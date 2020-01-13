@@ -1,15 +1,12 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2019.4.1"
+    id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
-
-// This version of OpenCV should fix some "corrupt JPEg error" problems we had on the field
-// on 2019-03-22.
-wpi {
-    opencvVersion = "3.4.4-5"
-}
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -43,44 +40,29 @@ deploy {
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
-
-repositories {
-    // Maven central needed for JUnit
-    mavenCentral()
-
-    // Get NetworkTables straight from the source
-    // maven {
-    //     url = "http://first.wpi.edu/FRC/roborio/maven/development"
-    // }
-}
-
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
-    compile wpi.deps.wpilib()
-    compile wpi.deps.vendor.java()
+    implementation wpi.deps.wpilib()
+    nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
+    nativeDesktopZip wpi.deps.wpilibJni(wpi.platforms.desktop)
+
+
+    implementation wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
-    testCompile 'junit:junit:4.12'
 
-    // Add a dependency to networktables, since that's not automatic.
-    // compile group: 'edu.wpi.first.wpilib.networktables.java', name: 'NetworkTables', version: '3.0.0-SNAPSHOT', classifier: 'desktop'
-    //runtime group: "edu.wpi.first.ntcore", name: "ntcore-jni", version: "2019.+", classifier: "all"
-    //compile group: "edu.wpi.first.ntcore", name: "ntcore-java", version: "2019.+"
-    compile group: "edu.wpi.first.ntcore", name: "ntcore-java", version: "4.+"
-    runtime group: "edu.wpi.first.ntcore", name: "ntcore-jni", version: "4.+", classifier: "all"
-    compile group: "edu.wpi.first.wpiutil", name: "wpiutil-java", version: "2019.+"
+    testImplementation 'junit:junit:4.12'
 
-    // And now that we have this, add a dependency to networktables-input, a
-    // miraculous JAR file by Andrew McLees that allows us to control the
-    // robot with a keyboard.
-    compile files('lib/networktables-input.jar')
+    // Enable simulation gui support. Must check the box in vscode to enable support
+    // upon debugging
+    simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }

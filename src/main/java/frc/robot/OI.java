@@ -29,7 +29,9 @@ public class OI {
 	public Button forward;
 	public Button back;
 	public Button left;
-	public Button right; 
+	public Button right;
+	public Button strafeLeft;
+	public Button strafeRight; 
 	public Button sneak;
 	public Button climbUp;
 	public Button climbDown;
@@ -117,6 +119,8 @@ public class OI {
 			back = new NetworkButton(inputTable, "S");
 			left = new NetworkButton(inputTable, "A");
 			right = new NetworkButton(inputTable, "D");
+			strafeLeft = new NetworkButton(inputTable, "Q");
+			strafeRight = new NetworkButton(inputTable, "E");
 			sneak = new NetworkButton(inputTable, "Shift");
 		//}
 	}

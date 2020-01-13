@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.Sneak;
 import frc.robot.driving.TankDrive;
+import frc.robot.driving.mecanumDrive;
 import frc.robot.driving.RobotMap;
 import frc.robot.arm.Arm;
 import frc.robot.arm.Claw;
@@ -33,7 +34,8 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private Spark motor;
-  private TankDrive tank;
+  //private TankDrive tank;
+  private mecanumDrive mecanum;
   private Claw claw;
   private Arm arm;
   private OI oi;
@@ -74,7 +76,8 @@ public class Robot extends TimedRobot {
     CameraServer.getInstance().startAutomaticCapture();
     driveSneak = new Sneak(RobotMap.DRIVE_FORWARD_SNEAK_VALUE);
     wristSneak = new Sneak(RobotMap.WRIST_SNEAK_VALUE);
-    tank = new TankDrive(driveSneak);
+    //tank = new TankDrive(driveSneak);
+    mecanum = new mecanumDrive();
     oi = new OI();
     claw = new Claw();
     arm = new Arm(wristSneak);
@@ -123,7 +126,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     arm.arm(oi);
     claw.claw(oi);
-    tank.tankDrive(oi);
+    //tank.tankDrive(oi);
+    mecanum.mecanumDrive(oi);
     m_autoSelected = m_chooser.getSelected();
     // autoSelected = SmartDashboard.getString("Auto Selector",
     // defaultAuto);
@@ -140,7 +144,7 @@ public class Robot extends TimedRobot {
    /* if (!claw.canClawClose()) {
       claw.stopClosing();
     }*/
-    tank.tankDrive(oi);
+    mecanum.mecanumDrive(oi);
     handleSneak();    
   }
 
@@ -154,7 +158,7 @@ public class Robot extends TimedRobot {
     /*if (!claw.canClawClose()) {
       claw.stopClosing();
     }*/
-    tank.tankDrive(oi);
+    mecanum.mecanumDrive(oi);
     handleSneak();
     // motor.set(1);
     // System.out.println(motor.get());
