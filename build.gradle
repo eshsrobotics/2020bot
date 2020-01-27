@@ -8,6 +8,14 @@ targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
+// // This version of OpenCV should fix some "corrupt JPEG error" problems we had on the field
+// // on 2019-03-22.
+// //
+// // (Commented out because I'm not sure if it's still needed.)
+// wpi {
+//     opencvVersion = "3.4.4-5"
+// }
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
@@ -53,6 +61,13 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
+
+    // Add a dependency to networktables-input, a miraculous JAR file by Andrew
+    // McLees that allows us to control the robot with a keyboard.
+    //
+    // This depends on networktables, which is included in allwpilib from 2020 onwards
+    // (in short, you already have it.)
+    implementation files('lib/networktables-input.jar')
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
