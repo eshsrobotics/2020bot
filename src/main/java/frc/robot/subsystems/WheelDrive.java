@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
@@ -8,29 +9,32 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMax;
+
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.controller.PIDController;
 
 public class WheelDrive extends SubsystemBase {
-    public static SparkMax angleMotor;
-    public static SparkMax speedMotor;
-    public PIDController pidController; //find sparkmax PID
+    public PWMSparkMax angleMotor;
+    public PWMSparkMax speedMotor;
+    public PIDController pidController; 
 
 
     public WheelDrive (int angleMotor, int speedMotor, int encoder) {
-        this.angleMotor = new SparkMax (angleMotor);
-        this.speedMotor = new SparkMax (speedMotor);
-        pidController = new PIDController (1, 0, 0, new AnalogInput (encoder), this.angleMotor);
+        this.angleMotor = new PWMSparkMax(angleMotor);
+        this.speedMotor = new PWMSparkMax(speedMotor);
+        this.pidController = new PIDController (1, 0, 0);
     
-        pidController.setInputRange(-1.0, 1.0);
-        pidController.setContinuous ();
-        pidController.enable ();
+        pidController.setIntegratorRange(-1.0, 1.0);
+        pidController.enableContinuousInput(-1.0, 1.0);
+        //pidController.enable();
     }
     private final double MAX_VOLTS = 12; 
 
     public void drive (double Speed, double Angle){
-        speedMotor.set (speed);
+        speedMotor.set (Speed);
 
-        double setpoint = angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here.
+        double setpoint = Angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here.
         if (setpoint < 0) {
             setpoint = MAX_VOLTS + setpoint;
         }
