@@ -5,24 +5,15 @@ robot.
 # Subsystem breakdown
 
 ## Drive subsystem
-Two possibilities:
-1. **Swerve drive**
-   - Motors:
-     * 4x Neo
-     * 4x Neo 550
-   - Controllers:
-     * 8x Spark Max
-   - Sensors:
-     * Gyro
-     * Accelerometer
-2. **Mecanum drive**
-   - Motors: 4x Neo 550
-   - Controllers: 4x Spark Max
-   - Sensors:
-     * Gyro
-     * Accelerometer
-   - Other:
-     * 4x Mecanum wheels
+**Swerve drive**
+- Motors:
+  * 4x Neo
+  * 4x Neo 550
+- Controllers:
+  * 8x Spark Max
+- Sensors:
+  * Gyro
+  * Accelerometer
 
 ## Climbing subsystem
 - Motors: 2x Andymark gear motors
@@ -47,8 +38,8 @@ Two possibilities:
   in the center to direct the power cells.
 
 ## Belt subsystem
-- Motors: 2x Neo 550
-- Controllers: 2x Spark Max
+- Motors: 2x Mini-CIM
+- Controllers: 2x standard Spark
 - Sensors: **???** (for ball detection)
 - Other:
   * Smooth belts
@@ -63,5 +54,5 @@ Two possibilities:
   * 1x Vision camera (preferably Limelight)
 
 ## Total
-- Motors: 12-16
-- Motor controllers: 12-16
+- Motors: 16 (6 Neo, 6 Neo 550, 2 Mini-CIM, 2 Andymark gear)
+- Motor controllers: 16 (12 Spark Max, 4 standard Spark)
