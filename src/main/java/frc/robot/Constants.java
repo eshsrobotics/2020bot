@@ -14,6 +14,23 @@ package frc.robot;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
+ * 
  */
 public final class Constants {
+    /**
+     * In meters. It is the horizontal component of the distance from the imaginary center
+     * (dimensional center, not center of mass) to the center of any of the wheels.
+     */
+    public static final double WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE = 0.5;
+
+    /**
+     * In meters. It is the vertical component of the distance from the imaginary center
+     * (dimensional center, not center of mass) to the center of any of the wheels.
+     */
+    public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 1.0;
+
+    public static final int FRONT_LEFT = 0;
+    public static final int BACK_LEFT = 1;
+    public static final int FRONT_RIGHT = 2;
+    public static final int BACK_RIGHT = 3;
 }
