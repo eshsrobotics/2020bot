@@ -22,17 +22,38 @@ import edu.wpi.first.wpilibj.controller.PIDController;
  * This class is designed to take inputs from OI and JoystickInput, and control
  * the driving motors for driving based on those inputs. It will handle all
  * modes of driving, such as CLASSIC and SNAKE.
+ * 
+ * For all arrays of 4 in this class, the indices within the arrays are
+ * indicated by Constants.FRONT_RIGHT, Constants.FRONT_LEFT,
+ * Constants.BACK_LEFT, and Constants.BACK_RIGHT.
  */
 public class WheelDriveSubsystem extends SubsystemBase {
     public PWMSparkMax angleMotor;
     public PWMSparkMax speedMotor;
     public PIDController pidController;
-    private double[] goalThetas = new double[4];
+
+    /**
+     * This array contains four elements, one for each wheel.  It maintains the
+     * last values passed into setGoalAngles().
+     * 
+     * These are directional angles, with 0 radians indicating straight forward and
+     * positive angles turning counterclockwise.
+     */
+    private double[] goalThetas;
+
+    /**
+     * This array contains four elements, one for each wheel.  It stores the
+     * encoder values we learned from calibrate().
+     */
+    private double[] initialEncoderValues;
 
     public WheelDriveSubsystem(int angleMotor, int speedMotor, int encoder) {
         this.angleMotor = new PWMSparkMax(angleMotor);
         this.speedMotor = new PWMSparkMax(speedMotor);
         this.pidController = new PIDController(1, 0, 0);
+
+        this.goalThetas = new double[4];
+        this.initialEncoderValues = new double[4];
 
         pidController.setIntegratorRange(-1.0, 1.0);
         pidController.enableContinuousInput(-1.0, 1.0);
@@ -55,26 +76,38 @@ public class WheelDriveSubsystem extends SubsystemBase {
         pidController.setSetpoint(setpoint);
     }
 
-    public void setGoalAngles(double thetaFL, double thetaBL, double thetaFR, double thetaBR) {
-        for (int i=0;i<4;i++) {
-            double angle = 0.0;
-            switch (i) {
-                case 0:
-                    angle = thetaFL;
-                    break;
-                case 1:
-                    angle = thetaBL;
-                    break;
-                case 2:
-                    angle = thetaFR;
-                    break;
-                case 3: 
-                    angle = thetaBR;
-                    break;
-            }
-            goalThetas[i] = angle;
-            
-        }
+    /**
+     * Sets the desired directional angles for the drives.  "Directional angles" are relative to a bearing of 0
+     * degrees, which for each wheel of the robot is assumed to point directly forward at the start of robotInit().
+     * 
+     * Ultimately, the goal of the input system is to set the appropriate goal angles for each drive mode,
+     * and the goal of the WheelDriveSubsystem itself is to move the wheels until they align with these goals.
+     * 
+     * All angles are in radians.
+     * 
+     * @param thetas An array of exactly 4 desired direction values.  The 
+     *               indices are as specified in 
+     *               Constants.{FRONT,BACK}_{LEFT,RIGHT}.
+     */
+    public void setGoalAngles(double[] thetas) {
+        this.goalThetas[Constants.FRONT_LEFT] = thetas[Constants.FRONT_LEFT];
+        this.goalThetas[Constants.FRONT_RIGHT] = thetas[Constants.FRONT_RIGHT];
+        this.goalThetas[Constants.BACK_LEFT] = thetas[Constants.BACK_LEFT];
+        this.goalThetas[Constants.BACK_RIGHT] = thetas[Constants.BACK_RIGHT];
+    }
+
+    /**
+     * Measures the four existing encoder values for the four wheels and
+     * presumes that they are all pointing directly to the front.
+     * 
+     * Thereafter, all pivoting angles will be relative to these initial measurements.
+     * 
+     * It is recommended to call calibrate() once at the very start of the match, during robotInit().
+     */
+    public void calibrate() {
+
+        // TODO: For each CANSparkMax, call getEncoder() to get the encoder, and then call getPosition() to get the encoder
+        // positions in units of rotations.  Store these into this.initialEncoderValues[].
     }
 
     /**
