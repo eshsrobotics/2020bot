@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
 
@@ -62,6 +63,18 @@ public class WheelDriveSubsystem extends SubsystemBase {
      */
     private List<PWMSpeedController> speedMotors;
 
+    /**
+     * This array contains four CANSparkMax controllers, one for each wheel.
+     *
+     * They are documented here:
+     * https://www.revrobotics.com/content/sw/max/sw-docs/java/com/revrobotics/CANSparkMax.html
+     *
+     * These are the only speed controllers that are condoned for use with the
+     * brushless NEO motors for FRC, so no, you don't get a choice of
+     * SpeedController here.
+     */
+    private List<CANSparkMax> pivotMotors;
+
     public WheelDriveSubsystem(int frontLeftPwmPort, int backLeftPwmPort,
                                int frontRightPwmPort, int backRightPwmPort) {
 
@@ -76,14 +89,25 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // Fill the speedMotors list with 4 nulls and then overwrite them.
         //
         // By doing things this way, we make this code immune to changes in
-        // the values of the indexing constants (FRONT_LEFT, FRONT_RIGHT, and
+        // the values of the indexing constants (Constants.FRONT_LEFT, Constants.FRONT_RIGHT, and
         // so on.)
-        this.speedMotors = new List<PWMSpeedController>();
-        Collections.addAll(this.speedMotors, new SpeedController[] { null, null, null, null });
-        this.speedMotors.set(Constants.FRONT_LEFT, new PWMSparkMax(frontLeftPwmPort));
+        this.speedMotors = new ArrayList<PWMSpeedController>();
+        Collections.addAll(this.speedMotors, new PWMSpeedController[] { null, null, null, null });
+        this.speedMotors.set(Constants.FRONT_LEFT,  new PWMSparkMax(frontLeftPwmPort));
         this.speedMotors.set(Constants.FRONT_RIGHT, new PWMSparkMax(frontRightPwmPort));
-        this.speedMotors.set(Constants.BACK_LEFT, new PWMSparkMax(backLeftPwmPort));
-        this.speedMotors.set(Constants.BACK_RIGHT, new PWMSparkMax(backRightPwmPort));
+        this.speedMotors.set(Constants.BACK_LEFT,   new PWMSparkMax(backLeftPwmPort));
+        this.speedMotors.set(Constants.BACK_RIGHT,  new PWMSparkMax(backRightPwmPort));
+
+        // Fill the pivotMotors list with 4 nulls and then overwrite them.
+        //
+        // For _ease of brain_, the IDs for the CANSparkMax controllers are
+        // the same as the index constants.
+        this.pivotMotors = new ArrayList<CANSparkMax>();
+        Collections.addAll(this.pivotMotors, new CANSparkMax[] { null, null, null, null });
+        this.pivotMotors.set(Constants.FRONT_LEFT,  new CANSparkMax(frontLeftPwmPort,  MotorType.kBrushless));
+        this.pivotMotors.set(Constants.FRONT_RIGHT, new CANSparkMax(frontRightPwmPort, MotorType.kBrushless));
+        this.pivotMotors.set(Constants.BACK_LEFT,   new CANSparkMax(backLeftPwmPort,   MotorType.kBrushless));
+        this.pivotMotors.set(Constants.BACK_RIGHT,  new CANSparkMax(backRightPwmPort,  MotorType.kBrushless));
 
         pidController.setIntegratorRange(-1.0, 1.0);
         pidController.enableContinuousInput(-1.0, 1.0);
@@ -117,7 +141,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *
      * @param thetas An array of exactly 4 desired direction values.  The
      *               indices are as specified in
-     *               Constants.{FRONT,BACK}_{LEFT,RIGHT}.
+     *               {FRONT,BACK}_{LEFT,RIGHT}.
      */
     public void setGoalAngles(double[] thetas) {
         this.goalThetas[Constants.FRONT_LEFT] = thetas[Constants.FRONT_LEFT];
