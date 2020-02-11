@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.SparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -34,10 +35,6 @@ import edu.wpi.first.wpilibj.controller.PIDController;
  * Constants.BACK_LEFT, and Constants.BACK_RIGHT.
  */
 public class WheelDriveSubsystem extends SubsystemBase {
-    public PWMSparkMax angleMotor;
-    public PWMSparkMax speedMotor;
-    public PIDController pidController;
-
     /**
      * This array contains four elements, one for each wheel.  It maintains the
      * last values passed into setGoalAngles().
@@ -78,11 +75,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public WheelDriveSubsystem(int frontLeftPwmPort, int backLeftPwmPort,
                                int frontRightPwmPort, int backRightPwmPort) {
 
-    //public WheelDriveSubsystem(int angleMotor, int speedMotor, int encoder) {
-        //this.angleMotor = new PWMSparkMax(angleMotor);
-        //this.speedMotor = new PWMSparkMax(speedMotor);
-        //this.pidController = new PIDController(1, 0, 0);
-
         this.goalThetas = new double[4];
         this.initialEncoderValues = new double[4];
 
@@ -109,9 +101,42 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.pivotMotors.set(Constants.BACK_LEFT,   new CANSparkMax(backLeftPwmPort,   MotorType.kBrushless));
         this.pivotMotors.set(Constants.BACK_RIGHT,  new CANSparkMax(backRightPwmPort,  MotorType.kBrushless));
 
-        pidController.setIntegratorRange(-1.0, 1.0);
-        pidController.enableContinuousInput(-1.0, 1.0);
-        // pidController.enable();
+        this.pivotMotors.forEach(m ->
+                                 {
+                                     // Reset to the default state (at least
+                                     // until the next power cycle.)
+                                     m.restoreFactoryDefaults();
+
+                                     // When we cut power, the motors should
+                                     // stop pivoting immediately; otherwise,
+                                     // the slop will throw us off.
+                                     m.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+                                     // TODO: call
+                                     // m.getEncoder().setPositionConversionFactor()
+                                     // with a constant that converts motor
+                                     // rotations into pivot wheel rotations,
+                                     // then multiple that by 2π to use radians.
+
+                                     // Set initial PID parameters.  We'll
+                                     // have to experiment with these.
+                                     final double kP = 0.1;
+                                     final double kI = 1e-4;
+                                     final double kD = 1;
+                                     final double kIz = 0;
+                                     final double kFF = 0;
+                                     final double kMaxOutput = 1;
+                                     final double kMinOutput = -1;
+
+                                     CANPIDController pidController = m.getPIDController();
+                                     pidController.setP(kP);
+                                     pidController.setI(kI);
+                                     pidController.setD(kD);
+                                     pidController.setIZone(kIz);
+                                     pidController.setFF(kFF);
+                                     pidController.setOutputRange(kMinOutput, kMaxOutput);
+
+                                 }); // end (for each pivot motor)
     }
 
     private final double MAX_VOLTS = 12;
@@ -131,17 +156,20 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the desired directional angles for the drives.  "Directional angles" are relative to a bearing of 0
-     * degrees, which for each wheel of the robot is assumed to point directly forward at the start of robotInit().
+     * Sets the desired directional angles for the drives.  "Directional
+     * angles" are relative to a bearing of 0 degrees, which for each wheel of
+     * the robot is assumed to point directly forward at the start of
+     * robotInit().
      *
-     * Ultimately, the goal of the input system is to set the appropriate goal angles for each drive mode,
-     * and the goal of the WheelDriveSubsystem itself is to move the wheels until they align with these goals.
+     * Ultimately, the goal of the input system is to set the appropriate goal
+     * angles for each drive mode, and the goal of the WheelDriveSubsystem
+     * itself is to move the wheels until they align with these goals.
      *
      * All angles are in radians.
      *
      * @param thetas An array of exactly 4 desired direction values.  The
      *               indices are as specified in
-     *               {FRONT,BACK}_{LEFT,RIGHT}.
+     *               Constants.{FRONT,BACK}_{LEFT,RIGHT}.
      */
     public void setGoalAngles(double[] thetas) {
         this.goalThetas[Constants.FRONT_LEFT] = thetas[Constants.FRONT_LEFT];
@@ -178,13 +206,27 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Given a desired turn radius, which can be positive or negative, this
+     * function finds the necessary orientation for all 4 pivot wheels so that
+     * the center is turningRadius units away from the turning center, and
+     * the inner and outer wheels are aligned with circles that are concentric
+     * with the turning center.
      *
-     * @param turningRadius which is in meters.
-     * @return An array of four directional angles.
+     * Note that when turningRadius == 0, this degenerates into an in-place
+     * rotation (which is supported behavior.)
      *
-     *         All angles are given in radians, in respect to the starting position of the wheels. The starting angle is pi/2 radians.
-     *         To find the absolutel angle of the wheel, it would be pi/2 + the directional angle.
-     *         The convention is that counterclockwise pivot angles are positive, while clockwise pivot angles are negative.
+     * @param turningRadius The turning radius, in the same units as
+     *                      Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE
+     *                      and
+     *                      Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE
+     *                      (that is, meters.)
+     * @return An array of four directional angles.  Directional angles are
+     *         relative to the starting position of the wheels (see
+     *         calibrate()).  Clockwise directional angles -- right turns --
+     *         are positive, and counterclockwise directional angles -- left
+     *         turns -- are negative.
+     *
+     *         All angles are given in radians.
      */
     public static double[] snakeDriveGetAngle(double turningRadius) {
         double angles[] = new double[4];
