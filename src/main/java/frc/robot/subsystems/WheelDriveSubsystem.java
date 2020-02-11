@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+import java.lang.Math;
 import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -15,7 +16,8 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANPIDController;
-import com.revrobotics.SparkMax;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
@@ -141,19 +143,21 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     private final double MAX_VOLTS = 12;
 
-    public void drive(double Speed, double Angle) {
-        speedMotor.set(Speed);
-
-        double setpoint = Angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here.
-        if (setpoint < 0) {
-            setpoint = MAX_VOLTS + setpoint;
-        }
-        if (setpoint > MAX_VOLTS) {
-            setpoint = setpoint - MAX_VOLTS;
-        }
-
-        pidController.setSetpoint(setpoint);
-    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // public void drive(double Speed, double Angle) {                                                                     //
+    //     speedMotor.set(Speed);                                                                                          //
+    //                                                                                                                     //
+    //     double setpoint = Angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here. //
+    //     if (setpoint < 0) {                                                                                             //
+    //         setpoint = MAX_VOLTS + setpoint;                                                                            //
+    //     }                                                                                                               //
+    //     if (setpoint > MAX_VOLTS) {                                                                                     //
+    //         setpoint = setpoint - MAX_VOLTS;                                                                            //
+    //     }                                                                                                               //
+    //                                                                                                                     //
+    //     pidController.setSetpoint(setpoint);                                                                            //
+    // }                                                                                                                   //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Sets the desired directional angles for the drives.  "Directional
@@ -196,13 +200,32 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * exists to constantly run with the scheduler
+     * Adjusts our pivoting angles so they get closer to the desired pivoting
+     * angles.
+     *
+     * This function is run continuously, thousands of times a second, by the
+     * scheduler.
      */
     @Override
     public void periodic() {
         /*
         here we would set all of the wheels to the required angles and speeds based on goalThetas and etc
         */
+
+        // This will *NOT* work correctly until we have called
+        // setPositionConversionFactor() on each of the pivotMotor encoders!
+        // The rotation values we get out of the encoders are unusable until
+        // then.
+        this.pivotMotors.forEach(m ->
+                                 {
+                                     CANPIDController pidController = m.getPIDController();
+                                     CANEncoder encoder = m.getEncoder();
+
+                                     final double wheelPositionInRotations = encoder.getPosition();
+                                     final double wheelPositionInRadians = wheelPositionInRotations * 2 * Math.PI;
+
+                                     pidController.setReference(wheelPositionInRadians, ControlType.kPosition);
+                                 });
     }
 
     /**
