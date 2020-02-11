@@ -141,23 +141,34 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                  }); // end (for each pivot motor)
     }
 
-    private final double MAX_VOLTS = 12;
+    /**
+     * Retrieves the pivot motors directly for debugging purposes.
+     */
+    List<CANSparkMax> getPivotMotors() { return this.pivotMotors; }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // public void drive(double Speed, double Angle) {                                                                     //
-    //     speedMotor.set(Speed);                                                                                          //
-    //                                                                                                                     //
-    //     double setpoint = Angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here. //
-    //     if (setpoint < 0) {                                                                                             //
-    //         setpoint = MAX_VOLTS + setpoint;                                                                            //
-    //     }                                                                                                               //
-    //     if (setpoint > MAX_VOLTS) {                                                                                     //
-    //         setpoint = setpoint - MAX_VOLTS;                                                                            //
-    //     }                                                                                                               //
-    //                                                                                                                     //
-    //     pidController.setSetpoint(setpoint);                                                                            //
-    // }                                                                                                                   //
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Retrieves the speed motors directly for debugging purposes.
+     */
+    List<PWMSpeedController> getSpeedMotors() { return this.speedMotors; }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // private final double MAX_VOLTS = 12;                                                                                 //
+    //                                                                                                                      //
+    // public void drive(double Speed, double Angle) {                                                                      //
+    //     speedMotor.set(Speed);                                                                                           //
+    //                                                                                                                      //
+    //     double setpoint = Angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here.  //
+    //     if (setpoint < 0) {                                                                                              //
+    //         setpoint = MAX_VOLTS + setpoint;                                                                             //
+    //     }                                                                                                                //
+    //     if (setpoint > MAX_VOLTS) {                                                                                      //
+    //         setpoint = setpoint - MAX_VOLTS;                                                                             //
+    //     }                                                                                                                //
+    //                                                                                                                      //
+    //     pidController.setSetpoint(setpoint);                                                                             //
+    // }                                                                                                                    //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
     /**
      * Sets the desired directional angles for the drives.  "Directional
@@ -237,6 +248,8 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *
      * Note that when turningRadius == 0, this degenerates into an in-place
      * rotation (which is supported behavior.)
+     *
+     * The values returned here can be passed directly into setGoalAngles().
      *
      * @param turningRadius The turning radius, in the same units as
      *                      Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE
