@@ -159,9 +159,12 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * It is recommended to call calibrate() once at the very start of the match, during robotInit().
      */
     public void calibrate() {
-
-        // TODO: For each CANSparkMax, call getEncoder() to get the encoder, and then call getPosition() to get the encoder
-        // positions in units of rotations.  Store these into this.initialEncoderValues[].
+        this.pivotMotors.forEach(m ->
+                                 {
+                                     int index = m.getDeviceId();
+                                     double rotations = m.getEncoder().getPosition();
+                                     initialEncoderValues[index] = rotations;
+                                 });
     }
 
     /**
