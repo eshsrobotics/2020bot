@@ -13,7 +13,15 @@ import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
 
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.PWMSparkMax;
+import edu.wpi.first.wpilibj.PWMSpeedController;
+import edu.wpi.first.wpilibj.controller.PIDController;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANEncoder;
@@ -22,10 +30,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Constants;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.PWMSparkMax;
-import edu.wpi.first.wpilibj.PWMSpeedController;
-import edu.wpi.first.wpilibj.controller.PIDController;
 
 /**
  * This class is designed to take inputs from OI and JoystickInput, and control
@@ -74,6 +78,16 @@ public class WheelDriveSubsystem extends SubsystemBase {
      */
     private List<CANSparkMax> pivotMotors;
 
+    /**
+     * PID constants.  Each of these appears on the SmartDashboard.
+     * We're going to have to experiment with these.
+     *
+     * See
+     * https://docs.wpilib.org/en/latest/docs/software/wpilib-tools/smartdashboard/index.html
+     * for more information.
+     */
+    double kP = 0.1, kI = 1e-4, kD = 1, kIz = 0, kFF = 0, kMaxOutput = 1, kMinOutput = -1;
+
     public WheelDriveSubsystem(int frontLeftPwmPort, int backLeftPwmPort,
                                int frontRightPwmPort, int backRightPwmPort) {
 
@@ -105,6 +119,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
         this.pivotMotors.forEach(m ->
                                  {
+                                     // TODO: Read the required PID constants
+                                     // for the SmartDashBoard.  The user may
+                                     // change the values at runtime.
+
                                      // Reset to the default state (at least
                                      // until the next power cycle.)
                                      m.restoreFactoryDefaults();
@@ -120,16 +138,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                      // rotations into pivot wheel rotations,
                                      // then multiple that by 2π to use radians.
 
-                                     // Set initial PID parameters.  We'll
-                                     // have to experiment with these.
-                                     final double kP = 0.1;
-                                     final double kI = 1e-4;
-                                     final double kD = 1;
-                                     final double kIz = 0;
-                                     final double kFF = 0;
-                                     final double kMaxOutput = 1;
-                                     final double kMinOutput = -1;
-
                                      CANPIDController pidController = m.getPIDController();
                                      pidController.setP(kP);
                                      pidController.setI(kI);
@@ -139,6 +147,17 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                      pidController.setOutputRange(kMinOutput, kMaxOutput);
 
                                  }); // end (for each pivot motor)
+
+        // Create SmartDashboard variables for the pivot PID constants.  These
+        // are read-write, so they can be adjusted on the fly from the
+        // SmartDashboard itself.
+        SmartDashboard.putNumber("Pivot PID: P Gain", kP);
+        SmartDashboard.putNumber("Pivot PID: I Gain", kI);
+        SmartDashboard.putNumber("Pivot PID: D Gain", kD);
+        SmartDashboard.putNumber("Pivot PID: I Zone", kIz);
+        SmartDashboard.putNumber("Pivot PID: Feed Forward", kFF);
+        SmartDashboard.putNumber("Pivot PID: Max Output", kMaxOutput);
+        SmartDashboard.putNumber("Pivot PID: Min Output", kMinOutput);
     }
 
     /**
@@ -191,6 +210,11 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.goalThetas[Constants.FRONT_RIGHT] = thetas[Constants.FRONT_RIGHT];
         this.goalThetas[Constants.BACK_LEFT] = thetas[Constants.BACK_LEFT];
         this.goalThetas[Constants.BACK_RIGHT] = thetas[Constants.BACK_RIGHT];
+
+        SmartDashboard.putNumber("FL goal θ", this.goalThetas[Constants.FRONT_LEFT]);
+        SmartDashboard.putNumber("FR goal θ", this.goalThetas[Constants.FRONT_RIGHT]);
+        SmartDashboard.putNumber("BL goal θ", this.goalThetas[Constants.BACK_LEFT]);
+        SmartDashboard.putNumber("BR goal θ", this.goalThetas[Constants.BACK_RIGHT]);
     }
 
     /**
@@ -206,8 +230,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                  {
                                      int index = m.getDeviceId();
                                      double rotations = m.getEncoder().getPosition();
-                                     initialEncoderValues[index] = rotations;
+                                     this.initialEncoderValues[index] = rotations;
                                  });
+
+        SmartDashboard.putNumber("FL pivot encoder (initial)", this.initialEncoderValues[Constants.FRONT_LEFT]);
+        SmartDashboard.putNumber("FR pivot encoder (initial)", this.initialEncoderValues[Constants.FRONT_RIGHT]);
+        SmartDashboard.putNumber("BL pivot encoder (initial)", this.initialEncoderValues[Constants.BACK_LEFT]);
+        SmartDashboard.putNumber("BR pivot encoder (initial)", this.initialEncoderValues[Constants.BACK_RIGHT]);
     }
 
     /**
@@ -235,8 +264,21 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                      final double wheelPositionInRotations = encoder.getPosition();
                                      final double wheelPositionInRadians = wheelPositionInRotations * 2 * Math.PI;
 
-                                     pidController.setReference(wheelPositionInRadians, ControlType.kPosition);
-                                 });
+                                     var errorCode = pidController.setReference(wheelPositionInRadians, ControlType.kPosition);
+
+                                     if (errorCode != CANError.kOk) {
+                                         // Something went wrong.
+                                         System.err.printf("pivot motor #%d: pidController.setReference() returned %d (%s)\n",
+                                                           m.getDeviceId(),
+                                                           errorCode,
+                                                           errorCode.name());
+                                     }
+                                 }); // end (for each pivot motor
+
+        SmartDashboard.putNumber("FL pivot encoder", this.pivotMotors.get(Constants.FRONT_LEFT).getEncoder().getPosition());
+        SmartDashboard.putNumber("FR pivot encoder", this.pivotMotors.get(Constants.FRONT_RIGHT).getEncoder().getPosition());
+        SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(Constants.BACK_LEFT).getEncoder().getPosition());
+        SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(Constants.BACK_RIGHT).getEncoder().getPosition());
     }
 
     /**
