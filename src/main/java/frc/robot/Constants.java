@@ -29,8 +29,40 @@ public final class Constants {
      */
     public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 1.0;
 
-    public static final int FRONT_LEFT = 0;
-    public static final int BACK_LEFT = 1;
-    public static final int FRONT_RIGHT = 2;
-    public static final int BACK_RIGHT = 3;
+    /**
+     * The front left motor that drives the front left wheel
+     */
+    public static final int FRONT_LEFT_DRIVE_MOTOR = 0;
+
+    /**
+     * The back left motor that drives the back left wheel
+     */
+    public static final int BACK_LEFT_DRIVE_MOTOR = 1;    
+    /**
+     * The front right motor that drives the front right wheel
+     */
+    public static final int FRONT_RIGHT_DRIVE_MOTOR = 2;
+
+    /**
+     * The back right motor that drives the back right wheel
+     */
+    public static final int BACK_RIGHT_DRIVE_MOTOR = 3;
+    
+    /**
+     * The front left motor that turns the front left wheel
+     */
+    public static final int FRONT_LEFT_TURN_MOTOR = 0;
+    /**
+     * The back left motor that turns the back left wheel
+     */
+    public static final int BACK_LEFT_TURN_MOTOR = 1;
+    /**
+     * The front right motor that turns the front right wheel
+     */
+    public static final int FRONT_RIGHT_TURN_MOTOR = 2;
+    /**
+     * The back right motor that turns the back wheel
+     */
+    public static final int BACK_RIGHT_TURN_MOTOR = 3;
+
 }
