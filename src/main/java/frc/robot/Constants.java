@@ -14,7 +14,7 @@ package frc.robot;
  *
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
- * 
+ *
  */
 public final class Constants {
     /**
@@ -30,39 +30,68 @@ public final class Constants {
     public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 1.0;
 
     /**
-     * The front left motor that drives the front left wheel
+     * Our swerve drive makes us use arrays of four quite often: four pivot
+     * motor controllers, four driving motor controllers, and two sets of four
+     * PWM ports for these.  It helps to have a consistent order!
+     *
+     * These constants determine that order.  You can think of them as being
+     * ordered "counterclockwise around the car", starting with the "driver's
+     * seat."
      */
-    public static final int FRONT_LEFT_DRIVE_MOTOR = 0;
+    public static final int FRONT_LEFT = 0;
+    public static final int BACK_LEFT = 1;
+    public static final int BACK_RIGHT = 2;
+    public static final int FRONT_RIGHT = 3;
+
+    ///////////////////
+    // Driving ports //
+    ///////////////////
 
     /**
-     * The back left motor that drives the back left wheel
+     * The PWM port for the motor controller which drives the front left
+     * wheel.
      */
-    public static final int BACK_LEFT_DRIVE_MOTOR = 1;    
-    /**
-     * The front right motor that drives the front right wheel
-     */
-    public static final int FRONT_RIGHT_DRIVE_MOTOR = 2;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_PORT = FRONT_LEFT + 0;
 
     /**
-     * The back right motor that drives the back right wheel
+     * The PWM port for the motor controller which drives the back left
+     * wheel.
      */
-    public static final int BACK_RIGHT_DRIVE_MOTOR = 3;
-    
-    /**
-     * The front left motor that turns the front left wheel
-     */
-    public static final int FRONT_LEFT_TURN_MOTOR = 0;
-    /**
-     * The back left motor that turns the back left wheel
-     */
-    public static final int BACK_LEFT_TURN_MOTOR = 1;
-    /**
-     * The front right motor that turns the front right wheel
-     */
-    public static final int FRONT_RIGHT_TURN_MOTOR = 2;
-    /**
-     * The back right motor that turns the back wheel
-     */
-    public static final int BACK_RIGHT_TURN_MOTOR = 3;
+    public static final int BACK_LEFT_DRIVE_MOTOR_PORT = BACK_LEFT + 0;
 
+    /**
+     * The PWM port for the motor controller which drives the back right
+     * wheel.
+     */
+    public static final int BACK_RIGHT_DRIVE_MOTOR_PORT = BACK_RIGHT + 0;
+
+    /**
+     * The PWM port for the motor controller which drives the front right
+     * wheel.
+     */
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_PORT = FRONT_RIGHT + 0;
+
+    /////////////////
+    // Pivot ports //
+    /////////////////
+
+    /**
+     * The PWM port for the motor controller which pivots the front left wheel.
+     */
+    public static final int FRONT_LEFT_TURN_MOTOR_PORT = FRONT_LEFT + 4;
+
+    /**
+     * The PWM port for the motor controller which pivots the back left wheel.
+     */
+    public static final int BACK_LEFT_TURN_MOTOR_PORT = BACK_LEFT + 4;
+
+    /**
+     * The PWM port for the motor controller which pivots the back wheel.
+     */
+    public static final int BACK_RIGHT_TURN_MOTOR_PORT = BACK_RIGHT + 4;
+
+    /**
+     * The PWM port for the motor controller which pivots the front right wheel.
+     */
+    public static final int FRONT_RIGHT_TURN_MOTOR_PORT = FRONT_RIGHT + 4;
 }

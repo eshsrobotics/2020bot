@@ -87,8 +87,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
      */
     double kP = 0.1, kI = 1e-4, kD = 1, kIz = 0, kFF = 0, kMaxOutput = 1, kMinOutput = -1;
 
-    public WheelDriveSubsystem(int frontLeftPwmPort, int backLeftPwmPort,
-                               int frontRightPwmPort, int backRightPwmPort) {
+    public WheelDriveSubsystem() {
 
         this.goalThetas = new double[4];
         this.initialEncoderValues = new double[4];
@@ -100,10 +99,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // so on.)
         this.speedMotors = new ArrayList<PWMSpeedController>();
         Collections.addAll(this.speedMotors, new PWMSpeedController[] { null, null, null, null });
-        this.speedMotors.set(Constants.FRONT_LEFT,  new PWMSparkMax(frontLeftPwmPort));
-        this.speedMotors.set(Constants.FRONT_RIGHT, new PWMSparkMax(frontRightPwmPort));
-        this.speedMotors.set(Constants.BACK_LEFT,   new PWMSparkMax(backLeftPwmPort));
-        this.speedMotors.set(Constants.BACK_RIGHT,  new PWMSparkMax(backRightPwmPort));
+        this.speedMotors.set(Constants.FRONT_LEFT,  new PWMSparkMax(FRONT_LEFT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(Constants.FRONT_RIGHT, new PWMSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(Constants.BACK_LEFT,   new PWMSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(Constants.BACK_RIGHT,  new PWMSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT));
 
         // Fill the pivotMotors list with 4 nulls and then overwrite them.
         //
@@ -111,10 +110,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // the same as the index constants.
         this.pivotMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.pivotMotors, new CANSparkMax[] { null, null, null, null });
-        this.pivotMotors.set(Constants.FRONT_LEFT,  new CANSparkMax(frontLeftPwmPort,  MotorType.kBrushless));
-        this.pivotMotors.set(Constants.FRONT_RIGHT, new CANSparkMax(frontRightPwmPort, MotorType.kBrushless));
-        this.pivotMotors.set(Constants.BACK_LEFT,   new CANSparkMax(backLeftPwmPort,   MotorType.kBrushless));
-        this.pivotMotors.set(Constants.BACK_RIGHT,  new CANSparkMax(backRightPwmPort,  MotorType.kBrushless));
+        this.pivotMotors.set(Constants.FRONT_LEFT,  new CANSparkMax(FRONT_LEFT_TURN_MOTOR_PORT,   MotorType.kBrushless));
+        this.pivotMotors.set(Constants.FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_PORT,  MotorType.kBrushless));
+        this.pivotMotors.set(Constants.BACK_LEFT,   new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT,    MotorType.kBrushless));
+        this.pivotMotors.set(Constants.BACK_RIGHT,  new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT,   MotorType.kBrushless));
 
         this.pivotMotors.forEach(m ->
                                  {
@@ -168,25 +167,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * Retrieves the speed motors directly for debugging purposes.
      */
     List<PWMSpeedController> getSpeedMotors() { return this.speedMotors; }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // private final double MAX_VOLTS = 12;                                                                                 //
-    //                                                                                                                      //
-    // public void drive(double Speed, double Angle) {                                                                      //
-    //     speedMotor.set(Speed);                                                                                           //
-    //                                                                                                                      //
-    //     double setpoint = Angle * (MAX_VOLTS * 0.5) + (MAX_VOLTS * 0.5); // Optimization offset can be calculated here.  //
-    //     if (setpoint < 0) {                                                                                              //
-    //         setpoint = MAX_VOLTS + setpoint;                                                                             //
-    //     }                                                                                                                //
-    //     if (setpoint > MAX_VOLTS) {                                                                                      //
-    //         setpoint = setpoint - MAX_VOLTS;                                                                             //
-    //     }                                                                                                                //
-    //                                                                                                                      //
-    //     pidController.setSetpoint(setpoint);                                                                             //
-    // }                                                                                                                    //
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     /**
      * Sets the desired directional angles for the drives.  "Directional
