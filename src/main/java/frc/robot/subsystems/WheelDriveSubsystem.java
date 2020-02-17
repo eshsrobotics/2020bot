@@ -27,7 +27,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import frc.robot.Constants;
+import static frc.robot.Constants.*;
 
 
 /**
@@ -36,8 +36,8 @@ import frc.robot.Constants;
  * modes of driving, such as CLASSIC and SNAKE.
  *
  * For all arrays of 4 in this class, the indices within the arrays are
- * indicated by Constants.FRONT_RIGHT, Constants.FRONT_LEFT,
- * Constants.BACK_LEFT, and Constants.BACK_RIGHT.
+ * indicated by FRONT_RIGHT, FRONT_LEFT,
+ * BACK_LEFT, and BACK_RIGHT.
  */
 public class WheelDriveSubsystem extends SubsystemBase {
     /**
@@ -95,14 +95,14 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // Fill the speedMotors list with 4 nulls and then overwrite them.
         //
         // By doing things this way, we make this code immune to changes in
-        // the values of the indexing constants (Constants.FRONT_LEFT, Constants.FRONT_RIGHT, and
+        // the values of the indexing constants (FRONT_LEFT, FRONT_RIGHT, and
         // so on.)
         this.speedMotors = new ArrayList<PWMSpeedController>();
         Collections.addAll(this.speedMotors, new PWMSpeedController[] { null, null, null, null });
-        this.speedMotors.set(Constants.FRONT_LEFT,  new PWMSparkMax(FRONT_LEFT_DRIVE_MOTOR_PORT));
-        this.speedMotors.set(Constants.FRONT_RIGHT, new PWMSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT));
-        this.speedMotors.set(Constants.BACK_LEFT,   new PWMSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT));
-        this.speedMotors.set(Constants.BACK_RIGHT,  new PWMSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(FRONT_LEFT,  new PWMSparkMax(FRONT_LEFT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(FRONT_RIGHT, new PWMSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(BACK_LEFT,   new PWMSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT));
+        this.speedMotors.set(BACK_RIGHT,  new PWMSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT));
 
         // Fill the pivotMotors list with 4 nulls and then overwrite them.
         //
@@ -110,10 +110,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // the same as the index constants.
         this.pivotMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.pivotMotors, new CANSparkMax[] { null, null, null, null });
-        this.pivotMotors.set(Constants.FRONT_LEFT,  new CANSparkMax(FRONT_LEFT_TURN_MOTOR_PORT,   MotorType.kBrushless));
-        this.pivotMotors.set(Constants.FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_PORT,  MotorType.kBrushless));
-        this.pivotMotors.set(Constants.BACK_LEFT,   new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT,    MotorType.kBrushless));
-        this.pivotMotors.set(Constants.BACK_RIGHT,  new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT,   MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_LEFT,  new CANSparkMax(FRONT_LEFT_TURN_MOTOR_PORT,   MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_PORT,  MotorType.kBrushless));
+        this.pivotMotors.set(BACK_LEFT,   new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT,    MotorType.kBrushless));
+        this.pivotMotors.set(BACK_RIGHT,  new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT,   MotorType.kBrushless));
 
         this.pivotMotors.forEach(m ->
                                  {
@@ -182,18 +182,18 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *
      * @param thetas An array of exactly 4 desired direction values.  The
      *               indices are as specified in
-     *               Constants.{FRONT,BACK}_{LEFT,RIGHT}.
+     *               {FRONT,BACK}_{LEFT,RIGHT}.
      */
     public void setGoalAngles(double[] thetas) {
-        this.goalThetas[Constants.FRONT_LEFT] = thetas[Constants.FRONT_LEFT];
-        this.goalThetas[Constants.FRONT_RIGHT] = thetas[Constants.FRONT_RIGHT];
-        this.goalThetas[Constants.BACK_LEFT] = thetas[Constants.BACK_LEFT];
-        this.goalThetas[Constants.BACK_RIGHT] = thetas[Constants.BACK_RIGHT];
+        this.goalThetas[FRONT_LEFT] = thetas[FRONT_LEFT];
+        this.goalThetas[FRONT_RIGHT] = thetas[FRONT_RIGHT];
+        this.goalThetas[BACK_LEFT] = thetas[BACK_LEFT];
+        this.goalThetas[BACK_RIGHT] = thetas[BACK_RIGHT];
 
-        SmartDashboard.putNumber("FL goal θ", this.goalThetas[Constants.FRONT_LEFT]);
-        SmartDashboard.putNumber("FR goal θ", this.goalThetas[Constants.FRONT_RIGHT]);
-        SmartDashboard.putNumber("BL goal θ", this.goalThetas[Constants.BACK_LEFT]);
-        SmartDashboard.putNumber("BR goal θ", this.goalThetas[Constants.BACK_RIGHT]);
+        SmartDashboard.putNumber("FL goal θ", this.goalThetas[FRONT_LEFT]);
+        SmartDashboard.putNumber("FR goal θ", this.goalThetas[FRONT_RIGHT]);
+        SmartDashboard.putNumber("BL goal θ", this.goalThetas[BACK_LEFT]);
+        SmartDashboard.putNumber("BR goal θ", this.goalThetas[BACK_RIGHT]);
     }
 
     /**
@@ -212,10 +212,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                      this.initialEncoderValues[index] = rotations;
                                  });
 
-        SmartDashboard.putNumber("FL pivot encoder (initial)", this.initialEncoderValues[Constants.FRONT_LEFT]);
-        SmartDashboard.putNumber("FR pivot encoder (initial)", this.initialEncoderValues[Constants.FRONT_RIGHT]);
-        SmartDashboard.putNumber("BL pivot encoder (initial)", this.initialEncoderValues[Constants.BACK_LEFT]);
-        SmartDashboard.putNumber("BR pivot encoder (initial)", this.initialEncoderValues[Constants.BACK_RIGHT]);
+        SmartDashboard.putNumber("FL pivot encoder (initial)", this.initialEncoderValues[FRONT_LEFT]);
+        SmartDashboard.putNumber("FR pivot encoder (initial)", this.initialEncoderValues[FRONT_RIGHT]);
+        SmartDashboard.putNumber("BL pivot encoder (initial)", this.initialEncoderValues[BACK_LEFT]);
+        SmartDashboard.putNumber("BR pivot encoder (initial)", this.initialEncoderValues[BACK_RIGHT]);
     }
 
     /**
@@ -254,10 +254,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
                                      }
                                  }); // end (for each pivot motor
 
-        SmartDashboard.putNumber("FL pivot encoder", this.pivotMotors.get(Constants.FRONT_LEFT).getEncoder().getPosition());
-        SmartDashboard.putNumber("FR pivot encoder", this.pivotMotors.get(Constants.FRONT_RIGHT).getEncoder().getPosition());
-        SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(Constants.BACK_LEFT).getEncoder().getPosition());
-        SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(Constants.BACK_RIGHT).getEncoder().getPosition());
+        SmartDashboard.putNumber("FL pivot encoder", this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition());
+        SmartDashboard.putNumber("FR pivot encoder", this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition());
+        SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition());
+        SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition());
     }
 
     /**
@@ -273,9 +273,9 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * The values returned here can be passed directly into setGoalAngles().
      *
      * @param turningRadius The turning radius, in the same units as
-     *                      Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE
+     *                      WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE
      *                      and
-     *                      Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE
+     *                      WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE
      *                      (that is, meters.)
      * @return An array of four directional angles.  Directional angles are
      *         relative to the starting position of the wheels (see
@@ -288,13 +288,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public static double[] snakeDriveGetAngle(double turningRadius) {
         double angles[] = new double[4];
 
-        double innerTheta = Math.atan(Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / (turningRadius - Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE));
-        double outerTheta = Math.atan(Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / (turningRadius + Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE));
+        double innerTheta = Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / (turningRadius - WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE));
+        double outerTheta = Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / (turningRadius + WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE));
 
-        angles[Constants.FRONT_LEFT] = innerTheta;
-        angles[Constants.BACK_LEFT] = -innerTheta;
-        angles[Constants.FRONT_RIGHT] = outerTheta;
-        angles[Constants.BACK_RIGHT] = -outerTheta;
+        angles[FRONT_LEFT] = innerTheta;
+        angles[BACK_LEFT] = -innerTheta;
+        angles[FRONT_RIGHT] = outerTheta;
+        angles[BACK_RIGHT] = -outerTheta;
 
         return angles;
     }
