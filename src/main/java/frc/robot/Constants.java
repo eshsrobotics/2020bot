@@ -43,6 +43,14 @@ public final class Constants {
     public static final int BACK_RIGHT = 2;
     public static final int FRONT_RIGHT = 3;
 
+  /*
+   * Ratio for how many revolutions of the motor to a revolution of the wheel
+   *
+   * TODO: Explain precisely how this was calculated, and how it can be calculated
+   * again if the drive hardware changes.
+   */
+   public static final double WHEEL_TURN_RATIO = 12.167;
+
     ///////////////////
     // Driving ports //
     ///////////////////
