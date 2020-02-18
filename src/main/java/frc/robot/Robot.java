@@ -37,10 +37,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    this.motorTop = new PWMSparkMax(2);
-    this.motorBottom = new PWMSparkMax(4);
-    this.motorTop.stopMotor();
-    this.motorBottom.stopMotor();
+    
   }
 
   /**
@@ -56,10 +53,7 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-
-      motorTop.set(-0.2);
-      // motorBottom.set(0.2);
+    CommandScheduler.getInstance().run();//hi
 
   }
 

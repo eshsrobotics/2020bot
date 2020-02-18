@@ -9,8 +9,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -28,12 +30,16 @@ public class RobotContainer {
 
     private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();
 
+    private final InputSubsystem inputSubsystem = new InputSubsystem();
+
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         // Configure the button bindings
         configureButtonBindings();
+        this.wheelDrive.calibrate();
+        this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
     }
 
     /**
