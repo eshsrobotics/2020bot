@@ -47,7 +47,7 @@ public final class Constants {
    *
    * The gearbox for the planetary gear that our swerve controllers' NEO 550 motors
    * are attached to is 10:1.
-   * 
+   *
    * The gearbox is, in turn, connected to a 12-tooth sprocket, and this is attached by
    * chain to a 26-tooth sprocket that drives the swerve wheel.
    *                                                       _
@@ -56,15 +56,15 @@ public final class Constants {
   public static final double WHEEL_TURN_RATIO = (26 / 12) * (10 / 1);
 
   /**
-   * If only one joystick or controller is plugged in, then the joystick port defaults to 0. If multiple, 
-   * it then depends on the order it was plugged in. First joystick connected would 0, second one would be 1, etc. 
+   * If only one joystick or controller is plugged in, then the joystick port defaults to 0. If multiple,
+   * it then depends on the order it was plugged in. First joystick connected would 0, second one would be 1, etc.
    */
   public static final int JOYSTICK_PORT = 0;
 
   /**
-   * The left joystick on the controller handles the direction of the movement, all 360 dergrees. 
+   * The left joystick on the controller handles the direction of the movement, all 360 dergrees.
    * The right joystick on the controller handles the magnitude of the speed of the movement, Y-Value.
-   * The X-Value of the right joystick of the controller handles turning in place. 
+   * The X-Value of the right joystick of the controller handles turning in place.
    */
   public static final Hand TURNING_CONTROLLER_JOYSTICK = Hand.kLeft;
   public static final Hand POWER_CONTROLLER_JOYSTICK = Hand.kRight;
@@ -133,4 +133,34 @@ public final class Constants {
    * The PWM port for the motor controller which pivots the front right wheel.
    */
   public static final int FRONT_RIGHT_TURN_MOTOR_PORT = FRONT_RIGHT + 4;
+
+  //////////////////////////////////////
+  // NetworkTables button assignments //
+  //////////////////////////////////////
+  // Network Button key strings (for NetworkButton constructor):
+  // - Alphanumeric : Uppercase of the key (i.e. A, B, C, ... or 0, 1, 2, ...)
+  // - F Keys       : F1, F2, ...
+  // - Shift        : "Shift"
+  // - Control      : "Ctrl"
+  // - Alt          : "Alt"
+  // - Windows      : "Windows"
+  // - Enter        : "Enter"
+  // - Escape       : "Esc"
+  // - -            : "Minus"
+  // - =            : "Equals"
+  // - [            : "Open Bracket"
+  // - ]            : "Close Bracket"
+  // - /            : "Slash"
+  // - '            : "Quote"
+  // - ;            : "Semicolon"
+  // - Caps Lock    :  "Caps Lock"
+  // - `            : "Back Quote"
+  //
+  // For the mouse right and left buttons, use "Right Mouse" and "Left Mouse"
+  public static final String DRIVE_VECTOR_UP_BUTTON = "W";
+  public static final String DRIVE_VECTOR_LEFT_BUTTON = "A";
+  public static final String DRIVE_VECTOR_DOWN_BUTTON = "S";
+  public static final String DRIVE_VECTOR_RIGHT_BUTTON = "D";
+  public static final String DRIVE_AUXILIARY_LEFT_TURN_BUTTON = "Left";
+  public static final String DRIVE_AUXILIARY_RIGHT_TURN_BUTTON = "Right";
 }
