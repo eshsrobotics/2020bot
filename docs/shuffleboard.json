@@ -229,6 +229,17 @@
               "_source0": "network_table:///SmartDashboard/Set Rotations",
               "_title": "Set Rotations"
             }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Atan2 theta",
+              "_title": "Atan2 theta"
+            }
           }
         }
       }

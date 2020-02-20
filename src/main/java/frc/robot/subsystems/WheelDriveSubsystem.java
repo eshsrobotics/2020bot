@@ -104,7 +104,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     public WheelDriveSubsystem() {
 
-
         // By default, we're in crab mode.
         driveMode = DriveMode.CRAB_MODE;
 
@@ -276,18 +275,17 @@ public class WheelDriveSubsystem extends SubsystemBase {
         kFF = SmartDashboard.getNumber("Pivot PID: Feed Forward", kFF);
         kMaxOutput = SmartDashboard.getNumber("Pivot PID: Max Output", kMaxOutput);
         kMinOutput = SmartDashboard.getNumber("Pivot PID: Min Output", kMinOutput);
-        
+
         /*
          * here we would set all of the wheels to the required angles and speeds based
          * on goalThetas and etc
          */
 
-
-        for (int i = 0; i< this.pivotMotors.size(); i++) {
+        for (int i = 0; i < this.pivotMotors.size(); i++) {
             var m = this.pivotMotors.get(i);
 
             CANPIDController pidController = m.getPIDController();
-            
+
             pidController.setP(kP);
             pidController.setI(kI);
             pidController.setD(kD);
@@ -297,12 +295,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             CANEncoder encoder = m.getEncoder();
 
-            //final double wheelPositionInRotations = encoder.getPosition();
-            //final double wheelPositionInRadians = wheelPositionInRotations * 2 * Math.PI;
+            // final double wheelPositionInRotations = encoder.getPosition();
+            // final double wheelPositionInRadians = wheelPositionInRotations * 2 * Math.PI;
 
             final double goalRotations = this.goalThetas[i] / (2 * Math.PI);
 
-            // var errorCode = pidController.setReference(wheelPositionInRotations, ControlType.kPosition);
+            // var errorCode = pidController.setReference(wheelPositionInRotations,
+            // ControlType.kPosition);
             var errorCode = pidController.setReference(goalRotations, ControlType.kPosition);
 
             if (errorCode != CANError.kOk) {
@@ -386,22 +385,62 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
         final Vector2d normalizedVector = new Vector2d(joystickVector.x / joystickVectorLength,
                 joystickVector.y / joystickVectorLength);
-        final double dotProduct = normalizedVector.dot(referenceVector);
-        double theta = Math.acos(dotProduct);
-        SmartDashboard.putNumber("Atan2 theta", 
-          Math.atan2(normalizedVector.y, normalizedVector.x) + Math.PI);
-        theta = Math.atan2(normalizedVector.y, normalizedVector.x) + Math.PI;
+        SmartDashboard.putNumber("joystickvector x", joystickVector.x);
+        SmartDashboard.putNumber("joystickvector y", joystickVector.y);
+        SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y, normalizedVector.x));
+        double joystickAngle = Math.atan2(normalizedVector.y, normalizedVector.x);
 
-        // TODO: If the difference between the current angle and the new angle is 2*PI or more,
+        // Atan2() has a range of [-180, 180).  Shift to [0, 360).
+        joystickAngle += Math.PI;
+
+        // TODO: If the difference between the current angle and the new angle is 2*PI
+        // or more,
         // then set the current angle to the difference minus 2*PI.
         //
-        // - The current angle must come from this.pivotMotors.get(i).getEncoder().getPosition().
-        // - The new angle is theta, and I guess it will come from atan2() rather than the dot product.
+        // - The current angle must come from
+        // this.pivotMotors.get(i).getEncoder().getPosition().
+        // - The new angle is theta, and I guess it will come from atan2() rather than
+        // the dot product.
+        for (int i = 0; i < 4; i++) {
+            var motor = this.pivotMotors.get(i);
+            double theta = joystickAngle;
+            double currentRotations = motor.getEncoder().getPosition();
+            double currentAngle = currentRotations * Math.PI * 2;
+            double delta = currentAngle - joystickAngle;
+            if ((currentAngle - joystickAngle) % (Math.PI * 2) > Math.PI) {
+                // Current angle = 350
+                // Joy angle = 10
+                // Delta = 340
+                // We want to get to 370 degrees.
+                theta += (2 * Math.PI - delta);
+            } else {
+                // Current angle = 10
+                // Joy angle = 350
+                // Delta = -340
+                // We want to get to -10 degrees.
+                theta -= (2 * Math.PI + delta);
+            }
 
-        angles[FRONT_LEFT] = theta;
-        angles[BACK_LEFT] = theta;
-        angles[BACK_RIGHT] = theta;
-        angles[FRONT_RIGHT] = theta;
+            angles[i] = theta;
+            SmartDashboard.putNumber("current position", currentRotations * 360);
+            SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
+        }
+
+        /*
+         * [FRONT_LEFT] = theta; angles[BACK_LEFT] = theta; angles[BACK_RIGHT] = theta;
+         * angles[FRONT_RIGHT] = theta;
+         */
+
+        /*while (Math.abs(theta) > (Math.PI * 2)) {
+            theta += -Math.signum(theta) * 2 * Math.PI;
+        }*/
+
         return angles;
+    }
+
+    public void setJankEncoderShenanigans() {
+        for (int i = 0; i < 4; i++) {
+            this.pivotMotors.get(i).getEncoder().setPosition(Math.PI);
+        }
     }
 }

@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    System.out.println("I'm disabled daddy!");
   }
 
   @Override
