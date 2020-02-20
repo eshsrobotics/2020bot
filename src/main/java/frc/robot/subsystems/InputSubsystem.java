@@ -64,24 +64,23 @@ public class InputSubsystem extends SubsystemBase {
     initializeJoystick(0);
     initializeController(0);
 
-    inputTable = NetworkTableInstance.getDefault().getTable("inputTable");
-    if (inputTable != null) {
-      // network tables is up
-      NetworkTableInstance.getDefault().setUpdateRate(0.0166);
+    NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
+    if (networkTableInstance.isConnected()) {
+      this.inputTable = networkTableInstance.getTable("inputTable");
+      if (this.inputTable != null) {
+        // network tables is up
+        NetworkTableInstance.getDefault().setUpdateRate(0.0166);
 
-      // These are vector controls, used during both crab and snake mode.
-      // driveUpButton = new NetworkButton(inputTable, DRIVE_VECTOR_UP_BUTTON);
-      // driveLeftButton = new NetworkButton(inputTable, DRIVE_VECTOR_LEFT_BUTTON);
-      // driveDownButton = new NetworkButton(inputTable, DRIVE_VECTOR_DOWN_BUTTON);
-      // driveRightButton = new NetworkButton(inputTable, DRIVE_VECTOR_RIGHT_BUTTON);
-      driveUpButtonEntry = inputTable.getEntry(DRIVE_VECTOR_UP_BUTTON);
-      driveLeftButtonEntry = inputTable.getEntry(DRIVE_VECTOR_LEFT_BUTTON);
-      driveDownButtonEntry = inputTable.getEntry(DRIVE_VECTOR_DOWN_BUTTON);
-      driveRightButtonEntry = inputTable.getEntry(DRIVE_VECTOR_RIGHT_BUTTON);
+        // These are vector controls, used during both crab and snake mode.
+        driveUpButtonEntry = inputTable.getEntry(DRIVE_VECTOR_UP_BUTTON);
+        driveLeftButtonEntry = inputTable.getEntry(DRIVE_VECTOR_LEFT_BUTTON);
+        driveDownButtonEntry = inputTable.getEntry(DRIVE_VECTOR_DOWN_BUTTON);
+        driveRightButtonEntry = inputTable.getEntry(DRIVE_VECTOR_RIGHT_BUTTON);
 
-      // These are only used during crab mode.
-      turnLeftButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_LEFT_TURN_BUTTON);
-      turnRightButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_RIGHT_TURN_BUTTON);
+        // These are only used during crab mode.
+        turnLeftButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_LEFT_TURN_BUTTON);
+        turnRightButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_RIGHT_TURN_BUTTON);
+      }
     }
   }
 
@@ -111,7 +110,7 @@ public class InputSubsystem extends SubsystemBase {
       yValue = this.controller.getY(Hand.kLeft);
     }
 
-    if (inputTable != null) {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
       // Handle the main direction vector.
       if (driveUpButtonEntry.getBoolean(false)) {
         yValue = -1.0;
@@ -123,13 +122,11 @@ public class InputSubsystem extends SubsystemBase {
       } else if (driveRightButtonEntry.getBoolean(false)) {
         xValue = 1.0;
       }
-
-      // TODO: Handle other buttons.
     }
 
-    Vector2d joystickVector;
-    joystickVector = new Vector2d(xValue, yValue);
-    return joystickVector;
+    Vector2d inputVector;
+    inputVector = new Vector2d(xValue, yValue);
+    return inputVector;
   }
 
   /**
