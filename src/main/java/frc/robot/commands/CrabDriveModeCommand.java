@@ -41,8 +41,23 @@ public class CrabDriveModeCommand extends CommandBase {
         // NOTE: If NetworkTables-input 
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
-        double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
-        this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
+        boolean but1 = this.inputSubsystem.getControllerOneButt();
+        boolean but2 = this.inputSubsystem.getControllerTwoButt();
+        boolean but3 = this.inputSubsystem.getControllerThreeButt();
+        boolean but4 = this.inputSubsystem.getControllerFourButt();
+        double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector, but1, but2, but3, but4);
+        double[] goalTrueThetas = new double[4];
+        double[] goalTrueSpeeds = new double[4];
+        for (int i = 0; i < 8; i++) {
+            if (0 <= i && i <= 3) {
+                goalTrueThetas[i] = goalCrabThetas[i];
+            }
+            if (4 <= i && i <= 7) {
+                goalTrueSpeeds[i - 4] = goalCrabThetas[i];
+            }
+        }
+        this.wheelDriveSubsystem.setGoalAngles(goalTrueThetas);
+        this.wheelDriveSubsystem.setDriveSpeeds(goalTrueSpeeds);
 
         super.execute();
     }    

@@ -26,7 +26,7 @@ public final class Constants {
    * When doing floating-point comparisons, values less than this are considered to be
    * zero for all intents and purposes.
    */
-  public static final double EPSILON = 0.0001;
+  public static final double EPSILON = 0.001;
 
   /**
    * In meters. It is the horizontal component of the distance from the imaginary

@@ -28,6 +28,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import static frc.robot.Constants.*;
+import static frc.robot.subsystems.InputSubsystem.*;
 
 /**
  * This class is designed to take inputs from OI and JoystickInput, and control
@@ -234,6 +235,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("BR goal theta", this.goalThetas[BACK_RIGHT]);
     }
 
+    public void setDriveSpeeds(double[] thetas) {
+        for (int i = 0; i < 4; i++) {
+            this.speedMotors.get(i).set(thetas[i]);
+        }
+         
+    }
+
     /**
      * Measures the four existing encoder values for the four wheels and presumes
      * that they are all pointing directly to the front.
@@ -364,8 +372,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * @return An array of four directional angles; see snakeDriveGetAngle() for
      *         more information.
      */
-    public double[] crabDriveGetAngle(Vector2d joystickVector) {
-        double angles[] = new double[4];
+    public double[] crabDriveGetAngle(Vector2d joystickVector, boolean but1, boolean but2, boolean but3, boolean but4) {
+        double angles[] = new double[8];
+        InputSubsystem controller = new InputSubsystem();
+        controller.initializeController(0);
 
         // The reference vector points straight forward.
         // Its length is 1.
@@ -401,12 +411,20 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // this.pivotMotors.get(i).getEncoder().getPosition().
         // - The new angle is theta, and I guess it will come from atan2() rather than
         // the dot product.
+        /*if (but1) {joystickAngle = -Math.PI/6;}
+        if (but2) {joystickAngle = Math.PI;}
+        if (but3) {joystickAngle = (3*Math.PI)/2;}
+        if (but4) {joystickAngle = (11*Math.PI)/6;}*/
+
+        System.out.println(joystickAngle);
         for (int i = 0; i < 4; i++) {
             var motor = this.pivotMotors.get(i);
             double theta = joystickAngle;
             double currentRotations = motor.getEncoder().getPosition();
             double currentAngle = currentRotations * Math.PI * 2;
             double delta = currentAngle - joystickAngle;
+            double oppositeZeroDelta = (Math.PI*2) - joystickAngle;
+            System.out.println(joystickAngle + "on " + i);
             if ((currentAngle - joystickAngle) % (Math.PI * 2) > Math.PI) {
                 // Current angle = 350
                 // Joy angle = 10
@@ -420,10 +438,19 @@ public class WheelDriveSubsystem extends SubsystemBase {
                 // We want to get to -10 degrees.
                 theta -= (2 * Math.PI + delta);
             }
+            System.out.println(theta + "with " + i);
 
             angles[i] = theta;
             SmartDashboard.putNumber("current position", currentRotations * 360);
             SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
+        }
+
+        for (int i = 4; i < 8; i++) {
+            if (but1) {
+                angles[i] = 0.3;
+            } else if (but2) {
+                angles[i] = -0.3;
+            }
         }
 
         /*
