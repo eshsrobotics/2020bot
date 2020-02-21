@@ -375,10 +375,11 @@ public class WheelDriveSubsystem extends SubsystemBase {
         //   or negative.
         //
         // - If a is negative, then a % b is always between 0 and b, so adding
-        //   -b makes it positive.
+        //   b makes a % b positive.
         //
-        //   Of course, if a was positive, then adding b will make the result
-        //   greater than b, so a final modulus operation takes care of that.
+        //   Of course, if a was positive to begin with, then adding b will
+        //   make the result greater than b, so a final modulus operation
+        //   takes care of that.
         return ((a % b) + b) % b;
     }
 
