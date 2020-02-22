@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -32,14 +34,19 @@ public class RobotContainer {
 
     private final InputSubsystem inputSubsystem = new InputSubsystem();
 
+    // private final Shooter shooterBot = new Shooter(0, 9, inputSubsystem); 
+    // private final Shooter shooterTop = new Shooter(0, 8, inputSubsystem);
+
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() {
+    public RobotContainer() { 
         // Configure the button bindings
         configureButtonBindings();
         this.wheelDrive.calibrate();
         this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
+        //this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop, inputSubsystem, shooterBot));
+
     }
 
     /**

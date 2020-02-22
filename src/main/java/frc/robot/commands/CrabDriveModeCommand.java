@@ -48,7 +48,7 @@ public class CrabDriveModeCommand extends CommandBase {
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector, but1, but2, but3, but4);
         double[] goalTrueThetas = new double[4];
         double[] goalTrueSpeeds = new double[4];
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             if (0 <= i && i <= 3) {
                 goalTrueThetas[i] = goalCrabThetas[i];
             }
@@ -56,8 +56,9 @@ public class CrabDriveModeCommand extends CommandBase {
                 goalTrueSpeeds[i - 4] = goalCrabThetas[i];
             }
         }
+        //double shooterSpeed = goalCrabThetas[4];
         this.wheelDriveSubsystem.setGoalAngles(goalTrueThetas);
-        this.wheelDriveSubsystem.setDriveSpeeds(goalTrueSpeeds);
+        //this.wheelDriveSubsystem.setDriveSpeeds(goalTrueSpeeds);
 
         super.execute();
     }    

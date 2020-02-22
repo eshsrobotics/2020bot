@@ -107,4 +107,20 @@ public class InputSubsystem extends SubsystemBase {
     boolean x = this.controller.getRawButton(4);
     return x;
   }
+  public boolean getControllerFiveButt() {
+    boolean x = this.controller.getRawButton(5);
+    return x;
+  }
+  public boolean getControllerSixButt() {
+    boolean x = this.controller.getRawButton(6);
+    return x;
+  }
+  public boolean getControllerSevenButt() {
+    boolean x = this.controller.getRawButton(7);
+    return x;
+  }
+  public boolean getControllerEightButt() {
+    boolean x = this.controller.getRawButton(8);
+    return x;
+  }
 }

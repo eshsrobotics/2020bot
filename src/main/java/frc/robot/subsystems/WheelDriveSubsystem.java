@@ -134,6 +134,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT, MotorType.kBrushless));
         this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT, MotorType.kBrushless));
 
+        
+
+
+
         this.pivotMotors.forEach(m -> {
             // TODO: Read the required PID constants
             // for the SmartDashBoard. The user may
@@ -236,9 +240,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     public void setDriveSpeeds(double[] thetas) {
-        for (int i = 0; i < 4; i++) {
-            this.speedMotors.get(i).set(thetas[i]);
-        }
+        
          
     }
 
@@ -373,7 +375,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *         more information.
      */
     public double[] crabDriveGetAngle(Vector2d joystickVector, boolean but1, boolean but2, boolean but3, boolean but4) {
-        double angles[] = new double[8];
+        double angles[] = new double[4];
         InputSubsystem controller = new InputSubsystem();
         controller.initializeController(0);
 
@@ -445,13 +447,15 @@ public class WheelDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
         }
 
-        for (int i = 4; i < 8; i++) {
+        /*for (int i = 4; i < 8; i++) {
             if (but1) {
-                angles[i] = 0.3;
+                angles[4] = 0.3;
             } else if (but2) {
-                angles[i] = -0.3;
+                angles[4] = -0.3;
+            } else {
+                angles[4] = 0;
             }
-        }
+        */
 
         /*
          * [FRONT_LEFT] = theta; angles[BACK_LEFT] = theta; angles[BACK_RIGHT] = theta;
