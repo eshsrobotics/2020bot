@@ -42,6 +42,8 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     static final double TWO_PI = 2 * Math.PI;
 
+    private boolean turn_enabled = false;
+
     /**
      * At any given time, the drive can be controlled in one of two ways, carefully
      * chosen at the beginning of the season:
@@ -67,6 +69,11 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * positive angles turning counterclockwise.
      */
     private double[] goalThetas;
+
+    /**
+     * An array of speeds that the motors will gradually accelerate to. 
+     */
+    private double[] goalSpeeds;
 
     /**
      * This array contains four elements, one for each wheel. It stores the encoder
@@ -112,6 +119,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
         this.goalThetas = new double[4];
         this.initialEncoderValues = new double[4];
+        this.goalSpeeds = new double[4]; 
 
         // Fill the speedMotors list with 4 nulls and then overwrite them.
         //
@@ -241,8 +249,16 @@ public class WheelDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("BR goal theta", this.goalThetas[BACK_RIGHT]);
     }
 
-    public void setDriveSpeeds(double[] thetas) {
-        
+    public void setDriveSpeeds(double[] speeds) {
+        this.goalSpeeds[FRONT_LEFT] = speeds[FRONT_LEFT];
+        this.goalSpeeds[FRONT_RIGHT] = speeds[FRONT_RIGHT];
+        this.goalSpeeds[BACK_LEFT] = speeds[BACK_LEFT];
+        this.goalSpeeds[BACK_RIGHT] = speeds[BACK_RIGHT];
+
+        SmartDashboard.putNumber("FL goal speeds", this.goalSpeeds[FRONT_LEFT]);
+        SmartDashboard.putNumber("FR goal speeds", this.goalSpeeds[FRONT_RIGHT]);
+        SmartDashboard.putNumber("BL goal speeds", this.goalSpeeds[BACK_LEFT]);
+        SmartDashboard.putNumber("BR goal speeds", this.goalSpeeds[BACK_RIGHT]);
          
     }
 
@@ -311,6 +327,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
             // final double wheelPositionInRadians = wheelPositionInRotations * 2 * Math.PI;
 
             final double goalRotations = this.goalThetas[i] / (2 * Math.PI);
+            
+            if (!turn_enabled) {
+                continue;
+            }
 
             // var errorCode = pidController.setReference(wheelPositionInRotations,
             // ControlType.kPosition);
@@ -322,14 +342,22 @@ public class WheelDriveSubsystem extends SubsystemBase {
                         errorCode, errorCode.name());
             }
         }
-        this.pivotMotors.forEach(m -> {
-
-        }); // end (for each pivot motor
 
         SmartDashboard.putNumber("FL pivot encoder", this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition());
         SmartDashboard.putNumber("FR pivot encoder", this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition());
         SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition());
         SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition());
+
+        for (int i = 0; i < this.speedMotors.size(); ++i) {
+            var m = this.speedMotors.get(i);
+            double currentSpeed = m.getSpeed();
+            if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) { 
+                // We have either overshot or undershot. 
+                double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+                final double VELOCITY = 0.05; 
+                m.setSpeed(currentSpeed + sign * VELOCITY);
+            }
+        }
     }
 
     /**
@@ -409,12 +437,12 @@ public class WheelDriveSubsystem extends SubsystemBase {
         double theta = modulus(currentAngle + modulus(joystickAngle - currentAngle, TWO_PI),
                                TWO_PI);
 
-        if (theta > modulus(Math.PI + currentAngle, TWO_PI)) {
-            // The calculation would have had us turning more than 180
-            // degrees.  Rotate to the same position, but from the opposite
-            // direction.
-            theta = currentAngle - (TWO_PI - theta);
-        }
+        // if (theta > modulus(Math.PI + currentAngle, TWO_PI)) {
+        //     // The calculation would have had us turning more than 180
+        //     // degrees.  Rotate to the same position, but from the opposite
+        //     // direction.
+        //     theta = currentAngle - (TWO_PI - theta);
+        // }
 
         return theta;
     }
@@ -437,19 +465,21 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // The joystick vector comes from our args.
         // We need to normalize it so its value is 1.
         final double joystickVectorLength = joystickVector.magnitude();
-        if (joystickVectorLength < EPSILON) {
-            // The joystick has barely moved. There's nothing to rotate toward.
-            angles[FRONT_LEFT] = 0;
-            angles[BACK_LEFT] = 0;
-            angles[BACK_RIGHT] = 0;
-            angles[FRONT_RIGHT] = 0;
+        if (joystickVectorLength < joystick_epsilon) {
+            // The joystick is inside our dead zone. There's nothing to rotate toward.
+            turn_enabled = false;
+            for (int i = 0; i < 4; i++) {
+                angles[i] = this.pivotMotors.get(i).getEncoder().getPosition() * TWO_PI;
+            }
             return angles;
+        } else {
+            // This shows that we are not in the dead zone of the controller. 
+            // This means that the robot will attempt to rotate to the joystick angle.
+            turn_enabled = true; 
         }
 
         final Vector2d normalizedVector = new Vector2d(joystickVector.x / joystickVectorLength,
                 joystickVector.y / joystickVectorLength);
-        SmartDashboard.putNumber("joystickvector x", joystickVector.x);
-        SmartDashboard.putNumber("joystickvector y", joystickVector.y);
         SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y, normalizedVector.x));
         double joystickAngle = Math.atan2(normalizedVector.y, normalizedVector.x);
 
@@ -465,29 +495,11 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             double theta = getNewAngle(currentAngle, joystickAngle);
             angles[i] = theta;
-            SmartDashboard.putNumber("current position", currentRotations * 360);
             SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
         }
 
-        /*for (int i = 4; i < 8; i++) {
-            if (but1) {
-                angles[4] = 0.3;
-            } else if (but2) {
-                angles[4] = -0.3;
-            } else {
-                angles[4] = 0;
-            }
-        */
-
-        /*
-         * [FRONT_LEFT] = theta; angles[BACK_LEFT] = theta; angles[BACK_RIGHT] = theta;
-         * angles[FRONT_RIGHT] = theta;
-         */
-
-        /*while (Math.abs(theta) > (Math.PI * 2)) {
-            theta += -Math.signum(theta) * 2 * Math.PI;
-        }*/
-
+        SmartDashboard.putNumber("getNewAngle(3)", angles[3] / Math.PI * 180);
+        SmartDashboard.putNumber("CurrentAngle(3)", this.pivotMotors.get(3).getEncoder().getPosition()*360);
         return angles;
     }
 

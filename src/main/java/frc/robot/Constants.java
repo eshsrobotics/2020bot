@@ -26,8 +26,11 @@ public final class Constants {
    * When doing floating-point comparisons, values less than this are considered to be
    * zero for all intents and purposes.
    */
-  public static final double EPSILON = 0.001;
-
+  public static final double EPSILON = 0.01;
+  /**
+   * joystick_epsilon is the controller joystick deadzone variable. This will help with jittery movement while driving.
+   */
+  public static final double joystick_epsilon = .20;
   /**
    * In meters. It is the horizontal component of the distance from the imaginary
    * center (dimensional center, not center of mass) to the center of any of the
@@ -133,6 +136,12 @@ public final class Constants {
    * The PWM port for the motor controller which pivots the front right wheel.
    */
   public static final int FRONT_RIGHT_TURN_MOTOR_PORT = FRONT_RIGHT + 4;
+
+  /**
+   * Easily controlls speed, we dont want 100 % all the time. 
+   * This value should be between 0.0 and 1.0.
+   */
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.60; 
 
   //////////////////////////////////////
   // NetworkTables button assignments //

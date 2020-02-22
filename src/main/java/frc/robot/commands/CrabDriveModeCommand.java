@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
 
@@ -46,19 +47,19 @@ public class CrabDriveModeCommand extends CommandBase {
         boolean but3 = this.inputSubsystem.getControllerThreeButt();
         boolean but4 = this.inputSubsystem.getControllerFourButt();
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector, but1, but2, but3, but4);
-        double[] goalTrueThetas = new double[4];
-        double[] goalTrueSpeeds = new double[4];
-        for (int i = 0; i < 4; i++) {
-            if (0 <= i && i <= 3) {
-                goalTrueThetas[i] = goalCrabThetas[i];
-            }
-            if (4 <= i && i <= 7) {
-                goalTrueSpeeds[i - 4] = goalCrabThetas[i];
-            }
-        }
-        //double shooterSpeed = goalCrabThetas[4];
-        this.wheelDriveSubsystem.setGoalAngles(goalTrueThetas);
-        //this.wheelDriveSubsystem.setDriveSpeeds(goalTrueSpeeds);
+       
+        this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
+        
+        // Maximum value of each joystick channel is postive one. Maximum length of joystick vector is the hypotenuse of a right traingle with sides of one and one.    
+        final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
+
+        // Speed is between zero and one. 
+        double speed = directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
+        speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
+        double[] driveSpeeds = {
+            speed,speed,speed,speed
+        };
+        this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
 
         super.execute();
     }    
