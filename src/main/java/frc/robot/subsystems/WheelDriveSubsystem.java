@@ -40,10 +40,12 @@ import static frc.robot.subsystems.InputSubsystem.*;
  */
 public class WheelDriveSubsystem extends SubsystemBase {
 
+    static final double TWO_PI = 2 * Math.PI;
+
     /**
      * At any given time, the drive can be controlled in one of two ways, carefully
      * chosen at the beginning of the season:
-     * 
+     *
      * - Crab mode, which is the equivalent of a permanet "strafing" mode, and -
      * Snake mode, which turns the chassis in a manner not dissimilar from a snake
      * with four wheels.
@@ -183,7 +185,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     /**
      * Obtains the current drive mode for the benefit of commands that need to know
      * this.
-     * 
+     *
      * @return The current drive mode.
      */
     public DriveMode getDriveMode() {
@@ -192,7 +194,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     /**
      * Changes the current drive mode to the given one.
-     * 
+     *
      * @param driveMode The new mode.
      */
     public void setDriveMode(DriveMode driveMode) {
@@ -369,7 +371,56 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * 
+     * This is a version of the modulus function (fmod() in libc) that behaves
+     * correctly in the presence of negative numbers.  For instance, while
+     * -10 % 360 returns -10, modulus(-10, 360) returns 350.
+     *
+     * The sign of the result will always match the sign of b.
+     *
+     * Credit goes to https://stackoverflow.com/a/4412200 for the elegantly
+     * simple insight.
+     */
+    private static final double modulus(double a, double b) {
+        // - a % b is always lower than b, regardless of whether b is positive
+        //   or negative.
+        //
+        // - If a is negative, then a % b is always between 0 and b, so adding
+        //   b makes a % b positive.
+        //
+        //   Of course, if a was positive to begin with, then adding b will
+        //   make the result greater than b, so a final modulus operation
+        //   takes care of that.
+        return ((a % b) + b) % b;
+    }
+
+    /**
+     * Calculates were we need to rotate a swerve drive wheel to match the
+     * alignment that the human driver has specified.  This is used during
+     * crab drive mode on C3-PO-TATO.
+     *
+     * @param currentAngle  The current position of the swerve wheel as
+     *                      determined by the encoder, in radians.
+     * @param joystickAngle The current angle of the joystick, in radians.
+     * @return A new angle that is, at most, π radians away from the current
+     *         position, and that is equivalent to the joystickAngle (modulo
+     *         2π.)
+     */
+    private static final double getNewAngle(double currentAngle, double joystickAngle) {
+        double theta = modulus(currentAngle + modulus(joystickAngle - currentAngle, TWO_PI),
+                               TWO_PI);
+
+        if (theta > modulus(Math.PI + currentAngle, TWO_PI)) {
+            // The calculation would have had us turning more than 180
+            // degrees.  Rotate to the same position, but from the opposite
+            // direction.
+            theta = currentAngle - (TWO_PI - theta);
+        }
+
+        return theta;
+    }
+
+    /**
+     *
      * @param vector2 A vector based on axis input
      * @return An array of four directional angles; see snakeDriveGetAngle() for
      *         more information.
@@ -402,46 +453,17 @@ public class WheelDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y, normalizedVector.x));
         double joystickAngle = Math.atan2(normalizedVector.y, normalizedVector.x);
 
-        // Atan2() has a range of [-180, 180).  Shift to [0, 360).
-        joystickAngle += Math.PI;
+        // Atan2() has a range of [-180, 180), with 0 on the positive X axis.
+        // Shift so 0 is on the positive Y axis, then wrap the range to [0,
+        // 360).
+        joystickAngle = modulus(joystickAngle - Math.PI/2.0, TWO_PI);
 
-        // TODO: If the difference between the current angle and the new angle is 2*PI
-        // or more,
-        // then set the current angle to the difference minus 2*PI.
-        //
-        // - The current angle must come from
-        // this.pivotMotors.get(i).getEncoder().getPosition().
-        // - The new angle is theta, and I guess it will come from atan2() rather than
-        // the dot product.
-        /*if (but1) {joystickAngle = -Math.PI/6;}
-        if (but2) {joystickAngle = Math.PI;}
-        if (but3) {joystickAngle = (3*Math.PI)/2;}
-        if (but4) {joystickAngle = (11*Math.PI)/6;}*/
-
-        System.out.println(joystickAngle);
         for (int i = 0; i < 4; i++) {
             var motor = this.pivotMotors.get(i);
-            double theta = joystickAngle;
             double currentRotations = motor.getEncoder().getPosition();
-            double currentAngle = currentRotations * Math.PI * 2;
-            double delta = currentAngle - joystickAngle;
-            double oppositeZeroDelta = (Math.PI*2) - joystickAngle;
-            System.out.println(joystickAngle + "on " + i);
-            if ((currentAngle - joystickAngle) % (Math.PI * 2) > Math.PI) {
-                // Current angle = 350
-                // Joy angle = 10
-                // Delta = 340
-                // We want to get to 370 degrees.
-                theta += (2 * Math.PI - delta);
-            } else {
-                // Current angle = 10
-                // Joy angle = 350
-                // Delta = -340
-                // We want to get to -10 degrees.
-                theta -= (2 * Math.PI + delta);
-            }
-            System.out.println(theta + "with " + i);
+            double currentAngle = currentRotations * TWO_PI;
 
+            double theta = getNewAngle(currentAngle, joystickAngle);
             angles[i] = theta;
             SmartDashboard.putNumber("current position", currentRotations * 360);
             SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
