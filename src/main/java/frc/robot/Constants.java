@@ -141,7 +141,22 @@ public final class Constants {
    * Easily controlls speed, we dont want 100 % all the time. 
    * This value should be between 0.0 and 1.0.
    */
-  public static final double DRIVE_SPEED_MULTIPLIER = 0.60; 
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.60;
+  ///////////////////////////////
+  // Intake and Shooter ports. //
+  ///////////////////////////////
+  // These take up ports 8 through 12. 
+
+  public static final int INTAKE_PORT = 8;
+  public static final int LEFT_BELT_PORT = 9;
+  public static final int RIGHT_BELT_PORT = 10;
+  public static final int BOTTOM_SHOOTER_FLYWHEEL_PORT = 11;
+  public static final int TOP_SHOOTER_FLYWHEEL_PORT = 12;
+
+  public static final double INTAKE_SPEED = 1.0; 
+  public static final double BELT_SPEED = 1.0; 
+  
+  public static int CONTROLLER_SHOOT_TRIGGER_BUTTON = 8; 
 
   //////////////////////////////////////
   // NetworkTables button assignments //

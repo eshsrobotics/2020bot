@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import frc.robot.subsystems.InputSubsystem;
 
-public class Shooter extends SubsystemBase {
+public class ShooterSubsytem extends SubsystemBase {
   /**
    * Creates a new ExampleSubsystem.
    */

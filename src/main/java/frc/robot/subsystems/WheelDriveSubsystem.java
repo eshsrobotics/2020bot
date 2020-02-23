@@ -144,10 +144,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT, MotorType.kBrushless));
         this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT, MotorType.kBrushless));
 
-        
-
-
-
         this.pivotMotors.forEach(m -> {
             // TODO: Read the required PID constants
             // for the SmartDashBoard. The user may

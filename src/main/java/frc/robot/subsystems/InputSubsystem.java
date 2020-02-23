@@ -152,7 +152,20 @@ public class InputSubsystem extends SubsystemBase {
       this.controller = null;
     }
   }
-
+  /**
+   * Returns true if shoot button is held down, false otherwise. 
+   */
+  public boolean getShootButton() {
+    if (joystickAttached) {
+      return this.joystick.getTriggerPressed();
+    } else if (controllerAttached) {
+      return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON);
+    } else {
+      return false; 
+    }
+      
+  }
+    
   public boolean getControllerOneButt() {
     boolean x = this.controller.getRawButton(1);
     return x;

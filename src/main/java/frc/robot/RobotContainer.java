@@ -14,6 +14,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
+import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
@@ -27,12 +28,12 @@ import frc.robot.subsystems.Shooter;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
     private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
     private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();
-
     private final InputSubsystem inputSubsystem = new InputSubsystem();
+
+    private final ShootButton shootButton = new ShootButton(inputSubsystem);
 
     // private final Shooter shooterBot = new Shooter(0, 9, inputSubsystem); 
     // private final Shooter shooterTop = new Shooter(0, 8, inputSubsystem);
@@ -46,7 +47,7 @@ public class RobotContainer {
         this.wheelDrive.calibrate();
         this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
         //this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop, inputSubsystem, shooterBot));
-
+        // shootButton.whenPressed();
     }
 
     /**
