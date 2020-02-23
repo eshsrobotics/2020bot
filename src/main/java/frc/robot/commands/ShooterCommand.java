@@ -10,15 +10,14 @@ package frc.robot.commands;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * An example command that uses an example subsystem.
  */
 public class ShooterCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Shooter shooterTop;
-  private final Shooter shooterBot;
+  private final ShooterSubsystem shooterSubsystem;
   private final InputSubsystem controller;
 
   /**
@@ -26,12 +25,12 @@ public class ShooterCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(Shooter a, InputSubsystem b, Shooter c) {
-    shooterTop = a;
-    shooterBot = c;
+  public ShooterCommand(ShooterSubsystem a, InputSubsystem b) {
+    shooterSubsystem = a;
     controller = b;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterTop, controller, shooterBot); 
+    addRequirements(shooterSubsystem, controller);
   }
 
   // Called when the command is initially scheduled.
@@ -47,9 +46,15 @@ public class ShooterCommand extends CommandBase {
       speed = 1;
     } else if (this.controller.getControllerTwoButt()) {
       speed = -1;
-    } 
-    this.shooterTop.changeSpeed(-speed *0.9);
-    this.shooterBot.changeSpeed(speed);
+    }
+
+    if (speed != 0) {
+        this.shooterSubsystem.startShooter(speed * 0.9, speed);
+    } else {
+        this.shooterSubsystem.stopShooter();
+    }
+
+    // NB: This next line almost certainly does nothing.
     super.execute();
   }
 

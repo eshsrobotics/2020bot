@@ -17,7 +17,8 @@ import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -32,22 +33,22 @@ public class RobotContainer {
 
     private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();
     private final InputSubsystem inputSubsystem = new InputSubsystem();
+    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
 
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
 
-    // private final Shooter shooterBot = new Shooter(0, 9, inputSubsystem); 
+    // private final Shooter shooterBot = new Shooter(0, 9, inputSubsystem);
     // private final Shooter shooterTop = new Shooter(0, 8, inputSubsystem);
 
     /**
      * The container for the robot.  Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() { 
-        // Configure the button bindings
+    public RobotContainer() {
+        // Configure the button bindings.
         configureButtonBindings();
+
         this.wheelDrive.calibrate();
         this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
-        //this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop, inputSubsystem, shooterBot));
-        // shootButton.whenPressed();
     }
 
     /**
@@ -57,6 +58,16 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        // Our buttons are a bit special because they support three different
+        // input sources at once (joysticks, XBox-compatible controllers, and
+        // keyboard input via NetworkTables-input.jar.)  So for now, we need
+        // Button wrapper classes around the InputSubsystem which handles all
+        // of these input sources.
+
+        //this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop, inputSubsystem, shooterBot));
+        shootButton.whenPressed(new StartEndCommand(() -> shooterSubsystem.startShooter(0.5, 0.5),
+                                                    () -> shooterSubsystem.stopShooter())
+                                .withTimeout(1.0));
     }
 
 
