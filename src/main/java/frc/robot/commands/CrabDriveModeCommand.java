@@ -57,16 +57,19 @@ public class CrabDriveModeCommand extends CommandBase {
 
         // Speed is between zero and one. 
         double speed = 0; // directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
-        double joystickXMagnitude = directionalVector.x; 
-        double joystickYMagnitude = directionalVector.y; 
-        SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
+        speed = directionalVector.magnitude();
+if (speed > 1.0) {
+  speed = 1.0; // Max speed at edges, not corners (which are at sqrt(2))
+}
+        /*SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
         SmartDashboard.putNumber("directionalXMag", joystickYMagnitude);
         if (joystickXMagnitude >= joystickYMagnitude){
             speed = joystickXMagnitude;
         } else if (joystickXMagnitude <= joystickYMagnitude){
             speed = joystickYMagnitude;
-        }
+        }*/
         speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
+        SmartDashboard.putNumber("final speed", speed);
         double[] driveSpeeds = {
             speed,speed,speed,speed
         };

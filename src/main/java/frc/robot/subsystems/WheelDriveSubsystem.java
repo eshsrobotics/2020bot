@@ -348,11 +348,27 @@ public class WheelDriveSubsystem extends SubsystemBase {
             var m = this.speedMotors.get(i);
             double currentSpeed = m.getSpeed();
             if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) { 
-                // We have either overshot or undershot. 
+                
                 double sign = Math.signum(goalSpeeds[i] - currentSpeed);
                 final double VELOCITY = 0.05; 
                 m.setSpeed(currentSpeed + sign * VELOCITY);
+                double newSpeed = currentSpeed + sign * VELOCITY;
+                final double MIN_SPEED = 0.2;
+                final double MAX_SPEED = 0.6;
+                if (newSpeed < MIN_SPEED) {
+                m.stopMotor();
+                } else {
+                newSpeed = Math.min(MAX_SPEED, newSpeed);
+                m.setSpeed(newSpeed);
+                }
+
+                // We have either overshot or undershot. 
+                //double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+                //final double VELOCITY = 0.02; 
+                SmartDashboard.putNumber("final final speed", (currentSpeed + sign * VELOCITY));
+                //m.setSpeed((currentSpeed + sign * VELOCITY));
             }
+            m.setSpeed(goalSpeeds[i]);
         }
     }
 
