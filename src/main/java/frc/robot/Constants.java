@@ -30,7 +30,7 @@ public final class Constants {
   /**
    * joystick_epsilon is the controller joystick deadzone variable. This will help with jittery movement while driving.
    */
-  public static final double joystick_epsilon = .20;
+  public static final double joystick_epsilon = .10;
   /**
    * In meters. It is the horizontal component of the distance from the imaginary
    * center (dimensional center, not center of mass) to the center of any of the

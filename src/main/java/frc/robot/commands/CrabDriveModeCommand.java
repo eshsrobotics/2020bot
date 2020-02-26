@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.InputSubsystem;
@@ -51,10 +52,20 @@ public class CrabDriveModeCommand extends CommandBase {
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
         
         // Maximum value of each joystick channel is postive one. Maximum length of joystick vector is the hypotenuse of a right traingle with sides of one and one.    
-        final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
+        // final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
+        //This is for magnitude based on joystick vector magnitude, we want based on joystick linear magnitude
 
         // Speed is between zero and one. 
-        double speed = directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
+        double speed = 0; // directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
+        double joystickXMagnitude = directionalVector.x; 
+        double joystickYMagnitude = directionalVector.y; 
+        SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
+        SmartDashboard.putNumber("directionalXMag", joystickYMagnitude);
+        if (joystickXMagnitude >= joystickYMagnitude){
+            speed = joystickXMagnitude;
+        } else if (joystickXMagnitude <= joystickYMagnitude){
+            speed = joystickYMagnitude;
+        }
         speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
         double[] driveSpeeds = {
             speed,speed,speed,speed
