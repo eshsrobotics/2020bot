@@ -40,41 +40,48 @@ public class CrabDriveModeCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        // NOTE: If NetworkTables-input 
+        // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
-        boolean but1 = this.inputSubsystem.getControllerOneButt();
-        boolean but2 = this.inputSubsystem.getControllerTwoButt();
+        boolean but1 = this.inputSubsystem.getControllerFiveButt();
+        boolean but2 = this.inputSubsystem.getControllerSevenButt();
         boolean but3 = this.inputSubsystem.getControllerThreeButt();
         boolean but4 = this.inputSubsystem.getControllerFourButt();
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector, but1, but2, but3, but4);
-       
-        this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
-        
-        // Maximum value of each joystick channel is postive one. Maximum length of joystick vector is the hypotenuse of a right traingle with sides of one and one.    
-        // final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
-        //This is for magnitude based on joystick vector magnitude, we want based on joystick linear magnitude
 
-        // Speed is between zero and one. 
+        this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
+
+        // Maximum value of each joystick channel is postive one. Maximum length of
+        // joystick vector is the hypotenuse of a right traingle with sides of one and
+        // one.
+        // final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
+        // This is for magnitude based on joystick vector magnitude, we want based on
+        // joystick linear magnitude
+
+        // Speed is between zero and one.
         double speed = 0; // directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
         speed = directionalVector.magnitude();
-if (speed > 1.0) {
-  speed = 1.0; // Max speed at edges, not corners (which are at sqrt(2))
-}
-        /*SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
-        SmartDashboard.putNumber("directionalXMag", joystickYMagnitude);
-        if (joystickXMagnitude >= joystickYMagnitude){
-            speed = joystickXMagnitude;
-        } else if (joystickXMagnitude <= joystickYMagnitude){
-            speed = joystickYMagnitude;
-        }*/
+        if (speed > 1.0) {
+            speed = 1.0; // Max speed at edges, not corners (which are at sqrt(2))
+        }
+        /*
+         * SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
+         * SmartDashboard.putNumber("directionalXMag", joystickYMagnitude); if
+         * (joystickXMagnitude >= joystickYMagnitude){ speed = joystickXMagnitude; }
+         * else if (joystickXMagnitude <= joystickYMagnitude){ speed =
+         * joystickYMagnitude; }
+         */
         speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
+        if (but1) {
+            speed *= 0.5;
+        } else if (but2) {
+            speed *= 1.4;
+        }
         SmartDashboard.putNumber("final speed", speed);
-        double[] driveSpeeds = {
-            speed,speed,speed,speed
-        };
+        // speed = 1.0;
+        double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
 
         super.execute();
-    }    
+    }
 }

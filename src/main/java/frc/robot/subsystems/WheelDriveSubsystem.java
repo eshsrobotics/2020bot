@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.PWMSpeedController;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -71,7 +72,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     private double[] goalThetas;
 
     /**
-     * An array of speeds that the motors will gradually accelerate to. 
+     * An array of speeds that the motors will gradually accelerate to.
      */
     private double[] goalSpeeds;
 
@@ -83,12 +84,11 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     /**
      * This array contains four PWM-driven SpeedControllers, one for each wheel.
-     *
      * We use this abstract class on purpose: any motor controllers than can be
      * driven by PWM signals can drive the wheels forward, not just the Spark MAX.
      * Normal Sparks and CIM motors will work just as well!
      */
-    private List<PWMSpeedController> speedMotors;
+    private List<CANSparkMax> speedMotors;
 
     /**
      * This array contains four CANSparkMax controllers, one for each wheel.
@@ -119,19 +119,23 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
         this.goalThetas = new double[4];
         this.initialEncoderValues = new double[4];
-        this.goalSpeeds = new double[4]; 
+        this.goalSpeeds = new double[4];
 
         // Fill the speedMotors list with 4 nulls and then overwrite them.
         //
         // By doing things this way, we make this code immune to changes in
         // the values of the indexing constants (FRONT_LEFT, FRONT_RIGHT, and
         // so on.)
-        this.speedMotors = new ArrayList<PWMSpeedController>();
-        Collections.addAll(this.speedMotors, new PWMSpeedController[] { null, null, null, null });
-        this.speedMotors.set(FRONT_LEFT, new PWMSparkMax(FRONT_LEFT_DRIVE_MOTOR_PORT));
-        this.speedMotors.set(FRONT_RIGHT, new PWMSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT));
-        this.speedMotors.set(BACK_LEFT, new PWMSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT));
-        this.speedMotors.set(BACK_RIGHT, new PWMSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT));
+        this.speedMotors = new ArrayList<CANSparkMax>();
+        Collections.addAll(this.speedMotors, new CANSparkMax[] { null, null, null, null });
+        this.speedMotors.set(FRONT_LEFT, new CANSparkMax(8, MotorType.kBrushless));
+        this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
+        this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
+        this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
+        for (int i = 0; i< 4; i++) {
+            this.speedMotors.get(i).stopMotor();
+            this.speedMotors.get(i).set(0);
+        }
 
         // Fill the pivotMotors list with 4 nulls and then overwrite them.
         //
@@ -215,7 +219,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     /**
      * Retrieves the speed motors directly for debugging purposes.
      */
-    List<PWMSpeedController> getSpeedMotors() {
+    List<CANSparkMax> getSpeedMotors() {
         return this.speedMotors;
     }
 
@@ -255,7 +259,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("FR goal speeds", this.goalSpeeds[FRONT_RIGHT]);
         SmartDashboard.putNumber("BL goal speeds", this.goalSpeeds[BACK_LEFT]);
         SmartDashboard.putNumber("BR goal speeds", this.goalSpeeds[BACK_RIGHT]);
-         
+
     }
 
     /**
@@ -323,7 +327,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
             // final double wheelPositionInRadians = wheelPositionInRotations * 2 * Math.PI;
 
             final double goalRotations = this.goalThetas[i] / (2 * Math.PI);
-            
+
             if (!turn_enabled) {
                 continue;
             }
@@ -344,31 +348,32 @@ public class WheelDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition());
         SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition());
 
-        for (int i = 0; i < this.speedMotors.size(); ++i) {
+        for (int i = 0; i < this.speedMotors.size(); i++) {
             var m = this.speedMotors.get(i);
-            double currentSpeed = m.getSpeed();
-            if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) { 
-                
-                double sign = Math.signum(goalSpeeds[i] - currentSpeed);
-                final double VELOCITY = 0.05; 
-                m.setSpeed(currentSpeed + sign * VELOCITY);
-                double newSpeed = currentSpeed + sign * VELOCITY;
-                final double MIN_SPEED = 0.2;
-                final double MAX_SPEED = 0.6;
-                if (newSpeed < MIN_SPEED) {
-                m.stopMotor();
-                } else {
-                newSpeed = Math.min(MAX_SPEED, newSpeed);
-                m.setSpeed(newSpeed);
-                }
+            double currentSpeed = m.get();
+            if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) {
 
-                // We have either overshot or undershot. 
-                //double sign = Math.signum(goalSpeeds[i] - currentSpeed);
-                //final double VELOCITY = 0.02; 
-                SmartDashboard.putNumber("final final speed", (currentSpeed + sign * VELOCITY));
-                //m.setSpeed((currentSpeed + sign * VELOCITY));
+                double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+                final double ACCELERATION = 0.04;
+                m.set(currentSpeed + sign * ACCELERATION);
+                double newSpeed = currentSpeed + sign * ACCELERATION;
+                final double MIN_SPEED = 0.1;
+                final double MAX_SPEED = 1.0;
+                if (newSpeed < MIN_SPEED) {
+                    //m.stopMotor();
+                    //m.set(0);
+                } else {
+                    newSpeed = Math.min(MAX_SPEED, newSpeed);
+                    m.set(newSpeed);
+                }
+                
+
+                // We have either overshot or undershot.
+                // double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+                // final double VELOCITY = 0.02;
+                //SmartDashboard.putNumber("final final speed" + i, m.get());
+                // m.setSpeed((currentSpeed + sign * VELOCITY));
             }
-            m.setSpeed(goalSpeeds[i]);
         }
     }
 
@@ -412,48 +417,46 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     /**
      * This is a version of the modulus function (fmod() in libc) that behaves
-     * correctly in the presence of negative numbers.  For instance, while
-     * -10 % 360 returns -10, modulus(-10, 360) returns 350.
+     * correctly in the presence of negative numbers. For instance, while -10 % 360
+     * returns -10, modulus(-10, 360) returns 350.
      *
      * The sign of the result will always match the sign of b.
      *
-     * Credit goes to https://stackoverflow.com/a/4412200 for the elegantly
-     * simple insight.
+     * Credit goes to https://stackoverflow.com/a/4412200 for the elegantly simple
+     * insight.
      */
     private static final double modulus(double a, double b) {
         // - a % b is always lower than b, regardless of whether b is positive
-        //   or negative.
+        // or negative.
         //
         // - If a is negative, then a % b is always between 0 and b, so adding
-        //   b makes a % b positive.
+        // b makes a % b positive.
         //
-        //   Of course, if a was positive to begin with, then adding b will
-        //   make the result greater than b, so a final modulus operation
-        //   takes care of that.
+        // Of course, if a was positive to begin with, then adding b will
+        // make the result greater than b, so a final modulus operation
+        // takes care of that.
         return ((a % b) + b) % b;
     }
 
     /**
-     * Calculates were we need to rotate a swerve drive wheel to match the
-     * alignment that the human driver has specified.  This is used during
-     * crab drive mode on C3-PO-TATO.
+     * Calculates were we need to rotate a swerve drive wheel to match the alignment
+     * that the human driver has specified. This is used during crab drive mode on
+     * C3-PO-TATO.
      *
-     * @param currentAngle  The current position of the swerve wheel as
-     *                      determined by the encoder, in radians.
+     * @param currentAngle  The current position of the swerve wheel as determined
+     *                      by the encoder, in radians.
      * @param joystickAngle The current angle of the joystick, in radians.
      * @return A new angle that is, at most, π radians away from the current
-     *         position, and that is equivalent to the joystickAngle (modulo
-     *         2π.)
+     *         position, and that is equivalent to the joystickAngle (modulo 2π.)
      */
     private static final double getNewAngle(double currentAngle, double joystickAngle) {
-        double theta = modulus(currentAngle + modulus(joystickAngle - currentAngle, TWO_PI),
-                               TWO_PI);
+        double theta = modulus(currentAngle + modulus(joystickAngle - currentAngle, TWO_PI), TWO_PI);
 
         // if (theta > modulus(Math.PI + currentAngle, TWO_PI)) {
-        //     // The calculation would have had us turning more than 180
-        //     // degrees.  Rotate to the same position, but from the opposite
-        //     // direction.
-        //     theta = currentAngle - (TWO_PI - theta);
+        // // The calculation would have had us turning more than 180
+        // // degrees. Rotate to the same position, but from the opposite
+        // // direction.
+        // theta = currentAngle - (TWO_PI - theta);
         // }
 
         return theta;
@@ -485,9 +488,9 @@ public class WheelDriveSubsystem extends SubsystemBase {
             }
             return angles;
         } else {
-            // This shows that we are not in the dead zone of the controller. 
+            // This shows that we are not in the dead zone of the controller.
             // This means that the robot will attempt to rotate to the joystick angle.
-            turn_enabled = true; 
+            turn_enabled = true;
         }
 
         final Vector2d normalizedVector = new Vector2d(joystickVector.x / joystickVectorLength,
@@ -498,7 +501,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // Atan2() has a range of [-180, 180), with 0 on the positive X axis.
         // Shift so 0 is on the positive Y axis, then wrap the range to [0,
         // 360).
-        joystickAngle = modulus(joystickAngle - Math.PI/2.0, TWO_PI);
+        joystickAngle = modulus(joystickAngle + Math.PI / 2.0, TWO_PI);
 
         for (int i = 0; i < 4; i++) {
             var motor = this.pivotMotors.get(i);
@@ -511,7 +514,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("getNewAngle(3)", angles[3] / Math.PI * 180);
-        SmartDashboard.putNumber("CurrentAngle(3)", this.pivotMotors.get(3).getEncoder().getPosition()*360);
+        SmartDashboard.putNumber("CurrentAngle(3)", this.pivotMotors.get(3).getEncoder().getPosition() * 360);
         return angles;
     }
 
