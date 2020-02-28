@@ -165,6 +165,28 @@ public class InputSubsystem extends SubsystemBase {
     }
       
   }
+
+  public boolean getBeltButton() {
+    if (joystickAttached) {
+      return this.joystick.getRawButton(3);
+    } else if (controllerAttached) {
+      return this.controller.getRawButton(3);
+    } else {
+      return false; 
+    }
+      
+  }
+
+  public boolean getIntakeButton() {
+    if (joystickAttached) {
+      return this.joystick.getRawButton(4);
+    } else if (controllerAttached) {
+      return this.controller.getRawButton(4);
+    } else {
+      return false; 
+    }
+      
+  }
     
   public boolean getControllerOneButt() {
     boolean x = this.controller.getRawButton(1);

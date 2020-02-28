@@ -12,13 +12,16 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.BeltButton;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
+import frc.robot.subsystems.IntakeButton;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem; 
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,8 +37,11 @@ public class RobotContainer {
     private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();
     private final InputSubsystem inputSubsystem = new InputSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
 
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
+    private final IntakeButton intakeButton = new IntakeButton(inputSubsystem); 
+    private final BeltButton beltButton = new BeltButton(inputSubsystem); 
 
     // private final Shooter shooterBot = new Shooter(0, 9, inputSubsystem);
     // private final Shooter shooterTop = new Shooter(0, 8, inputSubsystem);
@@ -67,6 +73,10 @@ public class RobotContainer {
         //this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop, inputSubsystem, shooterBot));
         shootButton.whenPressed(new StartEndCommand(() -> shooterSubsystem.startShooter(0.5, 0.5),
                                                     () -> shooterSubsystem.stopShooter())
+                                .withTimeout(1.0));
+
+        intakeButton.whenPressed(new StartEndCommand(() -> intakeSubsystem.enableIntake(),
+                                                     () ->  intakeSubsystem.disableIntake())
                                 .withTimeout(1.0));
     }
 
