@@ -153,7 +153,7 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
   /**
-   * Returns true if shoot button is held down, false otherwise. 
+   * Returns true if shoot button is held down, false otherwise.
    */
   public boolean getShootButton() {
     if (joystickAttached) {
@@ -161,9 +161,9 @@ public class InputSubsystem extends SubsystemBase {
     } else if (controllerAttached) {
       return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON);
     } else {
-      return false; 
+      return false;
     }
-      
+
   }
 
   public boolean getBeltButton() {
@@ -172,9 +172,9 @@ public class InputSubsystem extends SubsystemBase {
     } else if (controllerAttached) {
       return this.controller.getRawButton(3);
     } else {
-      return false; 
+      return false;
     }
-      
+
   }
 
   public boolean getIntakeButton() {
@@ -183,41 +183,7 @@ public class InputSubsystem extends SubsystemBase {
     } else if (controllerAttached) {
       return this.controller.getRawButton(4);
     } else {
-      return false; 
+      return false;
     }
-      
-  }
-    
-  public boolean getControllerOneButt() {
-    boolean x = this.controller.getRawButton(1);
-    return x;
-  }
-  public boolean getControllerTwoButt() {
-    boolean x = this.controller.getRawButton(2);
-    return x;
-  }
-  public boolean getControllerThreeButt() {
-    boolean x = this.controller.getRawButton(3);
-    return x;
-  }
-  public boolean getControllerFourButt() {
-    boolean x = this.controller.getRawButton(4);
-    return x;
-  }
-  public boolean getControllerFiveButt() {
-    boolean x = this.controller.getRawButton(5);
-    return x;
-  }
-  public boolean getControllerSixButt() {
-    boolean x = this.controller.getRawButton(6);
-    return x;
-  }
-  public boolean getControllerSevenButt() {
-    boolean x = this.controller.getRawButton(7);
-    return x;
-  }
-  public boolean getControllerEightButt() {
-    boolean x = this.controller.getRawButton(8);
-    return x;
   }
 }
