@@ -43,11 +43,7 @@ public class CrabDriveModeCommand extends CommandBase {
         // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
-        boolean but1 = this.inputSubsystem.getControllerFiveButt();
-        boolean but2 = this.inputSubsystem.getControllerSevenButt();
-        boolean but3 = this.inputSubsystem.getControllerThreeButt();
-        boolean but4 = this.inputSubsystem.getControllerFourButt();
-        double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector, but1, but2, but3, but4);
+        double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
 
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
 
@@ -72,11 +68,11 @@ public class CrabDriveModeCommand extends CommandBase {
          * joystickYMagnitude; }
          */
         speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
-        if (but1) {
-            speed *= 0.5;
-        } else if (but2) {
-            speed *= 1.4;
-        }
+        // if (but1) {
+            // speed *= 0.5;
+        // } else if (but2) {
+            // speed *= 1.4;
+        // }
         //SmartDashboard.putNumber("final speed", speed);
         // speed = 1.0;
         double[] driveSpeeds = { speed, speed, speed, speed };

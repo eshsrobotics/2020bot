@@ -20,6 +20,7 @@ public class ShooterCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
   private final InputSubsystem controller;
+  private double speed;
 
   /**
    * Creates a new ExampleCommand.
@@ -37,18 +38,12 @@ public class ShooterCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+	  speed = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = 0;
-    if (this.controller.getControllerOneButt()) {
-      speed = 1;
-    } else if (this.controller.getControllerTwoButt()) {
-      speed = -1;
-    }
-
     if (speed != 0) {
         this.shooterSubsystem.startShooter(speed * 0.9, speed);
     } else {

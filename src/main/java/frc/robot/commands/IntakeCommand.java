@@ -39,16 +39,16 @@ public class IntakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (this.controller.getControllerThreeButt()) {
-      this.intake.enableIntake();
-    } else {
-      this.intake.disableIntake();
-    }
-    if (this.controller.getControllerFourButt()) {
-      this.intake.enablesBelts();
-    } else {
-      this.intake.disablesBelts();
-    }
+    // if (this.controller.getControllerThreeButt()) {
+      // this.intake.enableIntake();
+    // } else {
+      // this.intake.disableIntake();
+    // }
+    // if (this.controller.getControllerFourButt()) {
+      // this.intake.enablesBelts();
+    // } else {
+      // this.intake.disablesBelts();
+    // }
   }
 
   // Called once the command ends or is interrupted.

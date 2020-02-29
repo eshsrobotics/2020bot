@@ -468,7 +468,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * @return An array of four directional angles; see snakeDriveGetAngle() for
      *         more information.
      */
-    public double[] crabDriveGetAngle(Vector2d joystickVector, boolean but1, boolean but2, boolean but3, boolean but4) {
+    public double[] crabDriveGetAngle(Vector2d joystickVector) {
         double angles[] = new double[4];
         InputSubsystem controller = new InputSubsystem();
         controller.initializeController(0);
