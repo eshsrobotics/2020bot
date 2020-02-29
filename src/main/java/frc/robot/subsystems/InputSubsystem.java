@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
@@ -159,6 +160,7 @@ public class InputSubsystem extends SubsystemBase {
     if (joystickAttached) {
       return this.joystick.getTriggerPressed();
     } else if (controllerAttached) {
+      SmartDashboard.putBoolean("shoot button val", this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON));
       return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON);
     } else {
       return false;

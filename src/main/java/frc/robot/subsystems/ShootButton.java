@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
 /**
@@ -27,6 +28,7 @@ public class ShootButton extends Button {
      */
     @Override
     public boolean get() {
+        //SmartDashboard.putBoolean("shoot button val", this.inputSubsystem.getShootButton());
         return this.inputSubsystem.getShootButton();
     }
 }

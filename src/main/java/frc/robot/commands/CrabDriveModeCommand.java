@@ -77,7 +77,7 @@ public class CrabDriveModeCommand extends CommandBase {
         } else if (but2) {
             speed *= 1.4;
         }
-        SmartDashboard.putNumber("final speed", speed);
+        //SmartDashboard.putNumber("final speed", speed);
         // speed = 1.0;
         double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);

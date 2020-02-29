@@ -1,3 +1,5 @@
+package frc.robot.subsystems;
+
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,5 +79,6 @@ public class IntakeSubsystem extends SubsystemBase {
             this.rightBeltMotor.stopMotor(); 
         }
      }
+    }
 
     
