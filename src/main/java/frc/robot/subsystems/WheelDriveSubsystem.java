@@ -128,10 +128,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // so on.)
         this.speedMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.speedMotors, new CANSparkMax[] { null, null, null, null });
-        this.speedMotors.set(FRONT_LEFT, new CANSparkMax(8, MotorType.kBrushless));
-        this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
-        this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
-        this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
+        this.speedMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
         for (int i = 0; i< 4; i++) {
             this.speedMotors.get(i).stopMotor();
             this.speedMotors.get(i).set(0);
@@ -143,10 +143,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // the same as the index constants.
         this.pivotMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.pivotMotors, new CANSparkMax[] { null, null, null, null });
-        this.pivotMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_TURN_MOTOR_PORT, MotorType.kBrushless));
-        this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_PORT, MotorType.kBrushless));
-        this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT, MotorType.kBrushless));
-        this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT, MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
 
         this.pivotMotors.forEach(m -> {
             // TODO: Read the required PID constants

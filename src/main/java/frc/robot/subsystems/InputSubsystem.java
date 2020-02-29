@@ -122,11 +122,40 @@ public class InputSubsystem extends SubsystemBase {
       } else if (driveRightButtonEntry.getBoolean(false)) {
         xValue = 1.0;
       }
+
+      // if (turnLeftButtonEntry.getBoolean(false)) {
+      //   xValue = -1.0;
+      //   yValue = 0/0;
+      // } else if (turnRightButtonEntry.getBoolean(false)) {
+      //   xValue = 1.0;
+      //   yValue = 2654876653658987654533.0*0.0;
+      // }
     }
 
     Vector2d inputVector;
     inputVector = new Vector2d(xValue, yValue);
     return inputVector;
+  }
+
+  public double getCrabDriveTurnMagnitude() {
+    double magnitude = 0.0;
+
+    if (this.joystickAttached) {
+      magnitude = joystick.getZ();
+    } else if (this.controllerAttached) {
+      magnitude = this.controller.getX(Hand.kRight);
+    }
+
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      // Handle the main direction vector.
+      if (turnLeftButtonEntry.getBoolean(false)) {
+        magnitude = -1.0;
+      } else if (turnRightButtonEntry.getBoolean(false)) {
+        magnitude = 1.0;
+      }
+    }
+
+    return magnitude;
   }
 
   /**

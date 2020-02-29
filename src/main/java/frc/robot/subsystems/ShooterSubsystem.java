@@ -27,8 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private PWMSpeedController topMotor, bottomMotor;
 
   public ShooterSubsystem() {
-    this.topMotor = new PWMSparkMax(TOP_SHOOTER_FLYWHEEL_PORT);
-    this.bottomMotor = new PWMSparkMax(BOTTOM_SHOOTER_FLYWHEEL_PORT);
+    this.topMotor = new PWMSparkMax(TOP_SHOOTER_FLYWHEEL_CAN_ID);
+    this.bottomMotor = new PWMSparkMax(BOTTOM_SHOOTER_FLYWHEEL_CAN_ID);
   }
 
   /**
