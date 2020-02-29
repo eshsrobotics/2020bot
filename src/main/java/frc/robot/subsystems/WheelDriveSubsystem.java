@@ -128,10 +128,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // so on.)
         this.speedMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.speedMotors, new CANSparkMax[] { null, null, null, null });
-        this.speedMotors.set(FRONT_LEFT, new CANSparkMax(8, MotorType.kBrushless));
-        this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
-        this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
-        this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_PORT, MotorType.kBrushless));
+        this.speedMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
         for (int i = 0; i< 4; i++) {
             this.speedMotors.get(i).stopMotor();
             this.speedMotors.get(i).set(0);
@@ -143,10 +143,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // the same as the index constants.
         this.pivotMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.pivotMotors, new CANSparkMax[] { null, null, null, null });
-        this.pivotMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_TURN_MOTOR_PORT, MotorType.kBrushless));
-        this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_PORT, MotorType.kBrushless));
-        this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_PORT, MotorType.kBrushless));
-        this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_PORT, MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
 
         this.pivotMotors.forEach(m -> {
             // TODO: Read the required PID constants
@@ -155,7 +155,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             // Reset to the default state (at least
             // until the next power cycle.)
-            m.restoreFactoryDefaults();
+            //m.restoreFactoryDefaults();
 
             // When we cut power, the motors should
             // stop pivoting immediately; otherwise,
@@ -199,7 +199,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public DriveMode getDriveMode() {
         return driveMode;
     }
-
+ 
     /**
      * Changes the current drive mode to the given one.
      *
@@ -255,10 +255,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.goalSpeeds[BACK_LEFT] = speeds[BACK_LEFT];
         this.goalSpeeds[BACK_RIGHT] = speeds[BACK_RIGHT];
 
-        SmartDashboard.putNumber("FL goal speeds", this.goalSpeeds[FRONT_LEFT]);
-        SmartDashboard.putNumber("FR goal speeds", this.goalSpeeds[FRONT_RIGHT]);
-        SmartDashboard.putNumber("BL goal speeds", this.goalSpeeds[BACK_LEFT]);
-        SmartDashboard.putNumber("BR goal speeds", this.goalSpeeds[BACK_RIGHT]);
+        //SmartDashboard.putNumber("FL goal speeds", this.goalSpeeds[FRONT_LEFT]);
+        //SmartDashboard.putNumber("FR goal speeds", this.goalSpeeds[FRONT_RIGHT]);
+        //SmartDashboard.putNumber("BL goal speeds", this.goalSpeeds[BACK_LEFT]);
+        //SmartDashboard.putNumber("BR goal speeds", this.goalSpeeds[BACK_RIGHT]);
 
     }
 
@@ -495,7 +495,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
         final Vector2d normalizedVector = new Vector2d(joystickVector.x / joystickVectorLength,
                 joystickVector.y / joystickVectorLength);
-        SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y, normalizedVector.x));
+        //SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y, normalizedVector.x));
         double joystickAngle = Math.atan2(normalizedVector.y, normalizedVector.x);
 
         // Atan2() has a range of [-180, 180), with 0 on the positive X axis.
@@ -513,8 +513,8 @@ public class WheelDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
         }
 
-        SmartDashboard.putNumber("getNewAngle(3)", angles[3] / Math.PI * 180);
-        SmartDashboard.putNumber("CurrentAngle(3)", this.pivotMotors.get(3).getEncoder().getPosition() * 360);
+        //SmartDashboard.putNumber("getNewAngle(3)", angles[3] / Math.PI * 180);
+        //SmartDashboard.putNumber("CurrentAngle(3)", this.pivotMotors.get(3).getEncoder().getPosition() * 360);
         return angles;
     }
 
