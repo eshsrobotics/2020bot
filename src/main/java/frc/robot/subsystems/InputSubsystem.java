@@ -70,14 +70,14 @@ public class InputSubsystem extends SubsystemBase {
         NetworkTableInstance.getDefault().setUpdateRate(0.0166);
 
         // These are vector controls, used during both crab and snake mode.
-        driveUpButtonEntry = inputTable.getEntry(DRIVE_VECTOR_UP_BUTTON);
-        driveLeftButtonEntry = inputTable.getEntry(DRIVE_VECTOR_LEFT_BUTTON);
-        driveDownButtonEntry = inputTable.getEntry(DRIVE_VECTOR_DOWN_BUTTON);
-        driveRightButtonEntry = inputTable.getEntry(DRIVE_VECTOR_RIGHT_BUTTON);
+        driveUpButtonEntry = inputTable.getEntry(DRIVE_VECTOR_UP_KEY);
+        driveLeftButtonEntry = inputTable.getEntry(DRIVE_VECTOR_LEFT_KEY);
+        driveDownButtonEntry = inputTable.getEntry(DRIVE_VECTOR_DOWN_KEY);
+        driveRightButtonEntry = inputTable.getEntry(DRIVE_VECTOR_RIGHT_KEY);
 
         // These are only used during crab mode.
-        turnLeftButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_LEFT_TURN_BUTTON);
-        turnRightButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_RIGHT_TURN_BUTTON);
+        turnLeftButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_LEFT_TURN_KEY);
+        turnRightButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_RIGHT_TURN_KEY);
       }
     }
   }

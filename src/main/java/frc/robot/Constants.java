@@ -179,28 +179,28 @@ public final class Constants {
   //////////////////////////////////////
   // Network Button key strings (for NetworkButton constructor):
   // - Alphanumeric : Uppercase of the key (i.e. A, B, C, ... or 0, 1, 2, ...)
-  // - F Keys       : F1, F2, ...
-  // - Shift        : "Shift"
-  // - Control      : "Ctrl"
-  // - Alt          : "Alt"
-  // - Windows      : "Windows"
-  // - Enter        : "Enter"
-  // - Escape       : "Esc"
-  // - -            : "Minus"
-  // - =            : "Equals"
-  // - [            : "Open Bracket"
-  // - ]            : "Close Bracket"
-  // - /            : "Slash"
-  // - '            : "Quote"
-  // - ;            : "Semicolon"
-  // - Caps Lock    :  "Caps Lock"
-  // - `            : "Back Quote"
+  // - F Keys    : F1, F2, ...
+  // - Shift     : "Shift"
+  // - Control   : "Ctrl"
+  // - Alt       : "Alt"
+  // - Windows   : "Windows"
+  // - Enter     : "Enter"
+  // - Escape    : "Esc"
+  // - -         : "Minus"
+  // - =         : "Equals"
+  // - [         : "Open Bracket"
+  // - ]         : "Close Bracket"
+  // - /         : "Slash"
+  // - '         : "Quote"
+  // - ;         : "Semicolon"
+  // - Caps Lock : "Caps Lock"
+  // - `         : "Back Quote"
   //
   // For the mouse right and left buttons, use "Right Mouse" and "Left Mouse"
-  public static final String DRIVE_VECTOR_UP_BUTTON = "W";
-  public static final String DRIVE_VECTOR_LEFT_BUTTON = "A";
-  public static final String DRIVE_VECTOR_DOWN_BUTTON = "S";
-  public static final String DRIVE_VECTOR_RIGHT_BUTTON = "D";
-  public static final String DRIVE_AUXILIARY_LEFT_TURN_BUTTON = "Left";
-  public static final String DRIVE_AUXILIARY_RIGHT_TURN_BUTTON = "Right";
+  public static final String DRIVE_VECTOR_UP_KEY = "W";
+  public static final String DRIVE_VECTOR_LEFT_KEY = "A";
+  public static final String DRIVE_VECTOR_DOWN_KEY = "S";
+  public static final String DRIVE_VECTOR_RIGHT_KEY = "D";
+  public static final String DRIVE_AUXILIARY_LEFT_TURN_KEY = "Left";
+  public static final String DRIVE_AUXILIARY_RIGHT_TURN_KEY = "Right";
 }
