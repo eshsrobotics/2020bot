@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.GenericHID.HIDType;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -134,12 +135,13 @@ public class InputSubsystem extends SubsystemBase {
    * Tries to set up a connected joystick, and subsequently checks if that joystick exists. If it does exist,
    * then a joystick object is set up. If it is not connected, then the boolean joystickAttached is set to false.
    */
-  public void initializeJoystick(int port) {
+  public void initializeJoystick(int port) {    	 
     try {
       this.joystick = new Joystick(port);
-      this.joystickAttached = true;
+	  if (this.joystick.getType() == HIDType.kHIDJoystick) {
+		this.joystickAttached = true;
+	  }
     } catch (Exception e) {
-      this.joystickAttached = false;
       this.joystick = null;
     }
   }
@@ -147,9 +149,10 @@ public class InputSubsystem extends SubsystemBase {
   public void initializeController(int port) {
     try {
       this.controller = new XboxController(port);
-      this.controllerAttached = true;
+	  if (this.controller.getType() != HIDType.kHIDJoystick) {
+		this.controllerAttached = true;
+	  }		      
     } catch (Exception e) {
-      this.controllerAttached = false;
       this.controller = null;
     }
   }
