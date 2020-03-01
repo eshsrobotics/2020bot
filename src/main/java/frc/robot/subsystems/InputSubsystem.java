@@ -33,10 +33,7 @@ import static frc.robot.Constants.*;
  */
 public class InputSubsystem extends SubsystemBase {
 
-  private boolean joystickAttached = false;
   private Joystick joystick = null;
-
-  private boolean controllerAttached = false;
   private XboxController controller = null;
 
   private NetworkTable inputTable;
@@ -63,8 +60,7 @@ public class InputSubsystem extends SubsystemBase {
    * suppose, but we didn't really want to bother.  Choose one.
    */
   public InputSubsystem() {
-    initializeJoystick(0);
-    initializeController(0);
+    initialize(0);
 
     NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
     if (networkTableInstance.isConnected()) {
@@ -104,10 +100,10 @@ public class InputSubsystem extends SubsystemBase {
     double xValue = 0.0;
     double yValue = 0.0;
 
-    if (this.joystickAttached) {
+    if (this.joystick != null) {
       xValue = this.joystick.getX();
       yValue = this.joystick.getY();
-    } else if (this.controllerAttached) {
+    } else if (this.controller != null) {
       xValue = this.controller.getX(Hand.kLeft);
       yValue = this.controller.getY(Hand.kLeft);
     }
@@ -132,60 +128,72 @@ public class InputSubsystem extends SubsystemBase {
   }
 
   /**
-   * Tries to set up a connected joystick, and subsequently checks if that joystick exists. If it does exist,
-   * then a joystick object is set up. If it is not connected, then the boolean joystickAttached is set to false.
+   * Tries to set up a connected joystick _or_ XBox-compatible controller.  If the controller or joystick does not exist,
+   * we set this.joystick or this.controller to null (respectively.)  Both cannot be true at the same time, since they
+   * use the same port.
    */
-  public void initializeJoystick(int port) {    	 
+  public void initialize(int port) {
     try {
+      this.controller = new XboxController(port);
+      for (int i = 0; i < KNOWN_CONTROLLER_NAMES.length; ++i) {
+        if (KNOWN_CONTROLLER_NAMES[i].equals(this.controller.getName())) {
+          // This is a known XBox controller.
+          this.joystick = null;
+          return;
+        }
+      }
+
+      // This is not a known XBox controller.
+      this.controller = null;
       this.joystick = new Joystick(port);
-	  if (this.joystick.getType() == HIDType.kHIDJoystick) {
-		this.joystickAttached = true;
-	  }
+
     } catch (Exception e) {
+
+      // Nothing worked. Probably no HID device is attached.
+      this.controller = null;
       this.joystick = null;
     }
   }
 
-  public void initializeController(int port) {
-    try {
-      this.controller = new XboxController(port);
-	  if (this.controller.getType() != HIDType.kHIDJoystick) {
-		this.controllerAttached = true;
-	  }		      
-    } catch (Exception e) {
-      this.controller = null;
-    }
-  }
   /**
    * Returns true if shoot button is held down, false otherwise.
    */
   public boolean getShootButton() {
-    if (false/*joystickAttached*/) {
-      return this.joystick.getTriggerPressed();
-    } else if (controllerAttached) {
-      // SmartDashboard.putBoolean("shoot button val", this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON));
-      return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON); 
+    if (this.joystick != null) {
+      return this.joystick.getTrigger();
+    } else if (this.controller != null) {
+      return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON);
     } else {
       return false;
     }
+  }
+
+  public boolean getClimbUpButton() {
+    if (joystick != null) {
+      return this.joystick.getTriggerPressed();
+    } else if (controller != null) {
+      return this.controller.getRawButton(5);
+    } else {
+      return false;
+    }
+  }
 
   }
 
   public boolean getBeltButton() {
-    if (joystickAttached) {
+    if (joystick != null) {
       return this.joystick.getRawButton(3);
-    } else if (controllerAttached) {
+    } else if (controller != null) {
       return this.controller.getRawButton(3);
     } else {
       return false;
     }
-
   }
 
   public boolean getIntakeButton() {
-    if (joystickAttached) {
+    if (joystick != null) {
       return this.joystick.getRawButton(4);
-    } else if (controllerAttached) {
+    } else if (controller != null) {
       return this.controller.getRawButton(4);
     } else {
       return false;

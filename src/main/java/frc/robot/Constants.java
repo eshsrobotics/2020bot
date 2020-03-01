@@ -158,6 +158,22 @@ public final class Constants {
 
   public static int CONTROLLER_SHOOT_TRIGGER_BUTTON = 8;
 
+  /**
+   * You'd think that you could detect an XBox controller easily, perhaps with:
+   *
+   * DriverStation.getInstance()..getJoystickIsXbox(port) == true
+   *
+   * Or maybe just with:
+   *
+   * joystick.getType() == GenericHID.HIDType.kHIDGamePad
+   *
+   * but you'd be wrong. Both of those return the SAME RESULT for both our XBox
+   * controller and our normal gaming joystick. Indeed, the only thing the system
+   * _does_ seem to be able to distinguish is the joystick names, which we then
+   * have to hard-code (only once, fortunately.)
+   */
+  public static String[] KNOWN_CONTROLLER_NAMES = { "Logitech Dual Action" };
+
   //////////////////////////////////////
   // NetworkTables button assignments //
   //////////////////////////////////////
