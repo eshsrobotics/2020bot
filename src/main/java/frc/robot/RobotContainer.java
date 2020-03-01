@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ShooterCommand;
@@ -17,7 +18,9 @@ import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -71,19 +74,24 @@ public class RobotContainer {
 
         // this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop,
         // inputSubsystem, shooterBot));
+        //System.out.println(shootButton.get());
+        SmartDashboard.putBoolean("shoot button", shootButton.get());
         shootButton
             .whenPressed(
                 new InstantCommand(() -> {
+                    SmartDashboard.putNumber("shoot number", 1);
                     intakeSubsystem.disableIntake();
-                    shooterSubsystem.startShooter(0.5, 0.5);
-                    new InstantCommand(
-                    () -> shooterSubsystem.startShooter(0.5,0.5)).andThen(
-                            new WaitCommand(0.4).andThen(
-                                    () -> intakeSubsystem.enablesBelts()));
+                    shooterSubsystem.startShooter(0.5,0.5);
+                    CommandScheduler.getInstance().schedule(new InstantCommand(() -> shooterSubsystem.startShooter(0.5,0.5))
+                    .andThen(new WaitCommand(0.4)
+                             .andThen(() -> intakeSubsystem.enablesBelts())));
+                                
                 })
             )
             .whenReleased(
                 new InstantCommand(() -> {
+                    SmartDashboard.putNumber("shoot number", 2);
+                    intakeSubsystem.disablesBelts();
                     shooterSubsystem.stopShooter();
                     intakeSubsystem.enableIntake();
                 })

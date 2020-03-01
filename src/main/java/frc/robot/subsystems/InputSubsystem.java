@@ -157,11 +157,11 @@ public class InputSubsystem extends SubsystemBase {
    * Returns true if shoot button is held down, false otherwise.
    */
   public boolean getShootButton() {
-    if (joystickAttached) {
+    if (false/*joystickAttached*/) {
       return this.joystick.getTriggerPressed();
     } else if (controllerAttached) {
-      SmartDashboard.putBoolean("shoot button val", this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON));
-      return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON);
+      // SmartDashboard.putBoolean("shoot button val", this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON));
+      return this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON); 
     } else {
       return false;
     }

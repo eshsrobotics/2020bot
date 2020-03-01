@@ -29,6 +29,7 @@ public class ShootButton extends Button {
     @Override
     public boolean get() {
         //SmartDashboard.putBoolean("shoot button val", this.inputSubsystem.getShootButton());
+        //System.out.println(this.inputSubsystem.getShootButton());
         return this.inputSubsystem.getShootButton();
     }
 }

@@ -30,6 +30,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     this.topMotor = new CANSparkMax(TOP_SHOOTER_FLYWHEEL_CAN_ID, MotorType.kBrushless);
     this.bottomMotor = new CANSparkMax(BOTTOM_SHOOTER_FLYWHEEL_CAN_ID, MotorType.kBrushless);
+
+    this.topMotor.stopMotor();
+    this.bottomMotor.stopMotor();
   }
 
   /**
@@ -61,8 +64,8 @@ public class ShooterSubsystem extends SubsystemBase {
     topSpeed    = Math.max(0.0, Math.min(1.0, topSpeed));
     bottomSpeed = Math.max(0.0, Math.min(1.0, bottomSpeed));
 
-    this.topMotor.set(-0.75*0.9);
-    this.bottomMotor.set(0.75);
+    this.topMotor.set(-topSpeed*0.9);
+    this.bottomMotor.set(bottomSpeed);
   }
 
   /**

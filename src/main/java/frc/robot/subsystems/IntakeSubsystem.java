@@ -63,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void enablesBelts() {
         if(!leftBeltError && !rightBeltError) {
             this.leftBeltMotor.set(BELT_SPEED); 
-            this.rightBeltMotor.set(BELT_SPEED); 
+            this.rightBeltMotor.set(-BELT_SPEED); 
         }
     }
 
