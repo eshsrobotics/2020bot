@@ -21,8 +21,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private Spark rightMotor, leftMotor;
 
   public ClimberSubsystem() {
-    this.rightMotor = new Spark(RIGHT_SHOOTER_MOTOR_PWM);
-    this.leftMotor = new Spark(LEFT_SHOOTER_MOTOR_PWM);
+    this.rightMotor = new Spark(RIGHT_CLIMBER_MOTOR_PWM);
+    this.leftMotor = new Spark(LEFT_CLIMBER_MOTOR_PWM);
 
     this.rightMotor.stopMotor();
     this.leftMotor.stopMotor();
@@ -74,7 +74,7 @@ public class ClimberSubsystem extends SubsystemBase {
   /**
    * Stops the shooter flywheels.
    */
-  public void stopShooter() {
+  public void stopClimber() {
     this.rightMotor.stopMotor();
     this.leftMotor.stopMotor();
   }

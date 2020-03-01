@@ -47,6 +47,7 @@ public class InputSubsystem extends SubsystemBase {
   private NetworkTableEntry driveRightButtonEntry;
   private NetworkTableEntry turnLeftButtonEntry;
   private NetworkTableEntry turnRightButtonEntry;
+  private NetworkTableEntry driveSneakButtonEntry;
 
   /**
    * Makes sure that we know, right away, whether a joystick or controller are
@@ -71,6 +72,7 @@ public class InputSubsystem extends SubsystemBase {
         driveLeftButtonEntry = inputTable.getEntry(DRIVE_VECTOR_LEFT_KEY);
         driveDownButtonEntry = inputTable.getEntry(DRIVE_VECTOR_DOWN_KEY);
         driveRightButtonEntry = inputTable.getEntry(DRIVE_VECTOR_RIGHT_KEY);
+        driveSneakButtonEntry = inputTable.getEntry(DRIVE_SNEAK_KEY);
 
         // These are only used during crab mode.
         turnLeftButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_LEFT_TURN_KEY);
@@ -123,6 +125,29 @@ public class InputSubsystem extends SubsystemBase {
     return inputVector;
   }
 
+  public double getCrabTurnValue() {
+    double xValue = 0.0;
+
+    if (this.joystick != null) {
+      xValue = this.joystick.getZ();
+    } else if (this.controller != null) {
+      xValue = this.controller.getX(Hand.kRight);
+    }
+
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      // Handle the main direction vector.
+      if (turnLeftButtonEntry.getBoolean(false)) {
+        xValue = -0.7;
+      } else if (turnRightButtonEntry.getBoolean(false)) {
+        xValue = 0.7;
+      } else {
+        xValue = 0;
+      }
+    }
+
+    return xValue;
+  }
+
   /**
    * Tries to set up a connected joystick _or_ XBox-compatible controller.  If the controller or joystick does not exist,
    * we set this.joystick or this.controller to null (respectively.)  Both cannot be true at the same time, since they
@@ -164,9 +189,24 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
 
+  public boolean getSneakButton() {
+    if (this.joystick != null) {
+      return this.joystick.getRawButton(2);
+    } else if (this.controller != null) {
+      return this.controller.getStickButton(Hand.kLeft);
+    } 
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      // Handle the main direction vector.
+      if (driveSneakButtonEntry.getBoolean(false)) {
+        return true;
+      } 
+    }
+    return false;
+  }
+
   public boolean getClimbUpButton() {
     if (joystick != null) {
-      return this.joystick.getTriggerPressed();
+      return this.joystick.getRawButton(3);
     } else if (controller != null) {
       return this.controller.getRawButton(5);
     } else {
@@ -176,10 +216,8 @@ public class InputSubsystem extends SubsystemBase {
 
   public boolean getClimbDownButton() {
     if (joystick != null) {
-      return this.joystick.getTriggerPressed();
+      return this.joystick.getRawButton(4);
     } else if (controller != null) {
-      // SmartDashboard.putBoolean("shoot button val",
-      // this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON));
       return this.controller.getRawButton(7);
     } else {
       return false;

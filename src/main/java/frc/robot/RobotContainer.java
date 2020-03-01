@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.ClimbDownButton;
+import frc.robot.subsystems.ClimbUpButton;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.ShootButton;
@@ -24,7 +26,9 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SneakButton;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -42,8 +46,12 @@ public class RobotContainer {
     private final InputSubsystem inputSubsystem = new InputSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
+    private final ClimbUpButton climbUpButton = new ClimbUpButton(inputSubsystem);
+    private final ClimbDownButton climbDownButton = new ClimbDownButton(inputSubsystem);
+    private final SneakButton sneakButton = new SneakButton(inputSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -71,31 +79,40 @@ public class RobotContainer {
 
         // this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop,
         // inputSubsystem, shooterBot));
-        //System.out.println(shootButton.get());
-        //SmartDashboard.putBoolean("shoot button", shootButton.get());
-        shootButton
-            .whenPressed(
-                new InstantCommand(() -> {
-                    SmartDashboard.putNumber("shoot number", 1);
-                    intakeSubsystem.disableIntake();
-                    CommandScheduler.getInstance().schedule(
-                        new InstantCommand(() -> shooterSubsystem.startShooter(0.75, 0.75))
-                        .andThen(new WaitCommand(0.4)
-                                 .andThen(() -> intakeSubsystem.enablesBelts())
-                        .withInterrupt(() -> 
-                            shootButton.get() == false
-                        )));
-                                
-                })
-            )
-            .whenReleased(
-                new InstantCommand(() -> {
-                    SmartDashboard.putNumber("shoot number", 2);
-                    intakeSubsystem.disablesBelts();
-                    shooterSubsystem.stopShooter();
-                    intakeSubsystem.enableIntake();
-                })
-            );
+        // System.out.println(shootButton.get());
+        // SmartDashboard.putBoolean("shoot button", shootButton.get());
+        sneakButton.whenPressed(new InstantCommand(() -> {
+            wheelDrive.enableSneak();
+        })).whenReleased(new InstantCommand(() -> {
+            wheelDrive.disableSneak();
+        }));
+
+        shootButton.whenPressed(new InstantCommand(() -> {
+            SmartDashboard.putNumber("shoot number", 1);
+            intakeSubsystem.disableIntake();
+            CommandScheduler.getInstance()
+                    .schedule(new InstantCommand(() -> shooterSubsystem.startShooter(0.75, 0.75))
+                            .andThen(new WaitCommand(0.4).andThen(() -> intakeSubsystem.enablesBelts())
+                                    .withInterrupt(() -> shootButton.get() == false)));
+
+        })).whenReleased(new InstantCommand(() -> {
+            SmartDashboard.putNumber("shoot number", 2);
+            intakeSubsystem.disablesBelts();
+            shooterSubsystem.stopShooter();
+            intakeSubsystem.enableIntake();
+        }));
+
+        climbDownButton.whenPressed(new InstantCommand(() -> {
+            climberSubsystem.takeClimberDown(0.5);
+        })).whenReleased(new InstantCommand(() -> {
+            climberSubsystem.stopClimber();
+        }));
+
+        climbUpButton.whenPressed(new InstantCommand(() -> {
+            climberSubsystem.takeClimberUp(0.5);
+        })).whenReleased(new InstantCommand(() -> {
+            climberSubsystem.stopClimber();
+        }));
     }
 
     /**

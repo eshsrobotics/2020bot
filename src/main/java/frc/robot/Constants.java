@@ -144,6 +144,8 @@ public final class Constants {
    * between 0.0 and 1.0.
    */
   public static final double DRIVE_SPEED_MULTIPLIER = 0.70;
+
+  public static final double DRIVE_SNEAK_MODIFIER = 0.5;
   ///////////////////////////////
   // Intake and Shooter ports. //
   ///////////////////////////////
@@ -154,8 +156,8 @@ public final class Constants {
   public static final int RIGHT_BELT_PORT = 1;
   public static final int BOTTOM_SHOOTER_FLYWHEEL_CAN_ID = 9;
   public static final int TOP_SHOOTER_FLYWHEEL_CAN_ID = 10;
-  public static final int RIGHT_SHOOTER_MOTOR_PWM = 2;
-  public static final int LEFT_SHOOTER_MOTOR_PWM = 3;
+  public static final int RIGHT_CLIMBER_MOTOR_PWM = 2;
+  public static final int LEFT_CLIMBER_MOTOR_PWM = 3;
 
   public static final double INTAKE_SPEED = 1.0;
   public static final double BELT_SPEED = 1.0;
@@ -207,4 +209,5 @@ public final class Constants {
   public static final String DRIVE_VECTOR_RIGHT_KEY = "D";
   public static final String DRIVE_AUXILIARY_LEFT_TURN_KEY = "Left";
   public static final String DRIVE_AUXILIARY_RIGHT_TURN_KEY = "Right";
+  public static final String DRIVE_SNEAK_KEY = "Shift";
 }

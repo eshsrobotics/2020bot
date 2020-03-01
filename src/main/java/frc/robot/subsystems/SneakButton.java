@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
 /**
@@ -14,11 +13,11 @@ import edu.wpi.first.wpilibj2.command.button.Button;
  * tiny, one-shot class, but we're not quite sure how yet.  Instant commands
  * are easier to piece together than instant buttons.
  */
-public class ClimbDownButton extends Button {
+public class SneakButton extends Button {
 
     private InputSubsystem inputSubsystem;
 
-    public ClimbDownButton(InputSubsystem inputSubsystem) {
+    public SneakButton(InputSubsystem inputSubsystem) {
         this.inputSubsystem = inputSubsystem;
     }
 
@@ -28,6 +27,6 @@ public class ClimbDownButton extends Button {
      */
     @Override
     public boolean get() {
-        return this.inputSubsystem.getClimbDownButton();
+        return this.inputSubsystem.getSneakButton();
     }
 }

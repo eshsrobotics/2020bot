@@ -43,6 +43,12 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     static final double TWO_PI = 2 * Math.PI;
 
+    private boolean crabCenterRotationMode = false;
+
+    private double crabCenterRotationSpeed = 0.0;
+
+    private boolean sneakMode = false;
+
     private boolean turn_enabled = false;
 
     /**
@@ -83,10 +89,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
     private double[] initialEncoderValues;
 
     /**
-     * This array contains four PWM-driven SpeedControllers, one for each wheel.
-     * We use this abstract class on purpose: any motor controllers than can be
-     * driven by PWM signals can drive the wheels forward, not just the Spark MAX.
-     * Normal Sparks and CIM motors will work just as well!
+     * This array contains four PWM-driven SpeedControllers, one for each wheel. We
+     * use this abstract class on purpose: any motor controllers than can be driven
+     * by PWM signals can drive the wheels forward, not just the Spark MAX. Normal
+     * Sparks and CIM motors will work just as well!
      */
     private List<CANSparkMax> speedMotors;
 
@@ -132,7 +138,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
         this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
         this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
-        for (int i = 0; i< 4; i++) {
+        for (int i = 0; i < 4; i++) {
             this.speedMotors.get(i).stopMotor();
             this.speedMotors.get(i).set(0);
         }
@@ -155,7 +161,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             // Reset to the default state (at least
             // until the next power cycle.)
-            //m.restoreFactoryDefaults();
+            // m.restoreFactoryDefaults();
 
             // When we cut power, the motors should
             // stop pivoting immediately; otherwise,
@@ -199,7 +205,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public DriveMode getDriveMode() {
         return driveMode;
     }
- 
+
     /**
      * Changes the current drive mode to the given one.
      *
@@ -250,15 +256,43 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     public void setDriveSpeeds(double[] speeds) {
-        this.goalSpeeds[FRONT_LEFT] = speeds[FRONT_LEFT];
-        this.goalSpeeds[FRONT_RIGHT] = speeds[FRONT_RIGHT];
-        this.goalSpeeds[BACK_LEFT] = speeds[BACK_LEFT];
-        this.goalSpeeds[BACK_RIGHT] = speeds[BACK_RIGHT];
+        if (!this.crabCenterRotationMode) {
+            this.goalSpeeds[FRONT_LEFT] = speeds[FRONT_LEFT];
+            this.goalSpeeds[FRONT_RIGHT] = speeds[FRONT_RIGHT];
+            this.goalSpeeds[BACK_LEFT] = speeds[BACK_LEFT];
+            this.goalSpeeds[BACK_RIGHT] = speeds[BACK_RIGHT];
+        } else {
+            this.goalSpeeds[FRONT_LEFT] = this.crabCenterRotationSpeed;
+            this.goalSpeeds[FRONT_RIGHT] = this.crabCenterRotationSpeed;
+            this.goalSpeeds[BACK_LEFT] = this.crabCenterRotationSpeed;
+            this.goalSpeeds[BACK_RIGHT] = this.crabCenterRotationSpeed;
+        }
 
-        //SmartDashboard.putNumber("FL goal speeds", this.goalSpeeds[FRONT_LEFT]);
-        //SmartDashboard.putNumber("FR goal speeds", this.goalSpeeds[FRONT_RIGHT]);
-        //SmartDashboard.putNumber("BL goal speeds", this.goalSpeeds[BACK_LEFT]);
-        //SmartDashboard.putNumber("BR goal speeds", this.goalSpeeds[BACK_RIGHT]);
+        // SmartDashboard.putNumber("FL goal speeds", this.goalSpeeds[FRONT_LEFT]);
+        // SmartDashboard.putNumber("FR goal speeds", this.goalSpeeds[FRONT_RIGHT]);
+        // SmartDashboard.putNumber("BL goal speeds", this.goalSpeeds[BACK_LEFT]);
+        // SmartDashboard.putNumber("BR goal speeds", this.goalSpeeds[BACK_RIGHT]);
+
+    }
+
+    public void setCrabDriveCenterRotation(double speed) {
+        if (Math.abs(speed) > 0.05) {
+            this.crabCenterRotationMode = true;
+            this.crabCenterRotationSpeed = speed;
+        } else {
+            this.crabCenterRotationMode = false;
+            this.crabCenterRotationSpeed = 0.0;
+        }
+
+    }
+    
+    public void enableSneak() {
+        this.sneakMode = true;
+
+    }
+    
+    public void disableSneak() {
+        this.sneakMode = false;
 
     }
 
@@ -295,14 +329,15 @@ public class WheelDriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // Read the PID values that the user set, dynamically.
-        // kP = SmartDashboard.getNumber("Pivot PID: P Gain", kP);
-        // kI = SmartDashboard.getNumber("Pivot PID: I Gain", kI);
-        // kD = SmartDashboard.getNumber("Pivot PID: D Gain", kD);
-        // kIz = SmartDashboard.getNumber("Pivot PID: I Zone", kIz);
-        // kFF = SmartDashboard.getNumber("Pivot PID: Feed Forward", kFF);
-        // kMaxOutput = SmartDashboard.getNumber("Pivot PID: Max Output", kMaxOutput);
-        // kMinOutput = SmartDashboard.getNumber("Pivot PID: Min Output", kMinOutput);
+        /*
+         * Read the PID values that the user set, dynamically. kP =
+         * SmartDashboard.getNumber("Pivot PID: P Gain", kP); kI =
+         * SmartDashboard.getNumber("Pivot PID: I Gain", kI); kD =
+         * SmartDashboard.getNumber("Pivot PID: D Gain", kD); kIz =
+         * SmartDashboard.getNumber("Pivot PID: I Zone", kIz); kFF =
+         * SmartDashboard.getNumber("Pivot PID: Feed Forward", kFF); kMaxOutput =
+         * SmartDashboard.getNumber("Pivot PID: Max Output", kMaxOutput);
+         */ kMinOutput = SmartDashboard.getNumber("Pivot PID: Min Output", kMinOutput);
 
         /*
          * here we would set all of the wheels to the required angles and speeds based
@@ -348,31 +383,45 @@ public class WheelDriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition());
         SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition());
 
-        for (int i = 0; i < this.speedMotors.size(); i++) {
-            var m = this.speedMotors.get(i);
-            double currentSpeed = m.get();
-            if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) {
+        if (!this.crabCenterRotationMode) {
+            for (int i = 0; i < this.speedMotors.size(); i++) {
+                var m = this.speedMotors.get(i);
+                double currentSpeed = m.get();
+                if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) {
 
-                double sign = Math.signum(goalSpeeds[i] - currentSpeed);
-                final double ACCELERATION = 0.04;
-                m.set(currentSpeed + sign * ACCELERATION);
-                double newSpeed = currentSpeed + sign * ACCELERATION;
-                final double MIN_SPEED = 0.1;
-                final double MAX_SPEED = 1.0;
-                if (newSpeed < MIN_SPEED) {
-                    //m.stopMotor();
-                    //m.set(0);
-                } else {
-                    newSpeed = Math.min(MAX_SPEED, newSpeed);
-                    m.set(newSpeed);
+                    double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+                    final double ACCELERATION = 0.04;
+                    m.set(currentSpeed + sign * ACCELERATION);
+                    double newSpeed = currentSpeed + sign * ACCELERATION;
+                    final double MIN_SPEED = 0.1;
+                    final double MAX_SPEED = 1.0;
+                    if (newSpeed < MIN_SPEED) {
+                        // m.stopMotor();
+                        // m.set(0);
+                    } else {
+                        newSpeed = Math.min(MAX_SPEED, newSpeed);
+                        if (!this.sneakMode) {
+                            m.set(newSpeed);
+                        } else {
+                            m.set(newSpeed * DRIVE_SNEAK_MODIFIER);
+                        }
+                    }
+
+                    // We have either overshot or undershot.
+                    // double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+                    // final double VELOCITY = 0.02;
+                    // SmartDashboard.putNumber("final final speed" + i, m.get());
+                    // m.setSpeed((currentSpeed + sign * VELOCITY));
                 }
-                
-
-                // We have either overshot or undershot.
-                // double sign = Math.signum(goalSpeeds[i] - currentSpeed);
-                // final double VELOCITY = 0.02;
-                //SmartDashboard.putNumber("final final speed" + i, m.get());
-                // m.setSpeed((currentSpeed + sign * VELOCITY));
+            }
+        } else {
+            for (int i = 0; i < this.speedMotors.size(); i++) {
+                var m = this.speedMotors.get(i);
+                if (!this.sneakMode) {
+                m.set(this.crabCenterRotationSpeed);
+                } else {
+                    m.set(this.crabCenterRotationSpeed * DRIVE_SNEAK_MODIFIER);
+                }
             }
         }
     }
@@ -471,48 +520,57 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public double[] crabDriveGetAngle(Vector2d joystickVector) {
         double angles[] = new double[4];
 
-        // The reference vector points straight forward.
-        // Its length is 1.
-        final Vector2d referenceVector = new Vector2d(0, -1);
+        if (!this.crabCenterRotationMode) {
 
-        // The joystick vector comes from our args.
-        // We need to normalize it so its value is 1.
-        final double joystickVectorLength = joystickVector.magnitude();
-        if (joystickVectorLength < joystick_epsilon) {
-            // The joystick is inside our dead zone. There's nothing to rotate toward.
-            turn_enabled = false;
-            for (int i = 0; i < 4; i++) {
-                angles[i] = this.pivotMotors.get(i).getEncoder().getPosition() * TWO_PI;
+            // The reference vector points straight forward.
+            // Its length is 1.
+            final Vector2d referenceVector = new Vector2d(0, -1);
+
+            // The joystick vector comes from our args.
+            // We need to normalize it so its value is 1.
+            final double joystickVectorLength = joystickVector.magnitude();
+            if (joystickVectorLength < joystick_epsilon) {
+                // The joystick is inside our dead zone. There's nothing to rotate toward.
+                turn_enabled = false;
+                for (int i = 0; i < 4; i++) {
+                    angles[i] = this.pivotMotors.get(i).getEncoder().getPosition() * TWO_PI;
+                }
+                return angles;
+            } else {
+                // This shows that we are not in the dead zone of the controller.
+                // This means that the robot will attempt to rotate to the joystick angle.
+                turn_enabled = true;
             }
-            return angles;
+
+            final Vector2d normalizedVector = new Vector2d(joystickVector.x / joystickVectorLength,
+                    joystickVector.y / joystickVectorLength);
+            // SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y,
+            // normalizedVector.x));
+            double joystickAngle = Math.atan2(normalizedVector.y, normalizedVector.x);
+
+            // Atan2() has a range of [-180, 180), with 0 on the positive X axis.
+            // Shift so 0 is on the positive Y axis, then wrap the range to [0,
+            // 360).
+            joystickAngle = modulus(joystickAngle + Math.PI / 2.0, TWO_PI);
+
+            for (int i = 0; i < 4; i++) {
+                var motor = this.pivotMotors.get(i);
+                double currentRotations = motor.getEncoder().getPosition();
+                double currentAngle = currentRotations * TWO_PI;
+
+                double theta = getNewAngle(currentAngle, joystickAngle);
+                angles[i] = theta;
+                SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
+            }
         } else {
-            // This shows that we are not in the dead zone of the controller.
-            // This means that the robot will attempt to rotate to the joystick angle.
-            turn_enabled = true;
+            for (int i = 0; i < 4; i++) {
+                angles[i] = ((i * (Math.PI / 2)) + (Math.PI / 4));
+            }
         }
 
-        final Vector2d normalizedVector = new Vector2d(joystickVector.x / joystickVectorLength,
-                joystickVector.y / joystickVectorLength);
-        //SmartDashboard.putNumber("Atan2 theta", Math.atan2(normalizedVector.y, normalizedVector.x));
-        double joystickAngle = Math.atan2(normalizedVector.y, normalizedVector.x);
-
-        // Atan2() has a range of [-180, 180), with 0 on the positive X axis.
-        // Shift so 0 is on the positive Y axis, then wrap the range to [0,
-        // 360).
-        joystickAngle = modulus(joystickAngle + Math.PI / 2.0, TWO_PI);
-
-        for (int i = 0; i < 4; i++) {
-            var motor = this.pivotMotors.get(i);
-            double currentRotations = motor.getEncoder().getPosition();
-            double currentAngle = currentRotations * TWO_PI;
-
-            double theta = getNewAngle(currentAngle, joystickAngle);
-            angles[i] = theta;
-            SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
-        }
-
-        //SmartDashboard.putNumber("getNewAngle(3)", angles[3] / Math.PI * 180);
-        //SmartDashboard.putNumber("CurrentAngle(3)", this.pivotMotors.get(3).getEncoder().getPosition() * 360);
+        // SmartDashboard.putNumber("getNewAngle(3)", angles[3] / Math.PI * 180);
+        // SmartDashboard.putNumber("CurrentAngle(3)",
+        // this.pivotMotors.get(3).getEncoder().getPosition() * 360);
         return angles;
     }
 

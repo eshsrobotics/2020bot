@@ -43,8 +43,10 @@ public class CrabDriveModeCommand extends CommandBase {
         // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
+        double centerRotation = this.inputSubsystem.getCrabTurnValue();
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
 
+        this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
 
         // Maximum value of each joystick channel is postive one. Maximum length of
