@@ -180,13 +180,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
         // Create SmartDashboard variables for the pivot PID constants. These
         // are read-write, so they can be adjusted on the fly from the
         // SmartDashboard itself.
-        SmartDashboard.putNumber("Pivot PID: P Gain", kP);
-        SmartDashboard.putNumber("Pivot PID: I Gain", kI);
-        SmartDashboard.putNumber("Pivot PID: D Gain", kD);
-        SmartDashboard.putNumber("Pivot PID: I Zone", kIz);
-        SmartDashboard.putNumber("Pivot PID: Feed Forward", kFF);
-        SmartDashboard.putNumber("Pivot PID: Max Output", kMaxOutput);
-        SmartDashboard.putNumber("Pivot PID: Min Output", kMinOutput);
+        // SmartDashboard.putNumber("Pivot PID: P Gain", kP);
+        // SmartDashboard.putNumber("Pivot PID: I Gain", kI);
+        // SmartDashboard.putNumber("Pivot PID: D Gain", kD);
+        // SmartDashboard.putNumber("Pivot PID: I Zone", kIz);
+        // SmartDashboard.putNumber("Pivot PID: Feed Forward", kFF);
+        // SmartDashboard.putNumber("Pivot PID: Max Output", kMaxOutput);
+        // SmartDashboard.putNumber("Pivot PID: Min Output", kMinOutput);
         SmartDashboard.putNumber("Set Rotations", 0);
     }
 
@@ -296,13 +296,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public void periodic() {
 
         // Read the PID values that the user set, dynamically.
-        kP = SmartDashboard.getNumber("Pivot PID: P Gain", kP);
-        kI = SmartDashboard.getNumber("Pivot PID: I Gain", kI);
-        kD = SmartDashboard.getNumber("Pivot PID: D Gain", kD);
-        kIz = SmartDashboard.getNumber("Pivot PID: I Zone", kIz);
-        kFF = SmartDashboard.getNumber("Pivot PID: Feed Forward", kFF);
-        kMaxOutput = SmartDashboard.getNumber("Pivot PID: Max Output", kMaxOutput);
-        kMinOutput = SmartDashboard.getNumber("Pivot PID: Min Output", kMinOutput);
+        // kP = SmartDashboard.getNumber("Pivot PID: P Gain", kP);
+        // kI = SmartDashboard.getNumber("Pivot PID: I Gain", kI);
+        // kD = SmartDashboard.getNumber("Pivot PID: D Gain", kD);
+        // kIz = SmartDashboard.getNumber("Pivot PID: I Zone", kIz);
+        // kFF = SmartDashboard.getNumber("Pivot PID: Feed Forward", kFF);
+        // kMaxOutput = SmartDashboard.getNumber("Pivot PID: Max Output", kMaxOutput);
+        // kMinOutput = SmartDashboard.getNumber("Pivot PID: Min Output", kMinOutput);
 
         /*
          * here we would set all of the wheels to the required angles and speeds based
@@ -470,8 +470,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
      */
     public double[] crabDriveGetAngle(Vector2d joystickVector) {
         double angles[] = new double[4];
-        InputSubsystem controller = new InputSubsystem();
-        controller.initializeController(0);
 
         // The reference vector points straight forward.
         // Its length is 1.

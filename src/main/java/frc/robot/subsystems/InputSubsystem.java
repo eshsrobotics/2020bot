@@ -14,22 +14,19 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.GenericHID.HIDType;
 import edu.wpi.first.wpilibj.drive.Vector2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
 /**
- * This is the most heavily used subsystem in the 2020bot codebase.  Every
- * command that depends on asking the user what to do requires this
- * subsystem.
+ * This is the most heavily used subsystem in the 2020bot codebase. Every
+ * command that depends on asking the user what to do requires this subsystem.
  *
  * It is designed as a convenience wrapper for our three supported human input
  * methods: The traditional single joystick, the two-joystick XBox controller
- * family, and keyboard input using networktables-input.jar.  Dependent
- * Commands don't have to worry about which channel is assigned to what, which
- * button was hit, or which joystick was plugged in -- that's *our* job.
+ * family, and keyboard input using networktables-input.jar. Dependent Commands
+ * don't have to worry about which channel is assigned to what, which button was
+ * hit, or which joystick was plugged in -- that's *our* job.
  */
 public class InputSubsystem extends SubsystemBase {
 
@@ -55,9 +52,9 @@ public class InputSubsystem extends SubsystemBase {
    * Makes sure that we know, right away, whether a joystick or controller are
    * attached.
    *
-   * NOTE: Right now, we always look for joysticks on port 0.  That means we
-   * do not support having two different HID devices at once -- we could, I
-   * suppose, but we didn't really want to bother.  Choose one.
+   * NOTE: Right now, we always look for joysticks on port 0. That means we do not
+   * support having two different HID devices at once -- we could, I suppose, but
+   * we didn't really want to bother. Choose one.
    */
   public InputSubsystem() {
     initialize(0);
@@ -88,11 +85,10 @@ public class InputSubsystem extends SubsystemBase {
   }
 
   /**
-   * This function abstracts away the concept of the "main directional
-   * control" -- the thing that determines the primary movement of the robot.
-   * Fro the single joystick, this is the joystick itself; for the XBox
-   * controller, this is one of the two joysticks; and for the keyboard, this
-   * is WASD.
+   * This function abstracts away the concept of the "main directional control" --
+   * the thing that determines the primary movement of the robot. Fro the single
+   * joystick, this is the joystick itself; for the XBox controller, this is one
+   * of the two joysticks; and for the keyboard, this is WASD.
    *
    * @return A vector indicating the direction that the user wants.
    */

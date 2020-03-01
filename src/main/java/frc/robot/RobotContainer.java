@@ -45,9 +45,6 @@ public class RobotContainer {
 
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
 
-    // private final Shooter shooterBot = new Shooter(0, 9, inputSubsystem);
-    // private final Shooter shooterTop = new Shooter(0, 8, inputSubsystem);
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -75,7 +72,7 @@ public class RobotContainer {
         // this.shooterTop.setDefaultCommand(new ShooterCommand(shooterTop,
         // inputSubsystem, shooterBot));
         //System.out.println(shootButton.get());
-        SmartDashboard.putBoolean("shoot button", shootButton.get());
+        //SmartDashboard.putBoolean("shoot button", shootButton.get());
         shootButton
             .whenPressed(
                 new InstantCommand(() -> {
@@ -99,20 +96,6 @@ public class RobotContainer {
                     intakeSubsystem.enableIntake();
                 })
             );
-        // shootButton.whenPressed(new StartEndCommand(() -> {
-        //     intakeSubsystem.disableIntake();
-        //     shooterSubsystem.startShooter(0.5, 0.5);
-
-        //     new InstantCommand(
-        //             () -> shooterSubsystem.startShooter(0.5,0.5)).andThen(
-        //                     new WaitCommand(0.4).andThen(
-        //                             () -> intakeSubsystem.enablesBelts()));
-
-        //     //new InstantCommand(new WaitCommand(0.4).andThen(next), intakeSubsystem, shooterSubsystem);
-        // }, () -> {
-        //     shooterSubsystem.stopShooter();
-        //     intakeSubsystem.enableIntake();
-        // }));
     }
 
     /**

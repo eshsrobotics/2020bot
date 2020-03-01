@@ -23,12 +23,13 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 public final class Constants {
 
   /**
-   * When doing floating-point comparisons, values less than this are considered to be
-   * zero for all intents and purposes.
+   * When doing floating-point comparisons, values less than this are considered
+   * to be zero for all intents and purposes.
    */
   public static final double EPSILON = 0.01;
   /**
-   * joystick_epsilon is the controller joystick deadzone variable. This will help with jittery movement while driving.
+   * joystick_epsilon is the controller joystick deadzone variable. This will help
+   * with jittery movement while driving.
    */
   public static final double joystick_epsilon = .10;
   /**
@@ -48,26 +49,27 @@ public final class Constants {
   /*
    * Ratio for how many revolutions of the motor to a revolution of the wheel
    *
-   * The gearbox for the planetary gear that our swerve controllers' NEO 550 motors
-   * are attached to is 10:1.
+   * The gearbox for the planetary gear that our swerve controllers' NEO 550
+   * motors are attached to is 10:1.
    *
-   * The gearbox is, in turn, connected to a 12-tooth sprocket, and this is attached by
-   * chain to a 26-tooth sprocket that drives the swerve wheel.
-   *                                                       _
-   * Thus the final gear ratio = (26 / 12) * (10 / 1) = 21.6.
+   * The gearbox is, in turn, connected to a 12-tooth sprocket, and this is
+   * attached by chain to a 26-tooth sprocket that drives the swerve wheel. _ Thus
+   * the final gear ratio = (26 / 12) * (10 / 1) = 21.6.
    */
   public static final double WHEEL_TURN_RATIO = (26 / 12) * (10 / 1);
 
   /**
-   * If only one joystick or controller is plugged in, then the joystick port defaults to 0. If multiple,
-   * it then depends on the order it was plugged in. First joystick connected would 0, second one would be 1, etc.
+   * If only one joystick or controller is plugged in, then the joystick port
+   * defaults to 0. If multiple, it then depends on the order it was plugged in.
+   * First joystick connected would 0, second one would be 1, etc.
    */
   public static final int JOYSTICK_PORT = 0;
 
   /**
-   * The left joystick on the controller handles the direction of the movement, all 360 dergrees.
-   * The right joystick on the controller handles the magnitude of the speed of the movement, Y-Value.
-   * The X-Value of the right joystick of the controller handles turning in place.
+   * The left joystick on the controller handles the direction of the movement,
+   * all 360 dergrees. The right joystick on the controller handles the magnitude
+   * of the speed of the movement, Y-Value. The X-Value of the right joystick of
+   * the controller handles turning in place.
    */
   public static final Hand TURNING_CONTROLLER_JOYSTICK = Hand.kLeft;
   public static final Hand POWER_CONTROLLER_JOYSTICK = Hand.kRight;
@@ -96,7 +98,7 @@ public final class Constants {
   /**
    * The PWM port for the motor controller which drives the front left wheel.
    */
-  public static final int FRONT_LEFT_DRIVE_MOTOR_CAN_ID = FRONT_LEFT + 1;//FRONT_LEFT + 0;
+  public static final int FRONT_LEFT_DRIVE_MOTOR_CAN_ID = FRONT_LEFT + 1;// FRONT_LEFT + 0;
 
   /**
    * The PWM port for the motor controller which drives the back left wheel.
@@ -138,8 +140,8 @@ public final class Constants {
   public static final int FRONT_RIGHT_TURN_MOTOR_CAN_ID = FRONT_RIGHT + 5;
 
   /**
-   * Easily controlls speed, we dont want 100 % all the time.
-   * This value should be between 0.0 and 1.0.
+   * Easily controlls speed, we dont want 100 % all the time. This value should be
+   * between 0.0 and 1.0.
    */
   public static final double DRIVE_SPEED_MULTIPLIER = 0.70;
   ///////////////////////////////
