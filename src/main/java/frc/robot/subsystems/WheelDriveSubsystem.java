@@ -285,12 +285,12 @@ public class WheelDriveSubsystem extends SubsystemBase {
         }
 
     }
-    
+
     public void enableSneak() {
         this.sneakMode = true;
 
     }
-    
+
     public void disableSneak() {
         this.sneakMode = false;
 
@@ -418,7 +418,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
             for (int i = 0; i < this.speedMotors.size(); i++) {
                 var m = this.speedMotors.get(i);
                 if (!this.sneakMode) {
-                m.set(this.crabCenterRotationSpeed);
+                    m.set(this.crabCenterRotationSpeed);
                 } else {
                     m.set(this.crabCenterRotationSpeed * DRIVE_SNEAK_MODIFIER);
                 }
@@ -499,6 +499,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *         position, and that is equivalent to the joystickAngle (modulo 2π.)
      */
     private static final double getNewAngle(double currentAngle, double joystickAngle) {
+        
         double theta = modulus(currentAngle + modulus(joystickAngle - currentAngle, TWO_PI), TWO_PI);
 
         // if (theta > modulus(Math.PI + currentAngle, TWO_PI)) {
@@ -563,8 +564,34 @@ public class WheelDriveSubsystem extends SubsystemBase {
                 SmartDashboard.putNumber("joystick angle", joystickAngle * 180 / Math.PI);
             }
         } else {
+            // NEED to align the four wheels to be tanget to a circle around the center,
+            // that completely circumscribes a circle throught the four wheels
+            // also known as set them on a circle through all four wheels
+            double length = WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE;
+            double width = WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE;
+
+            double rawAngle = Math.tan(length / width);
+            // each wheel needs to be set to the angle, but based on a different quadrant
+            // probably easiest to do a switch case for each wheel, rather than find the
+            // equation
+
             for (int i = 0; i < 4; i++) {
-                angles[i] = ((i * (Math.PI / 2)) + (Math.PI / 4));
+                switch (i) {
+                    //reminder that 0 is FL, 1 is BL, 2 is BR, 3 is FR
+                case 0:
+                    // 90 + rawAngle
+                    break;
+                case 1:
+                    // 90 - rawAngle
+                    break;
+                case 2:
+                    //raw angle
+                    break;
+                case 3:
+                    //180 - rawAngle
+                    break;
+
+                }
             }
         }
 

@@ -37,14 +37,14 @@ public final class Constants {
    * center (dimensional center, not center of mass) to the center of any of the
    * wheels.
    */
-  public static final double WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE = 0.5;
+  public static final double WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE = 0.435*0.5;
 
   /**
    * In meters. It is the vertical component of the distance from the imaginary
    * center (dimensional center, not center of mass) to the center of any of the
    * wheels.
    */
-  public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 1.0;
+  public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635*0.5;
 
   /*
    * Ratio for how many revolutions of the motor to a revolution of the wheel

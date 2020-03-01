@@ -44,7 +44,13 @@ public class CrabDriveModeCommand extends CommandBase {
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
         double centerRotation = this.inputSubsystem.getCrabTurnValue();
+
+        //if (crabDriveMode) {
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
+        //}
+        //else if (snakeDriveMode) {
+        // goalthetas = snakeDriveGetAngle(parameters)
+        //}
 
         this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
@@ -55,7 +61,6 @@ public class CrabDriveModeCommand extends CommandBase {
         // final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
         // This is for magnitude based on joystick vector magnitude, we want based on
         // joystick linear magnitude
-
         // Speed is between zero and one.
         double speed = 0; // directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
         speed = directionalVector.magnitude();
@@ -70,13 +75,6 @@ public class CrabDriveModeCommand extends CommandBase {
          * joystickYMagnitude; }
          */
         speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
-        // if (but1) {
-            // speed *= 0.5;
-        // } else if (but2) {
-            // speed *= 1.4;
-        // }
-        //SmartDashboard.putNumber("final speed", speed);
-        // speed = 1.0;
         double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
 
