@@ -154,6 +154,8 @@ public final class Constants {
   public static final int RIGHT_BELT_PORT = 1;
   public static final int BOTTOM_SHOOTER_FLYWHEEL_CAN_ID = 9;
   public static final int TOP_SHOOTER_FLYWHEEL_CAN_ID = 10;
+  public static final int RIGHT_SHOOTER_MOTOR_PWM = 2;
+  public static final int LEFT_SHOOTER_MOTOR_PWM = 3;
 
   public static final double INTAKE_SPEED = 1.0;
   public static final double BELT_SPEED = 1.0;

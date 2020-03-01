@@ -174,6 +174,16 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
 
+  public boolean getClimbDownButton() {
+    if (joystick != null) {
+      return this.joystick.getTriggerPressed();
+    } else if (controller != null) {
+      // SmartDashboard.putBoolean("shoot button val",
+      // this.controller.getRawButton(CONTROLLER_SHOOT_TRIGGER_BUTTON));
+      return this.controller.getRawButton(7);
+    } else {
+      return false;
+    }
   }
 
   public boolean getBeltButton() {
