@@ -369,13 +369,27 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             // var errorCode = pidController.setReference(wheelPositionInRotations,
             // ControlType.kPosition);
-            var errorCode = pidController.setReference(goalRotations, ControlType.kPosition);
 
-            if (errorCode != CANError.kOk) {
-                // Something went wrong.
-                System.err.printf("pivot motor #%d: pidController.setReference() returned %d (%s)\n", m.getDeviceId(),
-                        errorCode, errorCode.name());
+            double trueGoalTheta = modulus(goalThetas[i], TWO_PI);
+            double trueCurrentPosition = modulus(encoder.getPosition() * TWO_PI, TWO_PI);
+            double diffSign = Math.signum(trueGoalTheta - trueCurrentPosition);
+            double trueDiff = trueGoalTheta - trueCurrentPosition;
+            if (Math.abs(trueDiff) > 0.02) {
+                if (Math.abs(trueGoalTheta - trueCurrentPosition) > Math.PI) {
+                    m.set(0.7 * diffSign);
+                } else {
+                    m.set(-0.7 * diffSign);
+                }
             }
+            // COMMENTED OUT TO TEST POSSIBLE ROLLOVER FIX
+            /*
+             * var errorCode = pidController.setReference(goalRotations,
+             * ControlType.kPosition);
+             * 
+             * if (errorCode != CANError.kOk) { // Something went wrong. System.err.
+             * printf("pivot motor #%d: pidController.setReference() returned %d (%s)\n",
+             * m.getDeviceId(), errorCode, errorCode.name()); }
+             */
         }
 
         SmartDashboard.putNumber("FL pivot encoder", this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition());
@@ -499,7 +513,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *         position, and that is equivalent to the joystickAngle (modulo 2π.)
      */
     private static final double getNewAngle(double currentAngle, double joystickAngle) {
-        
+
         double theta = modulus(currentAngle + modulus(joystickAngle - currentAngle, TWO_PI), TWO_PI);
 
         // if (theta > modulus(Math.PI + currentAngle, TWO_PI)) {
@@ -577,7 +591,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             for (int i = 0; i < 4; i++) {
                 switch (i) {
-                    //reminder that 0 is FL, 1 is BL, 2 is BR, 3 is FR
+                // reminder that 0 is FL, 1 is BL, 2 is BR, 3 is FR
                 case 0:
                     // 90 + rawAngle
                     break;
@@ -585,10 +599,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
                     // 90 - rawAngle
                     break;
                 case 2:
-                    //raw angle
+                    // raw angle
                     break;
                 case 3:
-                    //180 - rawAngle
+                    // 180 - rawAngle
                     break;
 
                 }
