@@ -158,7 +158,7 @@ public class InputSubsystem extends SubsystemBase {
     return magnitude;
   }
 
-  /**
+  /** 
    * Tries to set up a connected joystick, and subsequently checks if that joystick exists. If it does exist,
    * then a joystick object is set up. If it is not connected, then the boolean joystickAttached is set to false.
    */

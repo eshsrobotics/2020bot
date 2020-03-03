@@ -96,22 +96,22 @@ public final class Constants {
   /**
    * The PWM port for the motor controller which drives the front left wheel.
    */
-  public static final int FRONT_LEFT_DRIVE_MOTOR_CAN_ID = 8;//FRONT_LEFT + 0;
+  public static final int FRONT_LEFT_DRIVE_MOTOR_CAN_ID = FRONT_LEFT + 1;
 
   /**
    * The PWM port for the motor controller which drives the back left wheel.
    */
-  public static final int BACK_LEFT_DRIVE_MOTOR_CAN_ID = BACK_LEFT + 0;
+  public static final int BACK_LEFT_DRIVE_MOTOR_CAN_ID = BACK_LEFT + 1;
 
   /**
    * The PWM port for the motor controller which drives the back right wheel.
    */
-  public static final int BACK_RIGHT_DRIVE_MOTOR_CAN_ID = BACK_RIGHT + 0;
+  public static final int BACK_RIGHT_DRIVE_MOTOR_CAN_ID = BACK_RIGHT + 1;
 
   /**
    * The PWM port for the motor controller which drives the front right wheel.
    */
-  public static final int FRONT_RIGHT_DRIVE_MOTOR_CAN_ID = FRONT_RIGHT + 0;
+  public static final int FRONT_RIGHT_DRIVE_MOTOR_CAN_ID = FRONT_RIGHT + 1;
 
   /////////////////
   // Pivot ports //
@@ -120,22 +120,22 @@ public final class Constants {
   /**
    * The PWM port for the motor controller which pivots the front left wheel.
    */
-  public static final int FRONT_LEFT_TURN_MOTOR_CAN_ID = FRONT_LEFT + 4;
+  public static final int FRONT_LEFT_TURN_MOTOR_CAN_ID = FRONT_LEFT + 5;
 
   /**
    * The PWM port for the motor controller which pivots the back left wheel.
    */
-  public static final int BACK_LEFT_TURN_MOTOR_CAN_ID = BACK_LEFT + 4;
+  public static final int BACK_LEFT_TURN_MOTOR_CAN_ID = BACK_LEFT + 5;
 
   /**
    * The PWM port for the motor controller which pivots the back wheel.
    */
-  public static final int BACK_RIGHT_TURN_MOTOR_CAN_ID = BACK_RIGHT + 4;
+  public static final int BACK_RIGHT_TURN_MOTOR_CAN_ID = BACK_RIGHT + 5;
 
   /**
    * The PWM port for the motor controller which pivots the front right wheel.
    */
-  public static final int FRONT_RIGHT_TURN_MOTOR_CAN_ID = FRONT_RIGHT + 4;
+  public static final int FRONT_RIGHT_TURN_MOTOR_CAN_ID = FRONT_RIGHT + 5;
 
   /**
    * Easily controlls speed, we dont want 100 % all the time.
