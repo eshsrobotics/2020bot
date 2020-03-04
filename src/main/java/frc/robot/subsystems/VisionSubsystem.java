@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    double tv, tx, ty, ta, ts;
+    double tv, tx, ty, ta, ts, distance;
 
     /**
      * Setting a parameter value to this variable means sthat the LimeLight
@@ -28,6 +28,7 @@ public class VisionSubsystem extends SubsystemBase {
     */
     public VisionSubsystem() {
         tv = tx = ty = ta = ts = NO_USEFUL_VALUE;
+        distance = 0;
     }
 
     /**
@@ -53,5 +54,19 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Skew or rotation (-90 degrees to 0 degrees)
         ts = table.getEntry("ts").getDouble(VisionSubsystem.NO_USEFUL_VALUE);
+    }
+
+    public double getMotorPower() {
+        //check for target
+        if (this.tv != 1) {
+            return 0.0;
+        }
+
+        double distance = this.distance;
+        //abritrary distance to power calculations
+        double power = distance / 100;
+
+        
+        return power;
     }
 }

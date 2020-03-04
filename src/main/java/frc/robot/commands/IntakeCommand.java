@@ -25,8 +25,8 @@ public class IntakeCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public IntakeCommand (IntakeSubsystem  subsystem, InputSubsystem inputSubsystem) {
-    intake = subsystem;
-    controller = inputSubsystem;
+    this.intake = subsystem;
+    this.controller = inputSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem, inputSubsystem);
   }

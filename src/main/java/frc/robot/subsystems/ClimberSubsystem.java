@@ -48,12 +48,14 @@ public class ClimberSubsystem extends SubsystemBase {
     // Signs for the arguments are ignored.  Otherwise, the caller would be
     // able to reverse the shooter and launch balls back into the belt
     // system.
-    speed = -Math.abs(speed);
+    speed = Math.abs(speed);
 
     // Clip the arguments to be between 0.0 and 1.0.
     speed = Math.max(0.0, Math.min(1.0, speed));
 
-    this.rightMotor.set(speed);
+    speed *= -1;
+
+    this.rightMotor.set(-speed);
     this.leftMotor.set(speed);
   }
 
@@ -67,7 +69,7 @@ public class ClimberSubsystem extends SubsystemBase {
     // Clip the arguments to be between 0.0 and 1.0.
     speed = Math.max(0.0, Math.min(1.0, speed));
 
-    this.rightMotor.set(speed);
+    this.rightMotor.set(-speed);
     this.leftMotor.set(speed);
   }
 

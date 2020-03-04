@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    this.wheelDrive = new WheelDriveSubsystem();
+    //this.wheelDrive = new WheelDriveSubsystem();
     
   }
 
@@ -61,8 +61,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    double[] zeroAngles = {0,0,0,0};
-    wheelDrive.setGoalAngles(zeroAngles);
+    System.out.println("I'm disabled daddy!");
+    //double[] zeroAngles = {0,0,0,0};
+    //wheelDrive.setGoalAngles(zeroAngles);
 
   }
 

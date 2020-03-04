@@ -13,10 +13,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.BeltButton;
 import frc.robot.subsystems.ClimbDownButton;
 import frc.robot.subsystems.ClimbUpButton;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
+import frc.robot.subsystems.IntakeButton;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +38,8 @@ import frc.robot.subsystems.ClimberSubsystem;
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
+ *           
+ * 
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
@@ -52,6 +56,8 @@ public class RobotContainer {
     private final ClimbUpButton climbUpButton = new ClimbUpButton(inputSubsystem);
     private final ClimbDownButton climbDownButton = new ClimbDownButton(inputSubsystem);
     private final SneakButton sneakButton = new SneakButton(inputSubsystem);
+    private final BeltButton beltButton = new BeltButton(inputSubsystem);
+    private final IntakeButton intakeButton = new IntakeButton(inputSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -103,16 +109,30 @@ public class RobotContainer {
         }));
 
         climbDownButton.whenPressed(new InstantCommand(() -> {
-            climberSubsystem.takeClimberDown(0.5);
+            climberSubsystem.takeClimberDown(1.0);
         })).whenReleased(new InstantCommand(() -> {
             climberSubsystem.stopClimber();
         }));
 
         climbUpButton.whenPressed(new InstantCommand(() -> {
-            climberSubsystem.takeClimberUp(0.5);
+            climberSubsystem.takeClimberUp(1.0);
         })).whenReleased(new InstantCommand(() -> {
             climberSubsystem.stopClimber();
         }));
+
+        beltButton.whenPressed(new InstantCommand(() -> {
+            intakeSubsystem.enablesBelts();
+        })).whenReleased(new InstantCommand(() -> {
+            intakeSubsystem.disablesBelts();
+        }));
+
+        intakeButton.whenPressed(new InstantCommand(() -> {
+            intakeSubsystem.enableIntake();
+        })).whenReleased(new InstantCommand(() -> {
+            intakeSubsystem.disableIntake();
+        }));
+
+
     }
 
     /**

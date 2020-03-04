@@ -10,11 +10,12 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-// import edu.wpi.first.wpilibj.buttons.NetworkButton;
+//import edu.wpi.first.wpilibj.buttons.NetworkButton;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.*;
 
@@ -193,7 +194,7 @@ public class InputSubsystem extends SubsystemBase {
     if (this.joystick != null) {
       return this.joystick.getRawButton(2);
     } else if (this.controller != null) {
-      return this.controller.getStickButton(Hand.kLeft);
+      return this.controller.getRawButton(2);
     } 
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
       // Handle the main direction vector.
@@ -206,9 +207,10 @@ public class InputSubsystem extends SubsystemBase {
 
   public boolean getClimbUpButton() {
     if (joystick != null) {
-      return this.joystick.getRawButton(3);
+      return this.joystick.getRawButton(7);
     } else if (controller != null) {
-      return this.controller.getRawButton(5);
+      SmartDashboard.putBoolean("button 5", this.controller.getRawButton(5));
+      return this.controller.getRawButton(7);
     } else {
       return false;
     }
@@ -216,9 +218,10 @@ public class InputSubsystem extends SubsystemBase {
 
   public boolean getClimbDownButton() {
     if (joystick != null) {
-      return this.joystick.getRawButton(4);
+      return this.joystick.getRawButton(5);
     } else if (controller != null) {
-      return this.controller.getRawButton(7);
+      SmartDashboard.putBoolean("button 7", this.controller.getRawButton(7));
+      return this.controller.getRawButton(5);
     } else {
       return false;
     }

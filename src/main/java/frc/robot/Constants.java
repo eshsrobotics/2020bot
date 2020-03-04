@@ -18,6 +18,11 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the constants are needed, to reduce verbosity.
+ * 
+ * <p>
+ * QUICK REFERENCE:
+ * FL: 1, 5. BL: 2, 6. BR: 3, 7. FR: 4, 8
+ * INTAKE: 4. BELTS: 0,1. CLIMB: 2, 3. SHOOTER: TOP-10, BOT-9
  *
  */
 public final class Constants {
@@ -31,7 +36,7 @@ public final class Constants {
    * joystick_epsilon is the controller joystick deadzone variable. This will help
    * with jittery movement while driving.
    */
-  public static final double joystick_epsilon = .10;
+  public static final double joystick_epsilon = .15;
   /**
    * In meters. It is the horizontal component of the distance from the imaginary
    * center (dimensional center, not center of mass) to the center of any of the
@@ -143,15 +148,15 @@ public final class Constants {
    * Easily controlls speed, we dont want 100 % all the time. This value should be
    * between 0.0 and 1.0.
    */
-  public static final double DRIVE_SPEED_MULTIPLIER = 0.70;
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.0;
 
-  public static final double DRIVE_SNEAK_MODIFIER = 0.5;
+  public static final double DRIVE_SNEAK_MODIFIER = 0.6;
   ///////////////////////////////
   // Intake and Shooter ports. //
   ///////////////////////////////
   // These take up ports 8 through 12.
 
-  public static final int INTAKE_PORT = 11;
+  public static final int INTAKE_PORT = 4;
   public static final int LEFT_BELT_PORT = 0;
   public static final int RIGHT_BELT_PORT = 1;
   public static final int BOTTOM_SHOOTER_FLYWHEEL_CAN_ID = 9;

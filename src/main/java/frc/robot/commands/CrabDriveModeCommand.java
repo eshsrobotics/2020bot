@@ -43,7 +43,7 @@ public class CrabDriveModeCommand extends CommandBase {
         // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
-        double centerRotation = this.inputSubsystem.getCrabTurnValue();
+        //double centerRotation = this.inputSubsystem.getCrabTurnValue();
 
         //if (crabDriveMode) {
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
@@ -52,7 +52,7 @@ public class CrabDriveModeCommand extends CommandBase {
         // goalthetas = snakeDriveGetAngle(parameters)
         //}
 
-        this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
+        //this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
 
         // Maximum value of each joystick channel is postive one. Maximum length of
@@ -74,6 +74,7 @@ public class CrabDriveModeCommand extends CommandBase {
          * else if (joystickXMagnitude <= joystickYMagnitude){ speed =
          * joystickYMagnitude; }
          */
+        SmartDashboard.putNumber("final final final final speed", speed);
         speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
         double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
