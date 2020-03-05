@@ -10,62 +10,7 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "4,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/BL pivot encoder",
-              "_title": "BL pivot encoder"
-            }
-          },
-          "4,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FL pivot encoder",
-              "_title": "FL pivot encoder"
-            }
-          },
-          "5,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/BR pivot encoder",
-              "_title": "BR pivot encoder"
-            }
-          },
-          "5,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FR pivot encoder",
-              "_title": "FR pivot encoder"
-            }
-          },
-          "2,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FL goal theta",
-              "_title": "FL goal theta"
-            }
-          },
-          "2,3": {
+          "0,1": {
             "size": [
               1,
               1
@@ -76,73 +21,18 @@
               "_title": "BL goal theta"
             }
           },
-          "4,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/BL pivot encoder (initial)",
-              "_title": "BL pivot encoder (initial)"
-            }
-          },
-          "4,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FL pivot encoder (initial)",
-              "_title": "FL pivot encoder (initial)"
-            }
-          },
-          "6,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/BR pivot encoder (initial)",
-              "_title": "BR pivot encoder (initial)"
-            }
-          },
-          "6,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FR pivot encoder (initial)",
-              "_title": "FR pivot encoder (initial)"
-            }
-          },
-          "3,3": {
+          "0,0": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/BR goal theta",
-              "_title": "BR goal theta"
+              "_source0": "network_table:///SmartDashboard/FL goal theta",
+              "_title": "FL goal theta"
             }
           },
-          "3,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FR goal theta",
-              "_title": "FR goal theta"
-            }
-          },
-          "8,0": {
+          "2,0": {
             "size": [
               1,
               1
@@ -153,29 +43,101 @@
               "_title": "Set Rotations"
             }
           },
-          "9,0": {
+          "1,1": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Atan2 theta",
-              "_title": "Atan2 theta"
+              "_source0": "network_table:///SmartDashboard/BR goal theta",
+              "_title": "BR goal theta"
             }
           },
-          "10,0": {
+          "1,0": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/joystick angle",
-              "_title": "joystick angle"
+              "_source0": "network_table:///SmartDashboard/FR goal theta",
+              "_title": "FR goal theta"
             }
           },
-          "0,0": {
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/button 5",
+              "_title": "button 5",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/button 7",
+              "_title": "button 7",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_PipelineName",
+              "_title": "limelight_PipelineName"
+            }
+          },
+          "9,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Interface",
+              "_title": "limelight_Interface"
+            }
+          },
+          "10,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/limelight_Stream",
+              "_title": "limelight_Stream"
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/button 6",
+              "_title": "button 6",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,2": {
             "size": [
               1,
               1
@@ -186,9 +148,9 @@
               "_title": "trueGoalTheta"
             }
           },
-          "1,0": {
+          "5,3": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -197,7 +159,7 @@
               "_title": "trueCurrentPosition"
             }
           },
-          "2,0": {
+          "5,2": {
             "size": [
               1,
               1
@@ -208,15 +170,147 @@
               "_title": "trueDiff"
             }
           },
-          "3,0": {
+          "2,2": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/shoot number",
-              "_title": "shoot number"
+              "_source0": "network_table:///SmartDashboard/FL pivot",
+              "_title": "FL pivot"
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FR pivot",
+              "_title": "FR pivot"
+            }
+          },
+          "2,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BL pivot",
+              "_title": "BL pivot"
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BR pivot",
+              "_title": "BR pivot"
+            }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/distance",
+              "_title": "distance"
+            }
+          },
+          "10,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/tx",
+              "_title": "tx"
+            }
+          },
+          "9,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/tv",
+              "_title": "tv"
+            }
+          },
+          "10,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/distance-center",
+              "_title": "distance-center"
+            }
+          },
+          "0,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FL pivot (initial)",
+              "_title": "FL pivot (initial)"
+            }
+          },
+          "1,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/FR pivot (initial)",
+              "_title": "FR pivot (initial)"
+            }
+          },
+          "0,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BL pivot (initial)",
+              "_title": "BL pivot (initial)"
+            }
+          },
+          "1,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/BR pivot (initial)",
+              "_title": "BR pivot (initial)"
+            }
+          },
+          "6,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/final x 5",
+              "_title": "final x 5"
             }
           }
         }
@@ -331,19 +425,19 @@
                 {
                   "_type": "Speed Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/Spark[2]",
-                  "_title": "/LiveWindow/Ungrouped/Spark[2]",
+                  "_title": "Spark[2]",
                   "Visuals/Orientation": "HORIZONTAL"
                 },
                 {
                   "_type": "Speed Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/Spark[4]",
-                  "_title": "/LiveWindow/Ungrouped/Spark[4]",
+                  "_title": "Spark[4]",
                   "Visuals/Orientation": "HORIZONTAL"
                 },
                 {
                   "_type": "Speed Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/Spark[3]",
-                  "_title": "/LiveWindow/Ungrouped/Spark[3]",
+                  "_title": "Spark[3]",
                   "Visuals/Orientation": "HORIZONTAL"
                 }
               ]
@@ -401,9 +495,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": 2.0,
-    "width": 1612.0,
-    "height": 865.0
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1616.0,
+    "height": 876.0
   }
 }
