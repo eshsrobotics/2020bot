@@ -42,7 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public void enableIntake() {
         if (!intakeError) {
-            this.intakeMotor.setSpeed(-INTAKE_SPEED*0.625);
+            this.intakeMotor.setSpeed(-INTAKE_SPEED*1.0);
         }
     }
 

@@ -43,10 +43,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     static final double TWO_PI = 2 * Math.PI;
 
-    private static double crabDriveCurrentGoalTheta = 0;
-
-    private boolean crabWheelturning = false;
-
     private boolean crabCenterRotationMode = false;
 
     private double crabCenterRotationSpeed = 0.0;
@@ -367,43 +363,36 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             final double goalRotations = this.goalThetas[i] / (2 * Math.PI);
 
-            if (!turn_enabled) {
-                continue;
-            }
+            // The user is not moving the joystick.
+            // if (!turn_enabled) {
+            //     continue;
+            // }
 
              //var errorCode = pidController.setReference(wheelPositionInRotations,
              //ControlType.kPosition);
 
             // var errorCode = pidController.setReference(goalRotations, ControlType.kPosition);
 
-            crabDriveCurrentGoalTheta = (modulus(goalThetas[i], TWO_PI)) - (Math.PI*0);
+            double crabDriveCurrentGoalTheta = (modulus(goalThetas[i], TWO_PI));
             double trueCurrentPosition = modulus(encoder.getPosition() * TWO_PI, TWO_PI);
             double diffSign = Math.signum(crabDriveCurrentGoalTheta - trueCurrentPosition);
             double trueDiff = crabDriveCurrentGoalTheta - trueCurrentPosition;
-            //trueCurrentPosition = Math.PI + trueCurrentPosition;
-            //trueDiff -= Math.PI *diffSign;
 
             SmartDashboard.putNumber("trueGoalTheta", crabDriveCurrentGoalTheta);
             SmartDashboard.putNumber("trueCurrentPosition", trueCurrentPosition);
             SmartDashboard.putNumber("trueDiff", trueDiff);
 
             if (Math.abs(trueDiff) > 0.15) {
-                this.crabWheelturning = true;
-            } else {
-                this.crabWheelturning = false;
-            }
-
-            if (this.crabWheelturning) {
                 if (Math.abs(trueDiff) > Math.PI) {
-                    //m.set(-0.075 * diffSign);
+                    m.set(-0.075 * diffSign);
                 } else {
-                    //m.set(0.075 * diffSign);
-                }
-            } 
-            if (Math.abs(trueDiff) < 0.1) {
+                    m.set(0.075 * diffSign);
+                }    
+            } else {
                 m.set(0);
                 m.stopMotor();
             }
+            
             // COMMENTED OUT TO TEST POSSIBLE ROLLOVER FIX
             
               //var errorCode = pidController.setReference(goalRotations,
@@ -578,6 +567,9 @@ public class WheelDriveSubsystem extends SubsystemBase {
             } else {
                 // This shows that we are not in the dead zone of the controller.
                 // This means that the robot will attempt to rotate to the joystick angle.
+                for (int i = 0; i < 4; i++) {
+                    angles[i] = 0;
+                }
                 turn_enabled = true;
             }
 
@@ -639,9 +631,12 @@ public class WheelDriveSubsystem extends SubsystemBase {
         return angles;
     }
 
-    public void setJankEncoderShenanigans() {
+    public void goalAnglesReached() {
+        int counter = 0;
         for (int i = 0; i < 4; i++) {
-            this.pivotMotors.get(i).getEncoder().setPosition(Math.PI);
+            var m = this.pivotMotors.get(i);
+            CANEncoder encoder = m.getEncoder();
+            //if this.goalThetas[i] = 
         }
     }
 }

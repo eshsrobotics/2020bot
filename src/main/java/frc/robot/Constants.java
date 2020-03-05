@@ -147,7 +147,7 @@ public final class Constants {
    * Easily controlls speed, we dont want 100 % all the time. This value should be
    * between 0.0 and 1.0.
    */
-  public static final double DRIVE_SPEED_MULTIPLIER = 0.0;
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.80;
 
   public static final double DRIVE_SNEAK_MODIFIER = 0.6;
   ///////////////////////////////
@@ -155,7 +155,7 @@ public final class Constants {
   ///////////////////////////////
   // These take up ports 8 through 12.
 
-  public static final int INTAKE_PORT = 4;
+  public static final int INTAKE_PORT = 4; 
   public static final int LEFT_BELT_PORT = 0;
   public static final int RIGHT_BELT_PORT = 1;
   public static final int BOTTOM_SHOOTER_FLYWHEEL_CAN_ID = 9;
