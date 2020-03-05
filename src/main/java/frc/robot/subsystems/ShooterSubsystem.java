@@ -21,9 +21,13 @@ import static frc.robot.Constants.*;
 public class ShooterSubsystem extends SubsystemBase {
   private CANSparkMax topMotor, bottomMotor;
 
+  private double shooterModifier;
+
   public ShooterSubsystem() {
     this.topMotor = new CANSparkMax(TOP_SHOOTER_FLYWHEEL_CAN_ID, MotorType.kBrushless);
     this.bottomMotor = new CANSparkMax(BOTTOM_SHOOTER_FLYWHEEL_CAN_ID, MotorType.kBrushless);
+
+    this.shooterModifier = 1.0;
 
     this.topMotor.stopMotor();
     this.bottomMotor.stopMotor();
@@ -58,8 +62,8 @@ public class ShooterSubsystem extends SubsystemBase {
     topSpeed    = Math.max(0.0, Math.min(1.0, topSpeed));
     bottomSpeed = Math.max(0.0, Math.min(1.0, bottomSpeed));
 
-    this.topMotor.set(-topSpeed*0.9);
-    this.bottomMotor.set(bottomSpeed);
+    this.topMotor.set(-topSpeed*0.9*shooterModifier);
+    this.bottomMotor.set(bottomSpeed*shooterModifier);
   }
 
   /**
@@ -68,6 +72,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public void stopShooter() {
     this.topMotor.stopMotor();
     this.bottomMotor.stopMotor();
+  }
+
+  public void changeSpeedModifier(double newSpeed) {
+    this.shooterModifier = newSpeed;
   }
 
   @Override

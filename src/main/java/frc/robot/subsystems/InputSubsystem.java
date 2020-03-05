@@ -227,6 +227,15 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
 
+  public double getJoystickSlider() {
+    if (joystick != null) {
+      SmartDashboard.putNumber("shooter speed", this.joystick.getRawAxis(3));
+      return this.joystick.getRawAxis(3);
+    } else {
+      return 0.0;
+    }
+  }
+
   public boolean getBeltButton() {
     if (joystick != null) {
       return this.joystick.getRawButton(3);

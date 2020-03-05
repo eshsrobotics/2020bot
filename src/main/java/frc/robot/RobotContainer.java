@@ -96,6 +96,7 @@ public class RobotContainer {
         shootButton.whenPressed(new InstantCommand(() -> {
             SmartDashboard.putNumber("shoot number", 1);
             intakeSubsystem.disableIntake();
+            shooterSubsystem.changeSpeedModifier(inputSubsystem.getJoystickSlider());
             CommandScheduler.getInstance()
                     .schedule(new InstantCommand(() -> shooterSubsystem.startShooter(0.75, 0.75))
                             .andThen(new WaitCommand(0.4).andThen(() -> intakeSubsystem.enablesBelts())

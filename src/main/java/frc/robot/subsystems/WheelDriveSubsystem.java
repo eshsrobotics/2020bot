@@ -376,7 +376,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             // var errorCode = pidController.setReference(goalRotations, ControlType.kPosition);
 
-            crabDriveCurrentGoalTheta = modulus(goalThetas[i], TWO_PI);
+            crabDriveCurrentGoalTheta = (modulus(goalThetas[i], TWO_PI)) - (Math.PI*0);
             double trueCurrentPosition = modulus(encoder.getPosition() * TWO_PI, TWO_PI);
             double diffSign = Math.signum(crabDriveCurrentGoalTheta - trueCurrentPosition);
             double trueDiff = crabDriveCurrentGoalTheta - trueCurrentPosition;
@@ -387,7 +387,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("trueCurrentPosition", trueCurrentPosition);
             SmartDashboard.putNumber("trueDiff", trueDiff);
 
-            if (Math.abs(trueDiff) > 0.1) {
+            if (Math.abs(trueDiff) > 0.15) {
                 this.crabWheelturning = true;
             } else {
                 this.crabWheelturning = false;
@@ -395,9 +395,9 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             if (this.crabWheelturning) {
                 if (Math.abs(trueDiff) > Math.PI) {
-                    m.set(0.03 * diffSign);
+                    //m.set(-0.075 * diffSign);
                 } else {
-                    m.set(-0.03 * diffSign);
+                    //m.set(0.075 * diffSign);
                 }
             } 
             if (Math.abs(trueDiff) < 0.1) {

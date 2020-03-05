@@ -45,13 +45,12 @@ public class ShooterCommand extends CommandBase {
   @Override
   public void execute() {
     if (speed != 0) {
-        this.shooterSubsystem.startShooter(speed * 0.9, speed);
+        this.shooterSubsystem.startShooter(speed, speed);
     } else {
         this.shooterSubsystem.stopShooter();
     }
 
     // NB: This next line almost certainly does nothing.
-    SmartDashboard.putNumber("shooter speed", speed);
     super.execute();
   }
 
