@@ -19,7 +19,6 @@ import frc.robot.subsystems.ClimbUpButton;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.IntakeButton;
-import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -33,6 +32,7 @@ import frc.robot.subsystems.SneakButton;
 import frc.robot.subsystems.TestButton;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.ClimberSubsystem;
 
 /**
@@ -71,10 +71,15 @@ public class RobotContainer {
         // Configure the button bindings.
         configureButtonBindings();
 
-        this.wheelDrive.calibrate();
         this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
     }
 
+    /**
+     * This exists to make it so the robot calibrates upon starting teleop, not the robot turning on.
+     */
+    public void calibrateDrive() {
+        this.wheelDrive.calibrate();
+    }
     /**
      * Use this method to define your button->command mappings. Buttons can be
      * created by instantiating a {@link GenericHID} or one of its subclasses
