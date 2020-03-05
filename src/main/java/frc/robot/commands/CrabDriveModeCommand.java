@@ -3,9 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import static frc.robot.Constants.*;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
+
 
 /**
  * When this command is running, the robot will be in *crab drive mode*:
@@ -43,6 +44,9 @@ public class CrabDriveModeCommand extends CommandBase {
         // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
+        if (directionalVector.magnitude() < JOYSTICK_EPSILON) {
+            return;
+        }
         //double centerRotation = this.inputSubsystem.getCrabTurnValue();
 
         //if (crabDriveMode) {
@@ -75,7 +79,7 @@ public class CrabDriveModeCommand extends CommandBase {
          * joystickYMagnitude; }
          */
         SmartDashboard.putNumber("final final final final speed", speed);
-        speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
+        speed = speed * DRIVE_SPEED_MULTIPLIER;
         double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
 

@@ -557,7 +557,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
             // The joystick vector comes from our args.
             // We need to normalize it so its value is 1.
             final double joystickVectorLength = joystickVector.magnitude();
-            if (joystickVectorLength < joystick_epsilon) {
+            if (joystickVectorLength < JOYSTICK_EPSILON) {
                 // The joystick is inside our dead zone. There's nothing to rotate toward.
                 turn_enabled = false;
                 for (int i = 0; i < 4; i++) {
@@ -639,4 +639,22 @@ public class WheelDriveSubsystem extends SubsystemBase {
             //if this.goalThetas[i] = 
         }
     }
+
+    public void setOppositeAngle() {
+        double[] thetas = new double[4];
+        for (int i = 0 ; i < 4; i++) {
+            var m = this.pivotMotors.get(i);
+            CANEncoder encoder = m.getEncoder();
+
+            double positionRadians = encoder.getPosition() * TWO_PI;
+            positionRadians = modulus(positionRadians, TWO_PI);
+
+            double newPositionRadians = positionRadians + Math.PI;
+            newPositionRadians = modulus(newPositionRadians, TWO_PI);
+
+            thetas[i] = newPositionRadians;
+        }
+        this.setGoalAngles(thetas);
+    }
+
 }

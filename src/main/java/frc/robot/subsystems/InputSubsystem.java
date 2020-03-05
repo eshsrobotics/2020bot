@@ -209,7 +209,7 @@ public class InputSubsystem extends SubsystemBase {
     if (joystick != null) {
       return this.joystick.getRawButton(7);
     } else if (controller != null) {
-      SmartDashboard.putBoolean("button 5", this.controller.getRawButton(5));
+      SmartDashboard.putBoolean("button 7", this.controller.getRawButton(7));
       return this.controller.getRawButton(7);
     } else {
       return false;
@@ -220,7 +220,7 @@ public class InputSubsystem extends SubsystemBase {
     if (joystick != null) {
       return this.joystick.getRawButton(5);
     } else if (controller != null) {
-      SmartDashboard.putBoolean("button 7", this.controller.getRawButton(7));
+      SmartDashboard.putBoolean("button 5", this.controller.getRawButton(5));
       return this.controller.getRawButton(5);
     } else {
       return false;
@@ -251,6 +251,23 @@ public class InputSubsystem extends SubsystemBase {
       return this.joystick.getRawButton(4);
     } else if (controller != null) {
       return this.controller.getRawButton(4);
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * This function allows use of button 6 for testing commands. It is not intended to be used during actual driving.
+   * @return True if the buttin is pressed, false if not.
+   */
+  public boolean getTestButton() {
+    if (joystick != null) {
+      SmartDashboard.putBoolean("button 6 joy", this.controller.getRawButton(6));
+      return this.joystick.getRawButton(6);
+      
+    } else if (controller != null) {
+      SmartDashboard.putBoolean("button 6", this.controller.getRawButton(6));
+      return this.controller.getRawButton(6);
     } else {
       return false;
     }
