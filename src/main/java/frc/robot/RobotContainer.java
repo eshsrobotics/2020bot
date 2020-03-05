@@ -24,11 +24,13 @@ import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SneakButton;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
@@ -51,6 +53,7 @@ public class RobotContainer {
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
     private final ClimbUpButton climbUpButton = new ClimbUpButton(inputSubsystem);
@@ -133,7 +136,13 @@ public class RobotContainer {
             intakeSubsystem.disableIntake();
         }));
 
+        Command foo = new PerpetualCommand(
+            new InstantCommand(() -> {
+                SmartDashboard.putNumber("distance", visionSubsystem.getSolutionDistance()); 
+            }).andThen(new WaitCommand(.05))
+        );
 
+        CommandScheduler.getInstance().schedule(foo);
     }
 
     /**

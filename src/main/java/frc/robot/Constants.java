@@ -20,9 +20,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
  * wherever the constants are needed, to reduce verbosity.
  * 
  * <p>
- * QUICK REFERENCE:
- * FL: 1, 5. BL: 2, 6. BR: 3, 7. FR: 4, 8
- * INTAKE: 4. BELTS: 0,1. CLIMB: 2, 3. SHOOTER: TOP-10, BOT-9
+ * QUICK REFERENCE: FL: 1, 5. BL: 2, 6. BR: 3, 7. FR: 4, 8 INTAKE: 4. BELTS:
+ * 0,1. CLIMB: 2, 3. SHOOTER: TOP-10, BOT-9
  *
  */
 public final class Constants {
@@ -42,14 +41,14 @@ public final class Constants {
    * center (dimensional center, not center of mass) to the center of any of the
    * wheels.
    */
-  public static final double WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE = 0.435*0.5;
+  public static final double WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE = 0.435 * 0.5;
 
   /**
    * In meters. It is the vertical component of the distance from the imaginary
    * center (dimensional center, not center of mass) to the center of any of the
    * wheels.
    */
-  public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635*0.5;
+  public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635 * 0.5;
 
   /*
    * Ratio for how many revolutions of the motor to a revolution of the wheel
@@ -190,22 +189,22 @@ public final class Constants {
   //////////////////////////////////////
   // Network Button key strings (for NetworkButton constructor):
   // - Alphanumeric : Uppercase of the key (i.e. A, B, C, ... or 0, 1, 2, ...)
-  // - F Keys    : F1, F2, ...
-  // - Shift     : "Shift"
-  // - Control   : "Ctrl"
-  // - Alt       : "Alt"
-  // - Windows   : "Windows"
-  // - Enter     : "Enter"
-  // - Escape    : "Esc"
-  // - -         : "Minus"
-  // - =         : "Equals"
-  // - [         : "Open Bracket"
-  // - ]         : "Close Bracket"
-  // - /         : "Slash"
-  // - '         : "Quote"
-  // - ;         : "Semicolon"
+  // - F Keys : F1, F2, ...
+  // - Shift : "Shift"
+  // - Control : "Ctrl"
+  // - Alt : "Alt"
+  // - Windows : "Windows"
+  // - Enter : "Enter"
+  // - Escape : "Esc"
+  // - - : "Minus"
+  // - = : "Equals"
+  // - [ : "Open Bracket"
+  // - ] : "Close Bracket"
+  // - / : "Slash"
+  // - ' : "Quote"
+  // - ; : "Semicolon"
   // - Caps Lock : "Caps Lock"
-  // - `         : "Back Quote"
+  // - ` : "Back Quote"
   //
   // For the mouse right and left buttons, use "Right Mouse" and "Left Mouse"
   public static final String DRIVE_VECTOR_UP_KEY = "W";
@@ -215,4 +214,27 @@ public final class Constants {
   public static final String DRIVE_AUXILIARY_LEFT_TURN_KEY = "Left";
   public static final String DRIVE_AUXILIARY_RIGHT_TURN_KEY = "Right";
   public static final String DRIVE_SNEAK_KEY = "Shift";
+
+  /////////////////////////////////
+  // Vision solutions constants. //
+  /////////////////////////////////
+
+  // Derived from limelight resolution.
+  public static final double SCREEN_WIDTH_PIXELS = 960;
+  // Derived from horizontal FOV of limelight.
+  public static final double FOV_RADIANS = 59.6 * (2 * Math.PI / 360);
+
+  // Height from the ground to the center of the limelight's camera.
+  public static final double ROBOT_HEIGHT_METERS = 1;
+  // Derived from vertical FOV of limelight.
+  public static final double VERTICAL_FOV_RADIANS = 45.7 * (2 * Math.PI / 360);
+  // Derived from limelight resolution.
+  public static final double SCREEN_HEIGHT_PIXELS = 720;
+  // Assumes that the bottom of the screen is the ground plane,
+  // and that the distance from the ground plane to the center of the screen is
+  // the robot height.
+  public static final double SCREEN_HEIGHT_METERS = ROBOT_HEIGHT_METERS * 2;
+
+  // Derived from meter and pixel values of screen height.
+  public static final double METERS_PER_PIXEL = SCREEN_HEIGHT_METERS / SCREEN_HEIGHT_PIXELS;
 }
