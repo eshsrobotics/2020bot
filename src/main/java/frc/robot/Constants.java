@@ -237,4 +237,8 @@ public final class Constants {
 
   // Derived from meter and pixel values of screen height.
   public static final double METERS_PER_PIXEL = SCREEN_HEIGHT_METERS / SCREEN_HEIGHT_PIXELS;
+
+  // Essentially the "P" in PID. This used to be .15 radians. 
+  // Used to tell the robot how far it needs to be from the goal angle to stop rotating.
+  public static double GOAL_ROTATION_EPSILON_DEGREES = 5.85;
 }

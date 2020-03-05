@@ -124,6 +124,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         driveMode = DriveMode.CRAB_MODE;
 
         this.goalThetas = new double[4];
+        this.setGoalAngles(new double[] {0, 0, 0, 0});
         this.initialEncoderValues = new double[4];
         this.goalSpeeds = new double[4];
 
@@ -244,15 +245,15 @@ public class WheelDriveSubsystem extends SubsystemBase {
      *               as specified in {FRONT,BACK}_{LEFT,RIGHT}.
      */
     public void setGoalAngles(double[] thetas) {
-        this.goalThetas[FRONT_LEFT] = thetas[FRONT_LEFT];
-        this.goalThetas[FRONT_RIGHT] = thetas[FRONT_RIGHT];
-        this.goalThetas[BACK_LEFT] = thetas[BACK_LEFT];
-        this.goalThetas[BACK_RIGHT] = thetas[BACK_RIGHT];
+        this.goalThetas[FRONT_LEFT] = modulus(thetas[FRONT_LEFT], TWO_PI);
+        this.goalThetas[FRONT_RIGHT] = modulus(thetas[FRONT_RIGHT], TWO_PI);
+        this.goalThetas[BACK_LEFT] = modulus(thetas[BACK_LEFT], TWO_PI);
+        this.goalThetas[BACK_RIGHT] = modulus(thetas[BACK_RIGHT], TWO_PI);
 
-        SmartDashboard.putNumber("FL goal theta", this.goalThetas[FRONT_LEFT]);
-        SmartDashboard.putNumber("FR goal theta", this.goalThetas[FRONT_RIGHT]);
-        SmartDashboard.putNumber("BL goal theta", this.goalThetas[BACK_LEFT]);
-        SmartDashboard.putNumber("BR goal theta", this.goalThetas[BACK_RIGHT]);
+        SmartDashboard.putNumber("FL goal theta", this.goalThetas[FRONT_LEFT] * 360 / TWO_PI);
+        SmartDashboard.putNumber("FR goal theta", this.goalThetas[FRONT_RIGHT] * 360 / TWO_PI);
+        SmartDashboard.putNumber("BL goal theta", this.goalThetas[BACK_LEFT] * 360 / TWO_PI);
+        SmartDashboard.putNumber("BR goal theta", this.goalThetas[BACK_RIGHT] * 360 / TWO_PI);
     }
 
     public void setDriveSpeeds(double[] speeds) {
@@ -275,6 +276,23 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
     }
 
+    /**
+     * In Crab Drive mode, the only way to accurately rotate the frame is to position the wheels
+     * such that they are tangent to a common circle, then drive them so as to rotate in place.
+     * 
+     * There are two scenarios when we wish to do this, each with their own exit condition:
+     * 
+     * - MANUAL: Driver is in crab drive mode and uses either joystick 2 (on the XBox controller)
+     *           or Z-rotation (on the ordinary joystick) to turn.  When they release, we stop.
+     * - VISION: We rotate until vision finds a vision solution and our horizontal deviation in
+     *           degrees is minimized.  Then we stop.
+     * 
+     * This function controls both starting and stopping that rotation mode.  As long as the rotation
+     * mode is on, the goal angles coming from {@link crabDriveGetAngle} will point toward that ideal
+     * tangent alignment.  When the mode is off, the goal angles will be tied to the joystick again.
+     * 
+     * @param speed Non-zero to turn the rotation mode ON; zero to turn it OFF.
+     */
     public void setCrabDriveCenterRotation(double speed) {
         if (Math.abs(speed) > 0.05) {
             this.crabCenterRotationMode = true;
@@ -313,10 +331,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
             this.initialEncoderValues[index] = rotations;
         }
 
-        SmartDashboard.putNumber("FL pivot encoder (initial)", this.initialEncoderValues[FRONT_LEFT]);
-        SmartDashboard.putNumber("FR pivot encoder (initial)", this.initialEncoderValues[FRONT_RIGHT]);
-        SmartDashboard.putNumber("BL pivot encoder (initial)", this.initialEncoderValues[BACK_LEFT]);
-        SmartDashboard.putNumber("BR pivot encoder (initial)", this.initialEncoderValues[BACK_RIGHT]);
+        SmartDashboard.putNumber("FL pivot (initial)", this.initialEncoderValues[FRONT_LEFT] * 360);
+        SmartDashboard.putNumber("FR pivot (initial)", this.initialEncoderValues[FRONT_RIGHT] * 360);
+        SmartDashboard.putNumber("BL pivot (initial)", this.initialEncoderValues[BACK_LEFT] * 360);
+        SmartDashboard.putNumber("BR pivot (initial)", this.initialEncoderValues[BACK_RIGHT] * 360);
     }
 
     /**
@@ -328,16 +346,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-
-        
-         // Read the PID values that the user set, dynamically. kP =
-          SmartDashboard.getNumber("Pivot PID: P Gain", kP); kI =
-          SmartDashboard.getNumber("Pivot PID: I Gain", kI); kD =
-          SmartDashboard.getNumber("Pivot PID: D Gain", kD); kIz =
-          SmartDashboard.getNumber("Pivot PID: I Zone", kIz); kFF =
-          SmartDashboard.getNumber("Pivot PID: Feed Forward", kFF); kMaxOutput =
-          SmartDashboard.getNumber("Pivot PID: Max Output", kMaxOutput);
-          kMinOutput = SmartDashboard.getNumber("Pivot PID: Min Output", kMinOutput);
 
         /*
          * here we would set all of the wheels to the required angles and speeds based
@@ -382,7 +390,18 @@ public class WheelDriveSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("trueCurrentPosition", trueCurrentPosition);
             SmartDashboard.putNumber("trueDiff", trueDiff);
 
-            if (Math.abs(trueDiff) > 0.15) {
+            // Rotate the pivot motors toward their goal values.
+            // Note that we do _NOT_ use PIDController.setReference() here.
+            // That is what REV Robotics provided, and it does work, but it
+            // has issues when crossing angle boundaries between 0 and 360 degrees.
+            //
+            // This code below overcomes that flaw.
+            final double goalEpsilonDegrees = SmartDashboard.getNumber("goal epsilon", 0);
+            if (goalEpsilonDegrees > 0) {
+                GOAL_ROTATION_EPSILON_DEGREES = goalEpsilonDegrees;
+            }
+            final double goalEpsilonRadians = goalEpsilonDegrees * TWO_PI / 360;
+            if (Math.abs(trueDiff) > goalEpsilonRadians) {
                 if (Math.abs(trueDiff) > Math.PI) {
                     m.set(-0.075 * diffSign);
                 } else {
@@ -392,7 +411,8 @@ public class WheelDriveSubsystem extends SubsystemBase {
                 m.set(0);
                 m.stopMotor();
             }
-            
+            SmartDashboard.putNumber("goal epsilon", GOAL_ROTATION_EPSILON_DEGREES);
+
             // COMMENTED OUT TO TEST POSSIBLE ROLLOVER FIX
             
               //var errorCode = pidController.setReference(goalRotations,
@@ -404,10 +424,10 @@ public class WheelDriveSubsystem extends SubsystemBase {
              
         }
 
-        SmartDashboard.putNumber("FL pivot encoder", this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition());
-        SmartDashboard.putNumber("FR pivot encoder", this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition());
-        SmartDashboard.putNumber("BL pivot encoder", this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition());
-        SmartDashboard.putNumber("BR pivot encoder", this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition());
+        SmartDashboard.putNumber("FL pivot", modulus(this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition() * 360, 360));
+        SmartDashboard.putNumber("FR pivot", modulus(this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition() * 360, 360));
+        SmartDashboard.putNumber("BL pivot", modulus(this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition() * 360, 360));
+        SmartDashboard.putNumber("BR pivot", modulus(this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition() * 360, 360));
 
         //if (!this.crabCenterRotationMode) {
             for (int i = 0; i < this.speedMotors.size(); i++) {
@@ -433,12 +453,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
                             m.set(newSpeed * DRIVE_SNEAK_MODIFIER);
                         }
                     }
-
-                    // We have either overshot or undershot.
-                    // double sign = Math.signum(goalSpeeds[i] - currentSpeed);
-                    // final double VELOCITY = 0.02;
-                    // SmartDashboard.putNumber("final final speed" + i, m.get());
-                    // m.setSpeed((currentSpeed + sign * VELOCITY));
                 }
             }
         //} else {
