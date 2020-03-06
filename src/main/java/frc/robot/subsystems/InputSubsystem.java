@@ -132,7 +132,7 @@ public class InputSubsystem extends SubsystemBase {
     if (this.joystick != null) {
       xValue = this.joystick.getZ();
     } else if (this.controller != null) {
-      xValue = this.controller.getX(Hand.kRight);
+      xValue = this.controller.getRawAxis(2);
     }
 
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {

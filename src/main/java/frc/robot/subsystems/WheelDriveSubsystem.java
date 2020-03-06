@@ -447,14 +447,18 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
                 double differenceModifier = 1.0;
 
-                double approachingMinSpeed = 0.1;
+                double approachingMinSpeed = 0.07;
 
-                double slowingThreshold = 1.0;
+                double slowingThreshold = 1.7;
 
-                double turningSpeed = 0.1;
+                double turningSpeed = 0.3;
+
+                if (Math.abs(trueDiff) > Math.PI) {
+                    trueDiff = (-Math.signum(trueDiff)*TWO_PI) - trueDiff;
+                }
 
                 if (Math.abs(trueDiff) < slowingThreshold) {
-                    differenceModifier = Math.abs(trueDiff)*(slowingThreshold-approachingMinSpeed) + approachingMinSpeed;
+                    differenceModifier = Math.abs(trueDiff)/(slowingThreshold-approachingMinSpeed) + approachingMinSpeed;
                 }
                 
                 if ((Math.abs(trueDiff) > goalEpsilonRadians)) {
@@ -771,17 +775,13 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * Checks whether the wheels have reached their desired positions saved in goalThetas.
      */
     public boolean isGoalThetasReached() {
-        int counter = 0;
         for (int i = 0; i <4; i++) {
             var m = this.pivotMotors.get(i);
             CANEncoder encoder = m.getEncoder();
             final double encoderPositionRadians = encoder.getPosition()*TWO_PI;
             if ((Math.abs(encoderPositionRadians - goalThetas[i]) > GOAL_ROTATION_EPSILON_RADIANS)) {
-                counter++;
+                return false;
             }
-        }
-        if (counter <= 4) {
-            return false;
         }
         return true;
     }
