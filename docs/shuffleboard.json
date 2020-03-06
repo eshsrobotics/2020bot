@@ -65,7 +65,7 @@
               "_title": "FR goal theta"
             }
           },
-          "5,0": {
+          "5,4": {
             "size": [
               1,
               1
@@ -78,7 +78,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,0": {
+          "6,4": {
             "size": [
               1,
               1
@@ -124,7 +124,7 @@
               "_title": "limelight_Stream"
             }
           },
-          "5,1": {
+          "4,4": {
             "size": [
               1,
               1
@@ -159,7 +159,7 @@
               "_title": "trueCurrentPosition"
             }
           },
-          "5,2": {
+          "4,2": {
             "size": [
               1,
               1
@@ -302,7 +302,7 @@
               "_title": "BR pivot (initial)"
             }
           },
-          "6,1": {
+          "7,4": {
             "size": [
               1,
               1
@@ -311,6 +311,44 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/final x 5",
               "_title": "final x 5"
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/final final final final speed",
+              "_title": "final final final final speed"
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/joystick angle",
+              "_title": "joystick angle"
+            }
+          },
+          "5,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/newPosition",
+              "_title": "newPosition",
+              "Graph/Visible time": 30.0,
+              "Y-axis/Automatic bounds": true,
+              "Y-axis/Upper bound": 1.0,
+              "Y-axis/Lower bound": -1.0,
+              "Visible data/SmartDashboard/newPosition": true
             }
           }
         }
@@ -439,6 +477,26 @@
                   "_source0": "network_table:///LiveWindow/Ungrouped/Spark[3]",
                   "_title": "Spark[3]",
                   "Visuals/Orientation": "HORIZONTAL"
+                },
+                {
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[2]",
+                  "_title": "LiveWindow/Ungrouped/PIDController[2]"
+                },
+                {
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[3]",
+                  "_title": "LiveWindow/Ungrouped/PIDController[3]"
+                },
+                {
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[1]",
+                  "_title": "LiveWindow/Ungrouped/PIDController[1]"
+                },
+                {
+                  "_type": "PID Controller",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[4]",
+                  "_title": "LiveWindow/Ungrouped/PIDController[4]"
                 }
               ]
             }

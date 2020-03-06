@@ -147,7 +147,7 @@ public final class Constants {
    * Easily controlls speed, we dont want 100 % all the time. This value should be
    * between 0.0 and 1.0.
    */
-  public static final double DRIVE_SPEED_MULTIPLIER = 0.80;
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.0;
 
   public static final double DRIVE_SNEAK_MODIFIER = 0.6;
   ///////////////////////////////
@@ -240,5 +240,5 @@ public final class Constants {
 
   // Essentially the "P" in PID. This used to be .15 radians. 
   // Used to tell the robot how far it needs to be from the goal angle to stop rotating.
-  public static double GOAL_ROTATION_EPSILON_DEGREES = 5.85;
+  public static double GOAL_ROTATION_EPSILON_RADIANS = 5.85 * 2 * Math.PI / 360;
 }

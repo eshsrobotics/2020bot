@@ -58,11 +58,13 @@ public class ShooterSubsystem extends SubsystemBase {
     // system.
     topSpeed    = Math.abs(topSpeed);
     bottomSpeed = Math.abs(bottomSpeed);
-
     // Clip the arguments to be between 0.0 and 1.0.
     topSpeed    = Math.max(0.0, Math.min(1.0, topSpeed));
     bottomSpeed = Math.max(0.0, Math.min(1.0, bottomSpeed));
-
+    SmartDashboard.putNumber("top shooter speed", 0);
+    SmartDashboard.putNumber("bottom shooter speed", 0);
+    //topSpeed = SmartDashboard.getNumber("top shooter speed", 0);
+    //bottomSpeed = SmartDashboard.getNumber("bottom shooter speed", 0);
     this.topMotor.set(-topSpeed*0.9*shooterModifier);
     this.bottomMotor.set(bottomSpeed*shooterModifier);
   }
