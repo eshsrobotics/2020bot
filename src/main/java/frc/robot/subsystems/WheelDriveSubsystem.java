@@ -350,8 +350,14 @@ public class WheelDriveSubsystem extends SubsystemBase {
         for (int index = 0; index < this.pivotMotors.size(); index++) {
             var m = this.pivotMotors.get(index);
             double rotations = m.getEncoder().getPosition();
+            m.getEncoder().setPosition(0);
             this.initialEncoderValues[index] = rotations;
         }
+
+        /*SmartDashboard.putNumber("FL pivot (initial)", this.initialEncoderValues[FRONT_LEFT] * 360);
+        SmartDashboard.putNumber("FR pivot (initial)", this.initialEncoderValues[FRONT_RIGHT] * 360);
+        SmartDashboard.putNumber("BL pivot (initial)", this.initialEncoderValues[BACK_LEFT] * 360);
+        SmartDashboard.putNumber("BR pivot (initial)", this.initialEncoderValues[BACK_RIGHT] * 360);*/
     }
 
     /**

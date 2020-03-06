@@ -24,6 +24,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double shooterModifier;
 
+  private double topSpeedOverride = -1;
+  private double bottomSpeedOverride = -1;
+
   public ShooterSubsystem() {
     this.topMotor = new CANSparkMax(TOP_SHOOTER_FLYWHEEL_CAN_ID, MotorType.kBrushless);
     this.bottomMotor = new CANSparkMax(BOTTOM_SHOOTER_FLYWHEEL_CAN_ID, MotorType.kBrushless);
@@ -53,20 +56,44 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void startShooter(double topSpeed, double bottomSpeed) {
 
+    //SmartDashboard.putNumber("topSpeed", topSpeed);
+    //SmartDashboard.putNumber("bottomSpeed", bottomSpeed);
+
+    double top = SmartDashboard.getNumber("topSpeed", topSpeed);
+    double bottom = SmartDashboard.getNumber("bottomSpeed", bottomSpeed);
+    if (top > 0) {
+      // User supplied an override topSpeed.
+      topSpeedOverride = top;
+    }
+    if (bottom > 0) {
+      // User supplied an override bottomSpeed.
+      bottomSpeedOverride = bottom;
+    }
+
+    if (topSpeedOverride > 0) {
+      topSpeed = topSpeedOverride;
+    }
+
+    if (bottomSpeedOverride > 0){
+      bottomSpeed = bottomSpeedOverride;
+    }
     // Signs for the arguments are ignored.  Otherwise, the caller would be
     // able to reverse the shooter and launch balls back into the belt
     // system.
-    topSpeed    = Math.abs(topSpeed);
-    bottomSpeed = Math.abs(bottomSpeed);
+    topSpeed    = Math.abs(top);
+    bottomSpeed = Math.abs(bottom);
+
     // Clip the arguments to be between 0.0 and 1.0.
     topSpeed    = Math.max(0.0, Math.min(1.0, topSpeed));
     bottomSpeed = Math.max(0.0, Math.min(1.0, bottomSpeed));
-    SmartDashboard.putNumber("top shooter speed", 0);
-    SmartDashboard.putNumber("bottom shooter speed", 0);
-    //topSpeed = SmartDashboard.getNumber("top shooter speed", 0);
-    //bottomSpeed = SmartDashboard.getNumber("bottom shooter speed", 0);
-    this.topMotor.set(-topSpeed*0.9*shooterModifier);
-    this.bottomMotor.set(bottomSpeed*shooterModifier);
+
+    this.topMotor.set(-topSpeed/*shooterModifier*/);
+    this.bottomMotor.set(bottomSpeed/*shooterModifier*/);
+
+    SmartDashboard.putNumber("topSpeed", top);
+    SmartDashboard.putNumber("bottomSpeed", bottom);
+
+
   }
 
   /**

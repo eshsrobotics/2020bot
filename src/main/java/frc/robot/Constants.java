@@ -147,7 +147,7 @@ public final class Constants {
    * Easily controlls speed, we dont want 100 % all the time. This value should be
    * between 0.0 and 1.0.
    */
-  public static final double DRIVE_SPEED_MULTIPLIER = 0.0;
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.60;
 
   public static final double DRIVE_SNEAK_MODIFIER = 0.6;
   ///////////////////////////////
@@ -225,7 +225,7 @@ public final class Constants {
   public static final double FOV_RADIANS = 59.6 * (2 * Math.PI / 360);
 
   // Height from the ground to the center of the limelight's camera.
-  public static final double ROBOT_HEIGHT_METERS = 1;
+  public static final double ROBOT_HEIGHT_METERS = 0.604166666;
   // Derived from vertical FOV of limelight.
   public static final double VERTICAL_FOV_RADIANS = 45.7 * (2 * Math.PI / 360);
   // Derived from limelight resolution.
@@ -235,7 +235,7 @@ public final class Constants {
   // the robot height.
   public static final double SCREEN_HEIGHT_METERS = ROBOT_HEIGHT_METERS * 2;
 
-  // Derived from meter and pixel values of screen height.
+  // Derived from meter and pixel values of screen height. This is true only at the edge of the field of view
   public static final double METERS_PER_PIXEL = SCREEN_HEIGHT_METERS / SCREEN_HEIGHT_PIXELS;
 
   // Essentially the "P" in PID. This used to be .15 radians. 

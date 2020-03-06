@@ -120,8 +120,10 @@ public class VisionSubsystem extends SubsystemBase {
         // Clearly the hypotenuse of the triangle -- the distance to the target -- is 
         // cos tx / distanceToScreenCenterMeters.
 
-        final double horizontalDeviationRadians = tx * (2 * Math.PI / 360);
-        final double distanceToTargetMeters = Math.cos(horizontalDeviationRadians) / distanceToScreenCenterMeters;
+        
+
+        final double verticalDeviationRadians = ty * (2 * Math.PI / 360);
+        final double distanceToTargetMeters = Math.cos(verticalDeviationRadians) / distanceToScreenCenterMeters;
 
         return distanceToTargetMeters;
     }
