@@ -50,6 +50,13 @@ public final class Constants {
    */
   public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635 * 0.5;
 
+  public static final double[] crabRotationThetas = {
+      Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
+      -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
+      Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
+      -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE) 
+    };
+
   /*
    * Ratio for how many revolutions of the motor to a revolution of the wheel
    *
@@ -155,7 +162,7 @@ public final class Constants {
   ///////////////////////////////
   // These take up ports 8 through 12.
 
-  public static final int INTAKE_PORT = 4; 
+  public static final int INTAKE_PORT = 4;
   public static final int LEFT_BELT_PORT = 0;
   public static final int RIGHT_BELT_PORT = 1;
   public static final int BOTTOM_SHOOTER_FLYWHEEL_CAN_ID = 9;
@@ -235,10 +242,12 @@ public final class Constants {
   // the robot height.
   public static final double SCREEN_HEIGHT_METERS = ROBOT_HEIGHT_METERS * 2;
 
-  // Derived from meter and pixel values of screen height. This is true only at the edge of the field of view
+  // Derived from meter and pixel values of screen height. This is true only at
+  // the edge of the field of view
   public static final double METERS_PER_PIXEL = SCREEN_HEIGHT_METERS / SCREEN_HEIGHT_PIXELS;
 
-  // Essentially the "P" in PID. This used to be .15 radians. 
-  // Used to tell the robot how far it needs to be from the goal angle to stop rotating.
+  // Essentially the "P" in PID. This used to be .15 radians.
+  // Used to tell the robot how far it needs to be from the goal angle to stop
+  // rotating.
   public static double GOAL_ROTATION_EPSILON_RADIANS = 5.85 * 2 * Math.PI / 360;
 }

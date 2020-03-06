@@ -41,6 +41,11 @@ import static frc.robot.subsystems.InputSubsystem.*;
  */
 public class WheelDriveSubsystem extends SubsystemBase {
 
+    /**
+     * A state variable showing whether the joystick is in the the deadzone for driving 
+     */
+    private boolean manualDriving = true;
+
     static final double TWO_PI = 2 * Math.PI;
 
     private boolean crabCenterRotationMode = false;
@@ -219,6 +224,14 @@ public class WheelDriveSubsystem extends SubsystemBase {
      */
     public DriveMode getDriveMode() {
         return driveMode;
+    }
+
+    public void changeManualDriving(boolean a) {
+        if (this.manualDriving && !a) {
+            //transitioning for first time from manual to non-manual
+            this.setDriveSpeeds(new double[] {0,0,0,0});
+        }
+        this.manualDriving = a;
     }
 
     /**
@@ -444,7 +457,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
                     differenceModifier = Math.abs(trueDiff)*(slowingThreshold-approachingMinSpeed) + approachingMinSpeed;
                 }
                 
-                if (Math.abs(trueDiff) > goalEpsilonRadians) {
+                if ((Math.abs(trueDiff) > goalEpsilonRadians)) {
                     if (Math.abs(trueDiff) > Math.PI) {
                         m.set(-turningSpeed * diffSign * differenceModifier);
                     } else {
@@ -659,7 +672,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
     public double[] crabDriveGetAngle(Vector2d joystickVector) {
         double angles[] = new double[4];
 
-        // if (!this.crabCenterRotationMode) {
+        //if (!this.crabCenterRotationMode) {
 
         // The reference vector points straight forward.
         // Its length is 1.
@@ -752,6 +765,25 @@ public class WheelDriveSubsystem extends SubsystemBase {
             thetas[i] = newPositionRadians;
         }
         this.setGoalAngles(thetas);
+    }
+
+    /**
+     * Checks whether the wheels have reached their desired positions saved in goalThetas.
+     */
+    public boolean isGoalThetasReached() {
+        int counter = 0;
+        for (int i = 0; i <4; i++) {
+            var m = this.pivotMotors.get(i);
+            CANEncoder encoder = m.getEncoder();
+            final double encoderPositionRadians = encoder.getPosition()*TWO_PI;
+            if ((Math.abs(encoderPositionRadians - goalThetas[i]) > GOAL_ROTATION_EPSILON_RADIANS)) {
+                counter++;
+            }
+        }
+        if (counter <= 4) {
+            return false;
+        }
+        return true;
     }
 
 }

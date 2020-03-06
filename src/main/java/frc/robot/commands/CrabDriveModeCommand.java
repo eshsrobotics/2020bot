@@ -45,7 +45,10 @@ public class CrabDriveModeCommand extends CommandBase {
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
         if (directionalVector.magnitude() < JOYSTICK_EPSILON) {
+            this.wheelDriveSubsystem.changeManualDriving(false);
             return;
+        } else {
+            this.wheelDriveSubsystem.changeManualDriving(true);
         }
         //double centerRotation = this.inputSubsystem.getCrabTurnValue();
 

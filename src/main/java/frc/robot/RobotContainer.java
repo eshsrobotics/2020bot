@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SneakButton;
 import frc.robot.subsystems.TestButton;
@@ -34,6 +35,9 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.CrabCenterRotationButton;
+import static frc.robot.Constants.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -63,6 +67,7 @@ public class RobotContainer {
     private final SneakButton sneakButton = new SneakButton(inputSubsystem);
     private final BeltButton beltButton = new BeltButton(inputSubsystem);
     private final IntakeButton intakeButton = new IntakeButton(inputSubsystem);
+    private final CrabCenterRotationButton crabRotateButton = new CrabCenterRotationButton(inputSubsystem);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -142,6 +147,25 @@ public class RobotContainer {
         })).whenReleased(new InstantCommand(() -> {
             intakeSubsystem.disableIntake();
         }));
+
+        crabRotateButton.whenPressed(new InstantCommand(() -> {
+            double[] goalThetas = crabRotationThetas;
+            this.wheelDrive.setGoalAngles(goalThetas);
+        }).andThen(new WaitUntilCommand(() -> {
+            return this.wheelDrive.isGoalThetasReached();
+        }).withInterrupt(() -> {
+            return crabRotateButton.get() == false;
+        })).andThen(new InstantCommand(() -> {
+            double[] goalSpeeds= {
+                inputSubsystem.getCrabTurnValue(),
+                -inputSubsystem.getCrabTurnValue(),
+                inputSubsystem.getCrabTurnValue(),
+                -inputSubsystem.getCrabTurnValue() 
+            };
+            this.wheelDrive.setDriveSpeeds(goalSpeeds);
+        })));
+
+
 
         testButton.whenPressed(new InstantCommand(wheelDrive::setOppositeAngle));
     }
