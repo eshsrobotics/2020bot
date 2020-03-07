@@ -363,11 +363,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
             m.getEncoder().setPosition(0);
             this.initialEncoderValues[index] = rotations;
         }
-
-        /*SmartDashboard.putNumber("FL pivot (initial)", this.initialEncoderValues[FRONT_LEFT] * 360);
-        SmartDashboard.putNumber("FR pivot (initial)", this.initialEncoderValues[FRONT_RIGHT] * 360);
-        SmartDashboard.putNumber("BL pivot (initial)", this.initialEncoderValues[BACK_LEFT] * 360);
-        SmartDashboard.putNumber("BR pivot (initial)", this.initialEncoderValues[BACK_RIGHT] * 360);*/
     }
 
     /**
@@ -490,6 +485,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         for (int i = 0; i < this.speedMotors.size(); i++) {
             var m = this.speedMotors.get(i);
             double currentSpeed = m.get();
+            SmartDashboard.putNumber(String.format("currentSpeed[%d]", i), currentSpeed);
             final double DRIVE_SPEED_EPSILON = 0.01;
             double deltaSpeed = goalSpeeds[i] - currentSpeed;
 

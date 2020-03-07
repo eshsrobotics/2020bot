@@ -174,6 +174,9 @@ public final class Constants {
   public static final double BELT_SPEED = 1.0;
 
   public static int CONTROLLER_SHOOT_TRIGGER_BUTTON = 8;
+  
+  public static int ROTATE_CLOCKWISE_BUTTON = 1;
+  public static int ROTATE_COUNTERCLOCKWISE_BUTTON = 2;
 
   /**
    * You'd think that you could detect an XBox controller easily, perhaps with:

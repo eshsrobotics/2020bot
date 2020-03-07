@@ -516,4 +516,23 @@ public class InputSubsystem extends SubsystemBase {
       return false;
     }
   }
+  public boolean getClockwiseButton() {
+    if (joystick != null) {
+            return this.joystick.getRawButton(1);
+    } else if (controller != null) {
+      return this.controller.getRawButton(1);
+    } else {
+      return false;
+    }
+  }
+
+    public boolean getCounterclockwiseButton() {
+      if (joystick != null) {
+              return this.joystick.getRawButton(2);
+      } else if (controller != null) {
+        return this.controller.getRawButton(2);
+      } else {
+        return false;
+      }
+    }
 }

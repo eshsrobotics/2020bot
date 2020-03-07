@@ -75,6 +75,7 @@ public class RobotContainer {
     private final CrabCenterRotationButton crabRotateButton = new CrabCenterRotationButton(inputSubsystem);
     private final CrabCenterRotation2 crabRotateButton2 = new CrabCenterRotation2(inputSubsystem);
 
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -160,8 +161,8 @@ public class RobotContainer {
             SmartDashboard.putBoolean("crab rotation button", true);
             double[] goalThetas = crabRotationThetas;
             this.wheelDrive.setGoalAngles(goalThetas);
-        }).andThen(new WaitCommand(4).withInterrupt(() -> {
-            return crabRotateButton.get() == false;
+        }).andThen(new WaitCommand(.5).withInterrupt(() -> {
+            return clockwiseCenterRotationButton.get() == false;
         }).andThen(new InstantCommand(() -> {
             double speed = 0.5;
             double[] goalSpeeds = { speed, speed, speed, speed };
@@ -174,7 +175,7 @@ public class RobotContainer {
             SmartDashboard.putBoolean("crab rotation button", true);
             double[] goalThetas = crabRotationThetas;
             this.wheelDrive.setGoalAngles(goalThetas);
-        }).andThen(new WaitCommand(4).withInterrupt(() -> {
+        }).andThen(new WaitCommand(.5).withInterrupt(() -> {
             return crabRotateButton.get() == false;
         }).andThen(new InstantCommand(() -> {
             double speed = -0.5;
