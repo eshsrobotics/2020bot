@@ -28,6 +28,7 @@ public class CrabCenterRotationButton extends Button {
      */
     @Override
     public boolean get() {
-        return (this.inputSubsystem.getCrabTurnValue() > Constants.JOYSTICK_EPSILON);
+        //return (this.inputSubsystem.getCrabTurnValue() > Constants.JOYSTICK_EPSILON);
+        return this.inputSubsystem.getTestButton();
     }
 }

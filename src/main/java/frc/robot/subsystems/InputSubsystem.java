@@ -266,7 +266,7 @@ public class InputSubsystem extends SubsystemBase {
       return this.joystick.getRawButton(6);
       
     } else if (controller != null) {
-      SmartDashboard.putBoolean("button 6", this.controller.getRawButton(6));
+      SmartDashboard.putNumber("button 6", this.controller.getRawButton(6) ? 1 : 0);
       return this.controller.getRawButton(6);
     } else {
       return false;

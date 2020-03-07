@@ -38,14 +38,13 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CrabCenterRotationButton;
 import static frc.robot.Constants.*;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
  * actually be handled in the {@link Robot} periodic methods (other than the
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
- *           
+ * 
  * 
  */
 public class RobotContainer {
@@ -80,11 +79,13 @@ public class RobotContainer {
     }
 
     /**
-     * This exists to make it so the robot calibrates upon starting teleop, not the robot turning on.
+     * This exists to make it so the robot calibrates upon starting teleop, not the
+     * robot turning on.
      */
     public void calibrateDrive() {
         this.wheelDrive.calibrate();
     }
+
     /**
      * Use this method to define your button->command mappings. Buttons can be
      * created by instantiating a {@link GenericHID} or one of its subclasses
@@ -151,23 +152,17 @@ public class RobotContainer {
         crabRotateButton.whenPressed(new InstantCommand(() -> {
             double[] goalThetas = crabRotationThetas;
             this.wheelDrive.setGoalAngles(goalThetas);
-        }).andThen(new WaitUntilCommand(() -> {
-            return this.wheelDrive.isGoalThetasReached();
-        }).withInterrupt(() -> {
+        }).andThen(new WaitCommand(4).withInterrupt(() -> {
             return crabRotateButton.get() == false;
-        })).andThen(new InstantCommand(() -> {
-            double[] goalSpeeds= {
-                inputSubsystem.getCrabTurnValue(),
-                -inputSubsystem.getCrabTurnValue(),
-                inputSubsystem.getCrabTurnValue(),
-                -inputSubsystem.getCrabTurnValue() 
-            };
+        }).andThen(new InstantCommand(() -> {
+            double speed = 0.5;
+            double[] goalSpeeds = { speed, speed, speed, speed };
             this.wheelDrive.setDriveSpeeds(goalSpeeds);
-        })));
+        })))).whenReleased(new InstantCommand(() -> {
+            this.wheelDrive.setDriveSpeeds(new double[] {0,0,0,0});
+        }));
 
-
-
-        testButton.whenPressed(new InstantCommand(wheelDrive::setOppositeAngle));
+        // testButton.whenPressed(new InstantCommand(wheelDrive::setOppositeAngle));
     }
 
     /**

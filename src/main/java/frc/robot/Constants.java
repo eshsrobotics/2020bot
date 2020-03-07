@@ -51,8 +51,8 @@ public final class Constants {
   public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635 * 0.5;
 
   public static final double[] crabRotationThetas = {
-      Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
-      -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
+      (-Math.PI) + Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
+      Math.PI - Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
       Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
       -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE) 
     };
@@ -67,7 +67,7 @@ public final class Constants {
    * attached by chain to a 26-tooth sprocket that drives the swerve wheel. _ Thus
    * the final gear ratio = (26 / 12) * (10 / 1) = 21.6.
    */
-  public static final double WHEEL_TURN_RATIO = (26 / 12) * (10 / 1);
+  public static final double WHEEL_TURN_RATIO = ((26 / 12) * (10 / 1)) * (1.05);
 
   /**
    * If only one joystick or controller is plugged in, then the joystick port

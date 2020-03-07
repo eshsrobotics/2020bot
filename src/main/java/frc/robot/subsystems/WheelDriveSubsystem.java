@@ -202,18 +202,6 @@ public class WheelDriveSubsystem extends SubsystemBase {
             pidController.setOutputRange(kMinOutput, kMaxOutput);
 
         }); // end (for each pivot motor)
-
-        // Create SmartDashboard variables for the pivot PID constants. These
-        // are read-write, so they can be adjusted on the fly from the
-        // SmartDashboard itself.
-        // SmartDashboard.putNumber("Pivot PID: P Gain", kP);
-        // SmartDashboard.putNumber("Pivot PID: I Gain", kI);
-        // SmartDashboard.putNumber("Pivot PID: D Gain", kD);
-        // SmartDashboard.putNumber("Pivot PID: I Zone", kIz);
-        // SmartDashboard.putNumber("Pivot PID: Feed Forward", kFF);
-        // SmartDashboard.putNumber("Pivot PID: Max Output", kMaxOutput);
-        // SmartDashboard.putNumber("Pivot PID: Min Output", kMinOutput);
-        SmartDashboard.putNumber("Set Rotations", 0);
     }
 
     /**
@@ -226,7 +214,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         return driveMode;
     }
 
-    public void changeManualDriving(boolean a) {
+    public void setManualDriving(boolean a) {
         if (this.manualDriving && !a) {
             //transitioning for first time from manual to non-manual
             this.setDriveSpeeds(new double[] {0,0,0,0});
@@ -277,6 +265,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
         this.goalThetas[BACK_LEFT] = modulus(thetas[BACK_LEFT], TWO_PI);
         this.goalThetas[BACK_RIGHT] = modulus(thetas[BACK_RIGHT], TWO_PI);
 
+        // NB: We're not using this.pidControllers anymore.
         for (int i = 0; i < 4; i++) {
             this.pidControllers[i].reset();
             this.pidControllers[i].setSetpoint(thetas[i]);
@@ -407,22 +396,16 @@ public class WheelDriveSubsystem extends SubsystemBase {
 
             final double goalRotations = this.goalThetas[i] / (2 * Math.PI);
 
-            // The user is not moving the joystick.
-            // if (!turn_enabled) {
-            // continue;
-            // }
-
-            final boolean oldSetReferenceMethod = false;
-            final boolean oldManualPIDMethod = true;
-            final boolean newPidControllerMethod = false; // Since encoder.setPosition() does nothing, this doesn't work.
-            final boolean newManualPIDMethod = false;
+            final boolean oldSetReferenceMethod = true;//false;
+            final boolean oldManualPIDMethod = false;//true;
 
             if (oldSetReferenceMethod) {
-                // var errorCode = pidController.setReference(wheelPositionInRotations,
-                // ControlType.kPosition);
+                final double wheelPositionInRotations = encoder.getPosition();
+                var errorCode = pidController.setReference(wheelPositionInRotations,
+                    ControlType.kPosition);
 
-                // var errorCode = pidController.setReference(goalRotations,
-                // ControlType.kPosition);
+                errorCode = pidController.setReference(goalRotations,
+                    ControlType.kPosition);
             } else if (oldManualPIDMethod) {
                 double crabDriveCurrentGoalTheta = (modulus(goalThetas[i], TWO_PI));
                 double trueCurrentPosition = modulus(encoder.getPosition() * TWO_PI, TWO_PI);
@@ -473,57 +456,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
                 }
                 SmartDashboard.putNumber("goal epsilon", GOAL_ROTATION_EPSILON_RADIANS);
 
-            } else if (newPidControllerMethod) {
-                // Note that we're using WPILib's new PIDController, not the REV Robotics
-                // PIDController.
-                final double currentRotationRadians = encoder.getPosition() * TWO_PI;
-                SmartDashboard.putNumber("current rotation in radians", currentRotationRadians);
-                double newRotationRadians = this.pidControllers[i].calculate(currentRotationRadians);
-                SmartDashboard.putNumber("new rotation in radians", newRotationRadians);
-                if (!this.pidControllers[i].atSetpoint()) {
-                    SmartDashboard.putString("if statement true", "ye bruh it true");
-                    encoder.setPosition(newRotationRadians / TWO_PI);
-                }
-            } else if (newManualPIDMethod) {
-
-                // Step 1: Calculate error values.
-
-                double error = this.goalThetas[i] / TWO_PI - encoder.getPosition();
-                final double KP = 0.5; // 0.75;
-                final double KI = 0;
-                final double KD = 0;
-                double pOut = KP * error;
-                final double DT = 1.0 / 50; // Every 20 ms.
-                pidIntegrals[i] += error * DT;
-                double iOut = KI * pidIntegrals[i];
-                double derivative = (error - pidErrors[i]) / DT;
-                double dOut = KD * derivative;
-                double newPosition = pOut + iOut + dOut;
-                SmartDashboard.putNumber("newPosition", newPosition);
-
-                // Let's drive the motors based on how far PID says we have to go.
-                double delta = modulus(newPosition, 1) - modulus(encoder.getPosition(), 1);
-
-                SmartDashboard.putNumber("delta", delta);
-                final double epsilonRotations = .05;
-                if (Math.abs(delta) < epsilonRotations) {
-                    // We've reached our target.
-                    m.stopMotor();
-                } else {
-                    // double trueCurrentPosition = modulus(encoder.getPosition() * TWO_PI, TWO_PI);
-                    // double trueDiff = goalThetas[i] - trueCurrentPosition;
-                    if (Math.abs(delta) > 0.5) {
-                        m.set(-0.075 * Math.signum(delta));
-                    } else {
-                        m.set(0.075 * Math.signum(delta));
-                    }
-                }
-
-                // Last step: update error values.
-                pidErrors[i] = error;
-
             }
-
             // COMMENTED OUT TO TEST POSSIBLE ROLLOVER FIX
 
             // var errorCode = pidController.setReference(goalRotations,
