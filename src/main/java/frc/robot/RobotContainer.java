@@ -158,11 +158,11 @@ public class RobotContainer {
         }));
 
         crabRotateButton.whenPressed(new InstantCommand(() -> {
-            SmartDashboard.putBoolean("crab rotation button", true);
+            SmartDashboard.putBoolean("crab rotation 1", true);
             double[] goalThetas = crabRotationThetas;
             this.wheelDrive.setGoalAngles(goalThetas);
         }).andThen(new WaitCommand(.5).withInterrupt(() -> {
-            return clockwiseCenterRotationButton.get() == false;
+            return crabRotateButton.get() == false;
         }).andThen(new InstantCommand(() -> {
             double speed = 0.5;
             double[] goalSpeeds = { speed, speed, speed, speed };
@@ -172,11 +172,11 @@ public class RobotContainer {
         }));
 
         crabRotateButton2.whenPressed(new InstantCommand(() -> {
-            SmartDashboard.putBoolean("crab rotation button", true);
+            SmartDashboard.putBoolean("crab rotation 2", true);
             double[] goalThetas = crabRotationThetas;
             this.wheelDrive.setGoalAngles(goalThetas);
         }).andThen(new WaitCommand(.5).withInterrupt(() -> {
-            return crabRotateButton.get() == false;
+            return crabRotateButton2.get() == false;
         }).andThen(new InstantCommand(() -> {
             double speed = -0.5;
             double[] goalSpeeds = { speed, speed, speed, speed };
