@@ -41,16 +41,17 @@ public class CrabDriveModeCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
         if (directionalVector.magnitude() < JOYSTICK_EPSILON) {
-            this.wheelDriveSubsystem.changeManualDriving(false);
+            this.wheelDriveSubsystem.setManualDriving(false);
             return;
         } else {
-            this.wheelDriveSubsystem.changeManualDriving(true);
+            this.wheelDriveSubsystem.setManualDriving(true);
         }
-        //double centerRotation = this.inputSubsystem.getCrabTurnValue();
+
+        // This is unused.
+        // double centerRotation = this.inputSubsystem.getCrabTurnValue();
 
         //if (crabDriveMode) {
         double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
@@ -59,7 +60,10 @@ public class CrabDriveModeCommand extends CommandBase {
         // goalthetas = snakeDriveGetAngle(parameters)
         //}
 
-        //this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
+        // Obsolete.  We replaced setCrabDriveCenterRotation() with an array of
+        // four constants in Constants.java.
+        // this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
+
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
 
         // Maximum value of each joystick channel is postive one. Maximum length of
@@ -74,14 +78,6 @@ public class CrabDriveModeCommand extends CommandBase {
         if (speed > 1.0) {
             speed = 1.0; // Max speed at edges, not corners (which are at sqrt(2))
         }
-        /*
-         * SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
-         * SmartDashboard.putNumber("directionalXMag", joystickYMagnitude); if
-         * (joystickXMagnitude >= joystickYMagnitude){ speed = joystickXMagnitude; }
-         * else if (joystickXMagnitude <= joystickYMagnitude){ speed =
-         * joystickYMagnitude; }
-         */
-        SmartDashboard.putNumber("final final final final speed", speed);
         speed = speed * DRIVE_SPEED_MULTIPLIER;
         double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
