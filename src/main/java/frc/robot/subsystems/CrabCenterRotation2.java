@@ -15,11 +15,11 @@ import frc.robot.Constants;
  * tiny, one-shot class, but we're not quite sure how yet.  Instant commands
  * are easier to piece together than instant buttons.
  */
-public class CrabCenterRotationButton extends Button {
+public class CrabCenterRotation2 extends Button {
 
     private InputSubsystem inputSubsystem;
 
-    public CrabCenterRotationButton(InputSubsystem inputSubsystem) {
+    public CrabCenterRotation2(InputSubsystem inputSubsystem) {
         this.inputSubsystem = inputSubsystem;
     }
 

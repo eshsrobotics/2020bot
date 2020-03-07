@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import frc.robot.Constants;
 
 /**
  * A simple Button class that allows you to attach commands to the act of
@@ -15,11 +13,11 @@ import frc.robot.Constants;
  * tiny, one-shot class, but we're not quite sure how yet.  Instant commands
  * are easier to piece together than instant buttons.
  */
-public class CrabCenterRotationButton extends Button {
+public class ReverseBeltsButton extends Button {
 
     private InputSubsystem inputSubsystem;
 
-    public CrabCenterRotationButton(InputSubsystem inputSubsystem) {
+    public ReverseBeltsButton(InputSubsystem inputSubsystem) {
         this.inputSubsystem = inputSubsystem;
     }
 
@@ -29,7 +27,6 @@ public class CrabCenterRotationButton extends Button {
      */
     @Override
     public boolean get() {
-        //return (this.inputSubsystem.getCrabTurnValue() > Constants.JOYSTICK_EPSILON);
-        return this.inputSubsystem.getTestButton();
+        return this.inputSubsystem.getReverseBeltButton();
     }
 }

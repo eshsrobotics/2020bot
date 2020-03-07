@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj2.command.button.Button;
  * tiny, one-shot class, but we're not quite sure how yet.  Instant commands
  * are easier to piece together than instant buttons.
  */
-public class IntakeButton extends Button {
+public class Auton extends Button {
 
     private InputSubsystem inputSubsystem;
 
-    public IntakeButton(InputSubsystem inputSubsystem) {
+    public Auton(InputSubsystem inputSubsystem) {
         this.inputSubsystem = inputSubsystem;
     }
 
@@ -27,6 +27,6 @@ public class IntakeButton extends Button {
      */
     @Override
     public boolean get() {
-        return this.inputSubsystem.getIntakeButton();
+        return true;
     }
 }

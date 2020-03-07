@@ -50,6 +50,30 @@ public class InputSubsystem extends SubsystemBase {
   private NetworkTableEntry turnRightButtonEntry;
   private NetworkTableEntry driveSneakButtonEntry;
 
+  private NetworkTableEntry shootTopFiveZeroButtonEntry;
+  private NetworkTableEntry shootTopFiveFiveButtonEntry;
+  private NetworkTableEntry shootTopSixZeroButtonEntry;
+  private NetworkTableEntry shootTopSixFiveButtonEntry;
+  private NetworkTableEntry shootTopSevenZeroButtonEntry;
+  private NetworkTableEntry shootTopSevenFiveButtonEntry;
+  private NetworkTableEntry shootTopEightZeroButtonEntry;
+  private NetworkTableEntry shootTopEightFiveButtonEntry;
+  private NetworkTableEntry shootTopNineZeroButtonEntry;
+  private NetworkTableEntry shootTopNineFiveButtonEntry;
+  private NetworkTableEntry shootTopMaxButtonEntry;
+
+  private NetworkTableEntry shootBotFiveFiveButtonEntry;
+  private NetworkTableEntry shootBotFiveZeroButtonEntry;
+  private NetworkTableEntry shootBotSixZeroButtonEntry;
+  private NetworkTableEntry shootBotSixFiveButtonEntry;
+  private NetworkTableEntry shootBotSevenZeroButtonEntry;
+  private NetworkTableEntry shootBotSevenFiveButtonEntry;
+  private NetworkTableEntry shootBotEightZeroButtonEntry;
+  private NetworkTableEntry shootBotEightFiveButtonEntry;
+  private NetworkTableEntry shootBotNineZeroButtonEntry;
+  private NetworkTableEntry shootBotNineFiveButtonEntry;
+  private NetworkTableEntry shootBotMaxButtonEntry;
+
   /**
    * Makes sure that we know, right away, whether a joystick or controller are
    * attached.
@@ -69,15 +93,37 @@ public class InputSubsystem extends SubsystemBase {
         NetworkTableInstance.getDefault().setUpdateRate(0.0166);
 
         // These are vector controls, used during both crab and snake mode.
-        driveUpButtonEntry = inputTable.getEntry(DRIVE_VECTOR_UP_KEY);
-        driveLeftButtonEntry = inputTable.getEntry(DRIVE_VECTOR_LEFT_KEY);
-        driveDownButtonEntry = inputTable.getEntry(DRIVE_VECTOR_DOWN_KEY);
-        driveRightButtonEntry = inputTable.getEntry(DRIVE_VECTOR_RIGHT_KEY);
-        driveSneakButtonEntry = inputTable.getEntry(DRIVE_SNEAK_KEY);
+        driveUpButtonEntry = inputTable.getEntry("z");
+        driveLeftButtonEntry = inputTable.getEntry("x");
+        driveDownButtonEntry = inputTable.getEntry("c");
+        driveRightButtonEntry = inputTable.getEntry("v");
+        driveSneakButtonEntry = inputTable.getEntry("b");
 
         // These are only used during crab mode.
-        turnLeftButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_LEFT_TURN_KEY);
-        turnRightButtonEntry = inputTable.getEntry(DRIVE_AUXILIARY_RIGHT_TURN_KEY);
+        turnLeftButtonEntry = inputTable.getEntry("n");
+        turnRightButtonEntry = inputTable.getEntry("m");
+
+        shootTopFiveFiveButtonEntry = inputTable.getEntry("1");
+        shootTopSixZeroButtonEntry = inputTable.getEntry("2");
+        shootTopSixFiveButtonEntry = inputTable.getEntry("3");
+        shootTopSevenZeroButtonEntry = inputTable.getEntry("4");
+        shootTopSevenFiveButtonEntry = inputTable.getEntry("5");
+        shootTopEightZeroButtonEntry = inputTable.getEntry("6");
+        shootTopEightFiveButtonEntry = inputTable.getEntry("7");
+        shootTopNineZeroButtonEntry = inputTable.getEntry("8");
+        shootTopNineFiveButtonEntry = inputTable.getEntry("9");
+        shootTopMaxButtonEntry = inputTable.getEntry("0");
+
+        shootBotFiveZeroButtonEntry = inputTable.getEntry("Q");
+        shootBotSixZeroButtonEntry = inputTable.getEntry("W");
+        shootBotSixFiveButtonEntry = inputTable.getEntry("E");
+        shootBotSevenZeroButtonEntry = inputTable.getEntry("R");
+        shootBotSevenFiveButtonEntry = inputTable.getEntry("T");
+        shootBotEightZeroButtonEntry = inputTable.getEntry("Y");
+        shootBotEightFiveButtonEntry = inputTable.getEntry("U");
+        shootBotNineZeroButtonEntry = inputTable.getEntry("I");
+        shootBotNineFiveButtonEntry = inputTable.getEntry("O");
+        shootBotMaxButtonEntry = inputTable.getEntry("P");
       }
     }
   }
@@ -150,9 +196,10 @@ public class InputSubsystem extends SubsystemBase {
   }
 
   /**
-   * Tries to set up a connected joystick _or_ XBox-compatible controller.  If the controller or joystick does not exist,
-   * we set this.joystick or this.controller to null (respectively.)  Both cannot be true at the same time, since they
-   * use the same port.
+   * Tries to set up a connected joystick _or_ XBox-compatible controller. If the
+   * controller or joystick does not exist, we set this.joystick or
+   * this.controller to null (respectively.) Both cannot be true at the same time,
+   * since they use the same port.
    */
   public void initialize(int port) {
     try {
@@ -190,27 +237,209 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
 
+  public boolean getShootTopFiveFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopSixZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopSixFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopSevenZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopSevenFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopEightZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopEightFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopNineZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopNineFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootTopMaxButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean getShootBotFiveFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotSixZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotSixFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotSevenZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotSevenFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotEightZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotEightFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotNineZeroButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotNineFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public boolean getShootBotMaxButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      
+      if (shootBotMaxButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   public boolean getSneakButton() {
     if (this.joystick != null) {
-      return this.joystick.getRawButton(2);
+      return this.joystick.getRawButton(7);
     } else if (this.controller != null) {
-      return this.controller.getRawButton(2);
-    } 
+      return this.controller.getRawButton(7);
+    }
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
       // Handle the main direction vector.
       if (driveSneakButtonEntry.getBoolean(false)) {
         return true;
-      } 
+      }
     }
     return false;
   }
 
   public boolean getClimbUpButton() {
     if (joystick != null) {
-      return this.joystick.getRawButton(7);
+      return this.joystick.getRawButton(6);
     } else if (controller != null) {
-      SmartDashboard.putBoolean("button 7", this.controller.getRawButton(7));
-      return this.controller.getRawButton(7);
+      SmartDashboard.putBoolean("button 6", this.controller.getRawButton(7));
+      return this.controller.getRawButton(6);
     } else {
       return false;
     }
@@ -246,7 +475,7 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean getIntakeButton() {
+  public boolean getReverseBeltButton() {
     if (joystick != null) {
       return this.joystick.getRawButton(4);
     } else if (controller != null) {
@@ -257,17 +486,32 @@ public class InputSubsystem extends SubsystemBase {
   }
 
   /**
-   * This function allows use of button 6 for testing commands. It is not intended to be used during actual driving.
+   * This function allows use of button 6 for testing commands. It is not intended
+   * to be used during actual driving.
+   * 
    * @return True if the buttin is pressed, false if not.
    */
   public boolean getTestButton() {
     if (joystick != null) {
       SmartDashboard.putBoolean("button 6 joy", this.controller.getRawButton(6));
-      return this.joystick.getRawButton(6);
-      
+      return this.joystick.getRawButton(1);
+
     } else if (controller != null) {
       SmartDashboard.putNumber("button 6", this.controller.getRawButton(6) ? 1 : 0);
-      return this.controller.getRawButton(6);
+      return this.controller.getRawButton(1);
+    } else {
+      return false;
+    }
+  }
+
+  public boolean getTestButton2() {
+    if (joystick != null) {
+      SmartDashboard.putBoolean("button 6 joy", this.controller.getRawButton(6));
+      return this.joystick.getRawButton(2);
+
+    } else if (controller != null) {
+      SmartDashboard.putNumber("button 6", this.controller.getRawButton(6) ? 1 : 0);
+      return this.controller.getRawButton(2);
     } else {
       return false;
     }

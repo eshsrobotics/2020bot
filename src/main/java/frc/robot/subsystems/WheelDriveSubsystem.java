@@ -278,11 +278,19 @@ public class WheelDriveSubsystem extends SubsystemBase {
     }
 
     public void setDriveSpeeds(double[] speeds) {
-        // if (!this.crabCenterRotationMode) {
-        this.goalSpeeds[FRONT_LEFT] = speeds[FRONT_LEFT];
-        this.goalSpeeds[FRONT_RIGHT] = speeds[FRONT_RIGHT];
-        this.goalSpeeds[BACK_LEFT] = speeds[BACK_LEFT];
-        this.goalSpeeds[BACK_RIGHT] = speeds[BACK_RIGHT];
+        //if (!this.crabCenterRotationMode) {
+            this.goalSpeeds[FRONT_RIGHT] = speeds[FRONT_RIGHT];
+            this.goalSpeeds[FRONT_LEFT] = speeds[FRONT_LEFT];
+            this.goalSpeeds[BACK_LEFT] = speeds[BACK_LEFT];
+            this.goalSpeeds[BACK_RIGHT] = speeds[BACK_RIGHT];
+         /*} else {
+            this.goalSpeeds[FRONT_LEFT] = .5;
+            this.goalSpeeds[FRONT_RIGHT] = .5;
+            this.goalSpeeds[BACK_LEFT] = .5;
+            this.goalSpeeds[BACK_RIGHT] = .5;
+
+        }*/
+
         /*
          * } else { this.goalSpeeds[FRONT_LEFT] = this.crabCenterRotationSpeed;
          * this.goalSpeeds[FRONT_RIGHT] = this.crabCenterRotationSpeed;

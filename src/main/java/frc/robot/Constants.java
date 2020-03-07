@@ -154,9 +154,9 @@ public final class Constants {
    * Easily controlls speed, we dont want 100 % all the time. This value should be
    * between 0.0 and 1.0.
    */
-  public static final double DRIVE_SPEED_MULTIPLIER = 0.60;
+  public static final double DRIVE_SPEED_MULTIPLIER = 0.90;
 
-  public static final double DRIVE_SNEAK_MODIFIER = 0.6;
+  public static final double DRIVE_SNEAK_MODIFIER = 0.65;
   ///////////////////////////////
   // Intake and Shooter ports. //
   ///////////////////////////////

@@ -59,8 +59,10 @@ public class ShooterSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("topSpeed", topSpeed);
     //SmartDashboard.putNumber("bottomSpeed", bottomSpeed);
 
-    double top = SmartDashboard.getNumber("topSpeed", topSpeed);
-    double bottom = SmartDashboard.getNumber("bottomSpeed", bottomSpeed);
+    //double top = SmartDashboard.getNumber("topSpeed", topSpeed);
+    //double bottom = SmartDashboard.getNumber("bottomSpeed", bottomSpeed);
+    double top = topSpeed;
+    double bottom = bottomSpeed;
     if (top > 0) {
       // User supplied an override topSpeed.
       topSpeedOverride = top;
@@ -90,8 +92,8 @@ public class ShooterSubsystem extends SubsystemBase {
     this.topMotor.set(-topSpeed/*shooterModifier*/);
     this.bottomMotor.set(bottomSpeed/*shooterModifier*/);
 
-    SmartDashboard.putNumber("topSpeed", top);
-    SmartDashboard.putNumber("bottomSpeed", bottom);
+    //SmartDashboard.putNumber("topSpeed", top);
+    //SmartDashboard.putNumber("bottomSpeed", bottom);
 
 
   }
