@@ -42,7 +42,7 @@ import static frc.robot.subsystems.InputSubsystem.*;
 public class WheelDriveSubsystem extends SubsystemBase {
 
     /**
-     * A state variable showing whether the joystick is in the the deadzone for driving 
+     * A state variable showing whether the joystick is in the the deadzone for driving
      */
     private boolean manualDriving = true;
 
@@ -312,20 +312,20 @@ public class WheelDriveSubsystem extends SubsystemBase {
      * In Crab Drive mode, the only way to accurately rotate the frame is to
      * position the wheels such that they are tangent to a common circle, then drive
      * them so as to rotate in place.
-     * 
+     *
      * There are two scenarios when we wish to do this, each with their own exit
      * condition:
-     * 
+     *
      * - MANUAL: Driver is in crab drive mode and uses either joystick 2 (on the
      * XBox controller) or Z-rotation (on the ordinary joystick) to turn. When they
      * release, we stop. - VISION: We rotate until vision finds a vision solution
      * and our horizontal deviation in degrees is minimized. Then we stop.
-     * 
+     *
      * This function controls both starting and stopping that rotation mode. As long
      * as the rotation mode is on, the goal angles coming from
      * {@link crabDriveGetAngle} will point toward that ideal tangent alignment.
      * When the mode is off, the goal angles will be tied to the joystick again.
-     * 
+     *
      * @param speed Non-zero to turn the rotation mode ON; zero to turn it OFF.
      */
     public void setCrabDriveCenterRotation(double speed) {
@@ -460,7 +460,7 @@ public class WheelDriveSubsystem extends SubsystemBase {
                 if (Math.abs(trueDiff) < slowingThreshold) {
                     differenceModifier = Math.abs(trueDiff)/(slowingThreshold-approachingMinSpeed) + approachingMinSpeed;
                 }
-                
+
                 if ((Math.abs(trueDiff) > goalEpsilonRadians)) {
                     if (Math.abs(trueDiff) > Math.PI) {
                         m.set(-turningSpeed * diffSign * differenceModifier);
@@ -511,17 +511,17 @@ public class WheelDriveSubsystem extends SubsystemBase {
                     m.stopMotor();
                 } else {
                     // double trueCurrentPosition = modulus(encoder.getPosition() * TWO_PI, TWO_PI);
-                    // double trueDiff = goalThetas[i] - trueCurrentPosition;                    
+                    // double trueDiff = goalThetas[i] - trueCurrentPosition;
                     if (Math.abs(delta) > 0.5) {
                         m.set(-0.075 * Math.signum(delta));
                     } else {
                         m.set(0.075 * Math.signum(delta));
                     }
                 }
-                
+
                 // Last step: update error values.
                 pidErrors[i] = error;
-                
+
             }
 
             // COMMENTED OUT TO TEST POSSIBLE ROLLOVER FIX
@@ -549,28 +549,34 @@ public class WheelDriveSubsystem extends SubsystemBase {
         for (int i = 0; i < this.speedMotors.size(); i++) {
             var m = this.speedMotors.get(i);
             double currentSpeed = m.get();
-            if (Math.abs(currentSpeed - this.goalSpeeds[i]) > 0.01) {
+            final double DRIVE_SPEED_EPSILON = 0.01;
+            double deltaSpeed = goalSpeeds[i] - currentSpeed;
 
-                double sign = Math.signum(goalSpeeds[i] - currentSpeed);
+            if (Math.abs(deltaSpeed) > DRIVE_SPEED_EPSILON) {
+
+                // We haven't reached our speed yet.  Accelerate *toward* that speed.
+                double sign = Math.signum(deltaSpeed);
                 final double ACCELERATION = 0.04;
-                m.set(currentSpeed + sign * ACCELERATION);
+
                 double newSpeed = currentSpeed + sign * ACCELERATION;
-                final double MIN_SPEED = 0.0;
-                final double MAX_SPEED = 1.0;
-                SmartDashboard.putNumber("final x 5", this.goalSpeeds[i]);
-                if (newSpeed < MIN_SPEED) {
-                    m.stopMotor();
-                    // m.set(0);
-                } else {
-                    newSpeed = Math.min(MAX_SPEED, newSpeed);
-                    if (!this.sneakMode) {
-                        m.set(newSpeed);
-                    } else {
-                        m.set(newSpeed * DRIVE_SNEAK_MODIFIER);
-                    }
+                if (this.sneakMode) {
+                    newSpeed *= DRIVE_SNEAK_MODIFIER;
                 }
+
+                // The goalSpeed should always be between -1 and 1.  But just in case...
+                final double MIN_SPEED = -1.0;
+                final double MAX_SPEED = 1.0;
+                SmartDashboard.putNumber(String.format("goalSpeeds[%d]", i), this.goalSpeeds[i]);
+
+                // Clamp to the desired range.
+                newSpeed = Math.min(MAX_SPEED, Math.max(MIN_SPEED, newSpeed));
+
+                // Actually set our speed.
+                m.set(newSpeed);
+            } else {
+                // Target speed attained, nothing to do.
             }
-        }
+        } // end (for each speedMotor)
         // } else {
         /*
          * for (int i = 0; i < this.speedMotors.size(); i++) { var m =
@@ -727,15 +733,15 @@ public class WheelDriveSubsystem extends SubsystemBase {
          * also known as set them on a circle through all four wheels double length =
          * WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE; double width =
          * WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE;
-         * 
+         *
          * double rawAngle = Math.tan(length / width); // each wheel needs to be set to
          * the angle, but based on a different quadrant // probably easiest to do a
          * switch case for each wheel, rather than find the // equation
-         * 
+         *
          * for (int i = 0; i < 4; i++) { switch (i) { // reminder that 0 is FL, 1 is BL,
          * 2 is BR, 3 is FR case 0: // 90 + rawAngle break; case 1: // 90 - rawAngle
          * break; case 2: // raw angle break; case 3: // 180 - rawAngle break;
-         * 
+         *
          * } } }
          */
 
