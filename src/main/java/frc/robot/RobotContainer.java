@@ -255,6 +255,7 @@ public class RobotContainer {
         }));
 
         shootButton.whenPressed(new InstantCommand(() -> {
+            wheelDrive.setGoalAngles(crabRotationThetas);
             intakeSubsystem.disableIntake();
             shooterSubsystem.changeSpeedModifier(inputSubsystem.getJoystickSlider());
             double shootDistance = limelight.getSolutionDistance();
