@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the constants are needed, to reduce verbosity.
- * 
+ *
  * <p>
  * QUICK REFERENCE: FL: 1, 5. BL: 2, 6. BR: 3, 7. FR: 4, 8 INTAKE: 4. BELTS:
  * 0,1. CLIMB: 2, 3. SHOOTER: TOP-10, BOT-9
@@ -54,7 +54,7 @@ public final class Constants {
       (-Math.PI) + Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
       Math.PI - Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
       Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
-      -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE) 
+      -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE)
     };
 
   /*
@@ -174,7 +174,7 @@ public final class Constants {
   public static final double BELT_SPEED = 1.0;
 
   public static int CONTROLLER_SHOOT_TRIGGER_BUTTON = 8;
-  
+
   public static int ROTATE_CLOCKWISE_BUTTON = 1;
   public static int ROTATE_COUNTERCLOCKWISE_BUTTON = 2;
 
@@ -252,5 +252,18 @@ public final class Constants {
   // Essentially the "P" in PID. This used to be .15 radians.
   // Used to tell the robot how far it needs to be from the goal angle to stop
   // rotating.
+  //
+  // NOTE: This is only used for the non-setReference()-based pivoting method in
+  // {@link WheelDriveSubsystem.periodic}, which means it is not currently
+  // being used.  It's also not final because it can be modified through the
+  // SmartDashboard.
   public static double GOAL_ROTATION_EPSILON_RADIANS = 5.85 * 2 * Math.PI / 360;
+
+  // Whenever our vision solution is this close to the center of the limelight, we
+  // assume we've hit our target.
+  public static final double DEVIATION_EPSILON_DEGREES = Math.E;
+
+  // Assumes limelight returns a tx between zero and this.
+  // It's ok if this isn't exactly accurate.
+  public static final double MAX_HORIZONTAL_DEVIATION_DEGREES = 22.0;
 }
