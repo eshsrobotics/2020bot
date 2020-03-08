@@ -434,6 +434,36 @@ public class InputSubsystem extends SubsystemBase {
     return false;
   }
 
+  public boolean getLimeLightDisableButton() {
+    if (this.joystick != null) {
+      return this.joystick.getRawButton(10);
+    } else if (this.controller != null) {
+      return this.controller.getRawButton(10);
+    }
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      // Handle the main direction vector.
+      if (driveSneakButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean getLimeLightEnableButton() {
+    if (this.joystick != null) {
+      return this.joystick.getRawButton(9);
+    } else if (this.controller != null) {
+      return this.controller.getRawButton(9);
+    }
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+      // Handle the main direction vector.
+      if (driveSneakButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean getClimbUpButton() {
     if (joystick != null) {
       return this.joystick.getRawButton(6);

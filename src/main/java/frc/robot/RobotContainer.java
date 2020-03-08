@@ -36,6 +36,8 @@ import frc.robot.subsystems.SneakButton;
 import frc.robot.subsystems.TestButton;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimeLightDisableButton;
+import frc.robot.subsystems.LimeLightEnableButton;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CrabCenterRotation2;
@@ -60,7 +62,7 @@ public class RobotContainer {
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+    private final VisionSubsystem limelight = new VisionSubsystem();
 
     private final AutoTimedDrive m_autoCommand = new AutoTimedDrive(wheelDrive, 1);
 
@@ -72,8 +74,13 @@ public class RobotContainer {
     private final BeltButton beltButton = new BeltButton(inputSubsystem);
     private final ReverseBeltsButton intakeButton = new ReverseBeltsButton(inputSubsystem);
     private final Auton auton = new Auton(inputSubsystem);
+    private final LimeLightDisableButton limeLightDisableButton = new LimeLightDisableButton(inputSubsystem);
+    private final LimeLightEnableButton limeLightEnableButton = new LimeLightEnableButton(inputSubsystem);
     private final CrabCenterRotationButton crabRotateButton = new CrabCenterRotationButton(inputSubsystem);
     private final CrabCenterRotation2 crabRotateButton2 = new CrabCenterRotation2(inputSubsystem);
+
+    private double topSpeed;
+    private double botSpeed;
 
 
     /**
@@ -118,11 +125,19 @@ public class RobotContainer {
         }));
 
         shootButton.whenPressed(new InstantCommand(() -> {
-            SmartDashboard.putNumber("shoot number", 1);
             intakeSubsystem.disableIntake();
             shooterSubsystem.changeSpeedModifier(inputSubsystem.getJoystickSlider());
+            double shootDistance = limelight.getSolutionDistance();
+            
+            if (shootDistance > 0) {
+                topSpeed = shooterSubsystem.getShootSpeedsOffVision(shootDistance)[0];
+                botSpeed = shooterSubsystem.getShootSpeedsOffVision(shootDistance)[1];
+            } else {
+                topSpeed = 0.75;
+                botSpeed = 0.75;
+            }
             CommandScheduler.getInstance()
-                    .schedule(new InstantCommand(() -> shooterSubsystem.startShooter(0.75, 0.75))
+                    .schedule(new InstantCommand(() -> shooterSubsystem.startShooter(topSpeed, botSpeed))
                             .andThen(new WaitCommand(0.4).andThen(() -> intakeSubsystem.enablesBelts())
                                     .withInterrupt(() -> shootButton.get() == false)));
 
@@ -130,13 +145,23 @@ public class RobotContainer {
             //SmartDashboard.putNumber("shoot number", 2);
             intakeSubsystem.disablesBelts();
             shooterSubsystem.stopShooter();
-            intakeSubsystem.enableIntake();
+            //intakeSubsystem.enableIntake();
         }));
 
         climbDownButton.whenPressed(new InstantCommand(() -> {
             climberSubsystem.takeClimberDown(1.0);
         })).whenReleased(new InstantCommand(() -> {
             climberSubsystem.stopClimber();
+        }));
+
+        limeLightDisableButton.whenPressed(new InstantCommand(() -> {
+            limelight.changeLimelightState(false);
+        })).whenReleased(new InstantCommand(() -> {
+        }));
+
+        limeLightEnableButton.whenPressed(new InstantCommand(() -> {
+            limelight.changeLimelightState(true);
+        })).whenReleased(new InstantCommand(() -> {
         }));
 
         climbUpButton.whenPressed(new InstantCommand(() -> {

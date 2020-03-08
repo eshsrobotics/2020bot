@@ -20,6 +20,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     double tv, tx, ty, ta, ts, distance;
 
+    boolean enabled;
+
     final NetworkTable table;
 
     /**
@@ -33,6 +35,9 @@ public class VisionSubsystem extends SubsystemBase {
     */
     public VisionSubsystem() {
         tv = tx = ty = ta = ts = NO_USEFUL_VALUE;
+
+        enabled = true;
+
         distance = 0;
         table = NetworkTableInstance.getDefault().getTable("limelight");
     }
@@ -59,9 +64,9 @@ public class VisionSubsystem extends SubsystemBase {
         ts = table.getEntry("ts").getDouble(VisionSubsystem.NO_USEFUL_VALUE);
 
         SmartDashboard.putNumber("distance", this.getSolutionDistance());
-        SmartDashboard.putNumber("tx", tx);
-        SmartDashboard.putNumber("tv", tv);
-        SmartDashboard.putNumber("distance-center", ROBOT_HEIGHT_METERS / (Math.tan(.5 * VERTICAL_FOV_RADIANS)));
+        //SmartDashboard.putNumber("tx", tx);
+        //SmartDashboard.putNumber("tv", tv);
+        //SmartDashboard.putNumber("distance-center", ROBOT_HEIGHT_METERS / (Math.tan(.5 * VERTICAL_FOV_RADIANS)));
     }
     
     /**
@@ -69,7 +74,15 @@ public class VisionSubsystem extends SubsystemBase {
      * @return True if one or more targets are found, false otherwise.
      */
     public boolean solutionFound() {
+        if (enabled) {
         return (tv > 0);
+        } else {
+            return false;
+        }
+    }
+
+    public void changeLimelightState(boolean newState) {
+        this.enabled = newState;
     }
 
     /**
@@ -100,15 +113,14 @@ public class VisionSubsystem extends SubsystemBase {
      * Finds distance from the center of the limelight to the target when a target is present (not a true measure of 
      * distance because it works independently of field conditions, but it doesn't need to be accurate -- 
      * it just needs to be consistent and proportional).
-     * @return Distance to center of the limelight's vision solution IN METERS, not pixels.
+     * @return Distance to center of the limelight's vision solution IN INCHES, not pixels.
      */
     public double getSolutionDistance() {
         if (!(solutionFound())) { 
             return -1;
         }
-
-        final double distanceToScreenCenterMeters = ROBOT_HEIGHT_METERS / (Math.tan(.5 * VERTICAL_FOV_RADIANS));
-
+        //final double distanceToScreenCenterMeters = ROBOT_HEIGHT_METERS / (Math.tan(.5 * VERTICAL_FOV_RADIANS));
+        
         // Picture the isosceles triangle with its apex at the Limelight, its base
         // distanceToScreenCenterMeters pixels away, and with tx representing the angular
         // deviation, in degrees, from the screen center to the vision target's center.
@@ -119,15 +131,19 @@ public class VisionSubsystem extends SubsystemBase {
         // Now, consider the right trangle formed by cutting the isosceles triangle in half.
         // Clearly the hypotenuse of the triangle -- the distance to the target -- is 
         // cos tx / distanceToScreenCenterMeters.
+       
+        //final double verticalDeviationRadians = ty * (2 * Math.PI / 360);
+        //final double distanceToTargetMeters = Math.cos(verticalDeviationRadians) / distanceToScreenCenterMeters;
 
-        
-
-        final double verticalDeviationRadians = ty * (2 * Math.PI / 360);
-        final double distanceToTargetMeters = Math.cos(verticalDeviationRadians) / distanceToScreenCenterMeters;
-
-        return distanceToTargetMeters;
+        double limelightHeight = 21.0;
+        double height = 98.25- limelightHeight;
+        double limelightBaseAngle = Math.PI/6.0;
+        double tempYAngle = Math.toRadians(this.ty);
+        double distanceToTargetInches = height / Math.tan(limelightBaseAngle + tempYAngle);
+        return distanceToTargetInches;
     }
 
+    //unneeded function?
     public double getMotorPower() {
         //check for target
         if (this.tv != 1) {
@@ -140,5 +156,9 @@ public class VisionSubsystem extends SubsystemBase {
 
         
         return power;
+    }
+
+    public boolean isRobotLinedUp() {
+        return (this.tx > 1);
     }
 }
