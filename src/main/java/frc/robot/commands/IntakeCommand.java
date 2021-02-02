@@ -7,51 +7,48 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.InputSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class ShooterCommand extends CommandBase {
+public class IntakeCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ShooterSubsystem shooterSubsystem;
+  private final IntakeSubsystem  intake;
   private final InputSubsystem controller;
-  private double speed;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new IntakeCommand .
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(ShooterSubsystem a, InputSubsystem b) {
-    shooterSubsystem = a;
-    controller = b;
-
+  public IntakeCommand (IntakeSubsystem  subsystem, InputSubsystem inputSubsystem) {
+    this.intake = subsystem;
+    this.controller = inputSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem, controller);
+    addRequirements(subsystem, inputSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-	  speed = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (speed != 0) {
-        this.shooterSubsystem.startShooter(speed, speed);
-    } else {
-        this.shooterSubsystem.stopShooter();
-    }
-
-    // NB: This next line almost certainly does nothing.
-    super.execute();
+    // if (this.controller.getControllerThreeButt()) {
+      // this.intake.enableIntake();
+    // } else {
+      // this.intake.disableIntake();
+    // }
+    // if (this.controller.getControllerFourButt()) {
+      // this.intake.enablesBelts();
+    // } else {
+      // this.intake.disablesBelts();
+    // }
   }
 
   // Called once the command ends or is interrupted.

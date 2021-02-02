@@ -8,50 +8,43 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.InputSubsystem;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /**
  * An example command that uses an example subsystem.
  */
-public class ShooterCommand extends CommandBase {
+public class DisabledCalibrate extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ShooterSubsystem shooterSubsystem;
-  private final InputSubsystem controller;
-  private double speed;
+  private final WheelDriveSubsystem m_subsystem;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShooterCommand(ShooterSubsystem a, InputSubsystem b) {
-    shooterSubsystem = a;
-    controller = b;
-
+  public DisabledCalibrate(WheelDriveSubsystem subsystem) {
+    m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterSubsystem, controller);
-  }
+    addRequirements(subsystem);
+  } 
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-	  speed = 0;
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    // TODO Auto-generated method stub
+    return true;//super.runsWhenDisabled();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (speed != 0) {
-        this.shooterSubsystem.startShooter(speed, speed);
-    } else {
-        this.shooterSubsystem.stopShooter();
-    }
-
-    // NB: This next line almost certainly does nothing.
-    super.execute();
+    SmartDashboard.putString("disabled calibrate", "it is running!");
   }
 
   // Called once the command ends or is interrupted.
