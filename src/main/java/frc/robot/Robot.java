@@ -7,10 +7,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PWMSparkMax;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.WheelDriveSubsystem;
 
 
 /**
@@ -20,12 +20,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-
-  PWMSparkMax motorTop;
-  PWMSparkMax motorBottom;
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -36,7 +34,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
     
   }
 
@@ -63,6 +60,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     System.out.println("I'm disabled daddy!");
+
   }
 
   @Override
@@ -98,6 +96,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    // Remembers current position of the encoders to set as a "default position" to be called later.
+    m_robotContainer.calibrateDrive();
   }
 
   /**

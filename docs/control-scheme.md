@@ -13,9 +13,9 @@ higher ports will be ignored.
 
 * **Crab mode**
   - **Joysticks**
-    1. [ ] One joystick controls *strafing*.  In the XBox controller, this is
+    1. [x] One joystick controls *strafing*.  In the XBox controller, this is
        the left joystick.
-       - [ ] The magnitude of the joystick's vector controls speed.
+       - [x] The magnitude of the joystick's vector controls speed.
        - [x] The orientation of the joystick's vector controls the pivot/swerve angle.
     2. [ ] One joystick controls *in-place rotation*.  In the XBox controller,
        this is the right joystick's left/right channel; with a single big
@@ -23,13 +23,18 @@ higher ports will be ignored.
        * [ ] The magnitude of the left/right channel or twist determines the turning speed.
        * [ ] Turning requires the wheels to align so they are tangent to the robot's circle:
          <img src="./snake-rotation.png" style="width: 300px;" />
+	3. [x] To handle *sneaking* (driving and turning at half-speed), we utilize a button
+	   near or on the strafing joystick.  For the single joystick, this is button 2 (the
+	   big thumb-accessible button on the left side of the trigger.)  In the XBox
+	   controller, this is accomplished by pushing the left joystick down.
   - **Keyboard**
-    1. [ ] WASD keys control *strafing.*
+    1. [x] `WASD` keys control *strafing.*
        - Note that this means that we can only strafe in 8 directions using the
-         keyboard (north = `W`, northeast = `WD`, east = `D`, southeast = `DS`,
-         and so on.)  A driver can make up for this by tapping one direction key
-         while holding the other key down.
+         keyboard (north = `W`, northeast = `W + D`, east = `D`, southeast = 
+		 `D + S`, and so on.)  A driver can make up for this by tapping one
+		 direction key while holding the other key down.
     2. [ ] Left and right arrow keys control *rotation*.
+	3. [ ] The `Shift` key controls *sneaking*.
 * **Snake mode**
   - **Joysticks**
     A single joystick controls all aspects of driving.

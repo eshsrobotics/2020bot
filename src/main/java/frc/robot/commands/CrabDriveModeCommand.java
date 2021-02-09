@@ -3,9 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import static frc.robot.Constants.*;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
+
 
 /**
  * When this command is running, the robot will be in *crab drive mode*:
@@ -40,14 +41,28 @@ public class CrabDriveModeCommand extends CommandBase {
      */
     @Override
     public void execute() {
-        // NOTE: If NetworkTables-input
 
         Vector2d directionalVector = this.inputSubsystem.getVector();
-        boolean but1 = this.inputSubsystem.getControllerFiveButt();
-        boolean but2 = this.inputSubsystem.getControllerSevenButt();
-        boolean but3 = this.inputSubsystem.getControllerThreeButt();
-        boolean but4 = this.inputSubsystem.getControllerFourButt();
-        double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector, but1, but2, but3, but4);
+        if (directionalVector.magnitude() < JOYSTICK_EPSILON) {
+            this.wheelDriveSubsystem.setManualDriving(false);
+            return;
+        } else {
+            this.wheelDriveSubsystem.setManualDriving(true);
+        }
+
+        // This is unused.
+        // double centerRotation = this.inputSubsystem.getCrabTurnValue();
+
+        //if (crabDriveMode) {
+        double[] goalCrabThetas = this.wheelDriveSubsystem.crabDriveGetAngle(directionalVector);
+        //}
+        //else if (snakeDriveMode) {
+        // goalthetas = snakeDriveGetAngle(parameters)
+        //}
+
+        // Obsolete.  We replaced setCrabDriveCenterRotation() with an array of
+        // four constants in Constants.java.
+        // this.wheelDriveSubsystem.setCrabDriveCenterRotation(centerRotation);
 
         this.wheelDriveSubsystem.setGoalAngles(goalCrabThetas);
 
@@ -57,28 +72,13 @@ public class CrabDriveModeCommand extends CommandBase {
         // final double MAX_JOYSTICK_MAGNITUDE = Math.sqrt(1 + 1);
         // This is for magnitude based on joystick vector magnitude, we want based on
         // joystick linear magnitude
-
         // Speed is between zero and one.
         double speed = 0; // directionalVector.magnitude() / MAX_JOYSTICK_MAGNITUDE;
         speed = directionalVector.magnitude();
         if (speed > 1.0) {
             speed = 1.0; // Max speed at edges, not corners (which are at sqrt(2))
         }
-        /*
-         * SmartDashboard.putNumber("directionalYMag", joystickXMagnitude);
-         * SmartDashboard.putNumber("directionalXMag", joystickYMagnitude); if
-         * (joystickXMagnitude >= joystickYMagnitude){ speed = joystickXMagnitude; }
-         * else if (joystickXMagnitude <= joystickYMagnitude){ speed =
-         * joystickYMagnitude; }
-         */
-        speed = speed * Constants.DRIVE_SPEED_MULTIPLIER;
-        if (but1) {
-            speed *= 0.5;
-        } else if (but2) {
-            speed *= 1.4;
-        }
-        SmartDashboard.putNumber("final speed", speed);
-        // speed = 1.0;
+        speed = speed * DRIVE_SPEED_MULTIPLIER;
         double[] driveSpeeds = { speed, speed, speed, speed };
         this.wheelDriveSubsystem.setDriveSpeeds(driveSpeeds);
 
