@@ -3,11 +3,16 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Controller;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -22,14 +27,46 @@ import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
+import static frc.robot.Constants.*;
+
 public class NewWheelDriveSubsystem extends SubsystemBase {
-    
     private Trajectory autonomousTrajectory;
     private SwerveDriveKinematics kinematics;
     private Timer trajectoryTimer; 
     private Gyro robotGyro;
     private SwerveDriveOdometry odometry;
 
+    /**
+     * This array contains four PWM-driven SpeedControllers, one for each wheel. We
+     * use this abstract class on purpose: any motor controllers than can be driven
+     * by PWM signals can drive the wheels forward, not just the Spark MAX. Normal
+     * Sparks and CIM motors will work just as well!
+     */
+    private List<CANSparkMax> speedMotors;
+
+    /**
+     * This array contains four CANSparkMax controllers, one for each wheel.
+     *
+     * They are documented here:
+     * https://www.revrobotics.com/content/sw/max/sw-docs/java/com/revrobotics/CANSparkMax.html
+     *
+     * These are the only speed controllers that are condoned for use with the
+     * brushless NEO motors for FRC, so no, you don't get a choice of
+     * SpeedController here.
+     */
+    private List<CANSparkMax> pivotMotors;
+
+    /**
+     * PID constants. Each of these appears on the SmartDashboard. We're going to
+     * have to experiment with these.
+     *
+     * See
+     * https://docs.wpilib.org/en/latest/docs/software/wpilib-tools/smartdashboard/index.html
+     * for more information.
+     */
+    double kP = 1, kI = 1e-4, kD = 1, kIz = 0, kFF = 0, kMaxOutput = 1, kMinOutput = -1;
+
+    
     /**
      * Initializes an instance of this class.
      */
@@ -48,6 +85,62 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         // Because we do not know if the gyro is ready at this point, we lazy-initialize the odometry
         // object.
         this.odometry = null;
+
+         // Fill the speedMotors list with 4 nulls and then overwrite them.
+        //
+        // By doing things this way, we make this code immune to changes in
+        // the values of the indexing constants (FRONT_LEFT, FRONT_RIGHT, and
+        // so on.)
+        this.speedMotors = new ArrayList<CANSparkMax>();
+        Collections.addAll(this.speedMotors, new CANSparkMax[] { null, null, null, null });
+        this.speedMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.speedMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
+        for (int i = 0; i < 4; i++) {
+            this.speedMotors.get(i).stopMotor();
+            this.speedMotors.get(i).set(0);
+        }
+
+        // Fill the pivotMotors list with 4 nulls and then overwrite them.
+        //
+        // For _ease of brain_, the IDs for the CANSparkMax controllers are
+        // the same as the index constants.
+        this.pivotMotors = new ArrayList<CANSparkMax>();
+        Collections.addAll(this.pivotMotors, new CANSparkMax[] { null, null, null, null });
+        this.pivotMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
+        
+        this.pivotMotors.forEach(m -> {
+            // TODO: Read the required PID constants
+            // for the SmartDashBoard. The user may
+            // change the values at runtime.
+
+            // Reset to the default state (at least
+            // until the next power cycle.)
+            // m.restoreFactoryDefaults();
+
+            // When we cut power, the motors should
+            // stop pivoting immediately; otherwise,
+            // the slop will throw us off.
+            m.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+            // setting the conversion factor between rotations of the motor to rotations of
+            // the wheel
+
+            m.getEncoder().setPositionConversionFactor(1 / WHEEL_TURN_RATIO);
+
+            CANPIDController pidController = m.getPIDController();
+            pidController.setP(kP);
+            pidController.setI(kI);
+            pidController.setD(kD);
+            pidController.setIZone(kIz);
+            pidController.setFF(kFF);
+            pidController.setOutputRange(kMinOutput, kMaxOutput);
+
+        }); // end (for each pivot motor)
     }
 
     /**
@@ -59,6 +152,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         this.trajectoryTimer = new Timer();
         this.trajectoryTimer.start();
     }
+
     /**
      * Instantaneously update our drive speed and direction. 
      * @param swerveModuleStates An array of direction/speed pairs, one for each wheel (4 in total). 
@@ -102,9 +196,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             
             // In this call, we want the robot face 0 degrees relative to its starting angle. 
             ChassisSpeeds velocities = controller.calculate(odometry.getPoseMeters(), state, Rotation2d.fromDegrees(0.0));
-            
             SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(velocities);
-            this.drive(List<SwerveModuleState>.of(swerveModuleStates));
+            
+            ArrayList<SwerveModuleState> foo = new ArrayList<SwerveModuleState>();
+            Collections.addAll(foo, swerveModuleStates);
+            this.drive(foo);
         }
     }
 
