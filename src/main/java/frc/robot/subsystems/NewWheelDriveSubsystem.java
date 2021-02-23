@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
@@ -37,6 +38,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private Gyro robotGyro;
     private SwerveDriveOdometry odometry;
 
+    /**
+     * When drive is called, retain goal speeds
+     */
+    private List<SwerveModuleState> goalStates;
+    
     /**
      * This array contains four PWM-driven SpeedControllers, one for each wheel. We
      * use this abstract class on purpose: any motor controllers than can be driven
@@ -159,6 +165,8 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
      * @param swerveModuleStates An array of direction/speed pairs, one for each wheel (4 in total). 
      */
     public void drive(List<SwerveModuleState> swerveModuleStates) {
+        this.goalStates = swerveModuleStates;
+
         // Update the swerve drive odometry (position)
         if (odometry == null) {
             // We are assuming gyro is ready by now
@@ -175,6 +183,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         // Actually move the motors using the swerve module states
         // We will only call setReference in response to changes in the goal angles and speeds (swerveModuleStates)
         // This will hopefully address motor overheating issued caused when we called this function during periodic
+        
 
         for (int i = 0; i < pivotMotors.size(); i++) {
             var m = pivotMotors.get(i);
@@ -205,8 +214,8 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
                                                       new ProfiledPIDController(1, 0, 0, 
                                                                                new TrapezoidProfile.Constraints(6.28, 3.14)));
 
-          
-        if (autonomousTrajectory != null) {
+        // If there is an autonomous trajectory, follow it  
+        if (autonomousTrajectory != null && trajectoryTimer.get() < autonomousTrajectory.getTotalTimeSeconds()) {
             Trajectory.State state = autonomousTrajectory.sample(trajectoryTimer.get());
             
             // In this call, we want the robot face 0 degrees relative to its starting angle. 
@@ -216,7 +225,45 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             ArrayList<SwerveModuleState> foo = new ArrayList<SwerveModuleState>();
             Collections.addAll(foo, swerveModuleStates);
             this.drive(foo);
+        } else {
+            // Teleop mode (Driving according to human input)
+            // TODO: IMPLEMENT
         }
+
+        // Make the speed motors reach their goal speeds.
+        for (int i = 0; i < this.speedMotors.size(); i++) {
+            var m = this.speedMotors.get(i);
+            double currentSpeed = m.get();
+            SmartDashboard.putNumber(String.format("currentSpeed[%d]", i), currentSpeed);
+            final double DRIVE_SPEED_EPSILON = 0.01;
+            final double MAX_ROBOT_SPEED_MPS = 5;
+            double deltaSpeed = (goalStates.get(i).speedMetersPerSecond / MAX_ROBOT_SPEED_MPS) - currentSpeed;
+
+            if (Math.abs(deltaSpeed) > DRIVE_SPEED_EPSILON) {
+
+                // We haven't reached our speed yet.  Accelerate *toward* that speed.
+                double sign = Math.signum(deltaSpeed);
+                final double ACCELERATION = 0.04;
+
+                double newSpeed = currentSpeed + sign * ACCELERATION;
+                // if (this.sneakMode) {
+                //     newSpeed *= DRIVE_SNEAK_MODIFIER;
+                // }
+
+                // The goalSpeed should always be between -1 and 1.  But just in case...
+                final double MIN_SPEED = -1.0;
+                final double MAX_SPEED = 1.0;
+                // SmartDashboard.putNumber(String.format("goalSpeeds[%d]", i), this.goalSpeeds[i]);
+
+                // Clamp to the desired range.
+                newSpeed = Math.min(MAX_SPEED, Math.max(MIN_SPEED, newSpeed));
+
+                // Actually set our speed.
+                m.set(newSpeed);
+            } else {
+                // Target speed attained, nothing to do.
+            }
+        } // end (for each speedMotor)
     }
 
 }
