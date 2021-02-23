@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
@@ -171,7 +172,21 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
                         swerveModuleStates.get(2),
                         swerveModuleStates.get(3));
                         
-        // TODO: Actually move the motors using the swerve module states
+        // Actually move the motors using the swerve module states
+        // We will only call setReference in response to changes in the goal angles and speeds (swerveModuleStates)
+        // This will hopefully address motor overheating issued caused when we called this function during periodic
+
+        for (int i = 0; i < pivotMotors.size(); i++) {
+            var m = pivotMotors.get(i);
+            var pidController = m.getPIDController();
+            // We dont think we need a redundant setReferance call
+            // var encoder = m.getEncoder();
+            // var currentPositionInRotations = encoder.getPosition();
+
+            final double goalPositionInRotations = swerveModuleStates.get(i).angle.getDegrees() / 360;
+            pidController.setReference(goalPositionInRotations, ControlType.kPosition);
+        }
+
     }
 
     
