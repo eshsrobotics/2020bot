@@ -236,8 +236,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             double currentSpeed = m.get();
             SmartDashboard.putNumber(String.format("currentSpeed[%d]", i), currentSpeed);
             final double DRIVE_SPEED_EPSILON = 0.01;
-            final double MAX_ROBOT_SPEED_MPS = 5;
-            double deltaSpeed = (goalStates.get(i).speedMetersPerSecond / MAX_ROBOT_SPEED_MPS) - currentSpeed;
+            double deltaSpeed = (goalStates.get(i).speedMetersPerSecond / Constants.MAX_ROBOT_SPEED_MPS) - currentSpeed;
 
             if (Math.abs(deltaSpeed) > DRIVE_SPEED_EPSILON) {
 

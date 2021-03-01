@@ -57,6 +57,14 @@ public final class Constants {
       -Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE)
     };
 
+  /**  
+   * Is an assumption of the maximum drive train speed in meters per second. 
+   * 
+   * This is so we can calculate the motor power percentage. This number is guessed from thin air 
+   * and should be replaced by actual drive speed train based upon trails. 
+   */
+  public static final double MAX_ROBOT_SPEED_MPS = 5;
+
   /*
    * Ratio for how many revolutions of the motor to a revolution of the wheel
    *
