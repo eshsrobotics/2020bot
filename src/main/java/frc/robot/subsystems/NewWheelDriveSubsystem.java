@@ -101,9 +101,9 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
 
         // assuming that -h is left, and -v is the back side of the robot
         kinematics = new SwerveDriveKinematics(new Translation2d(-h, +v), // FRONT_LEFT
-                new Translation2d(-h, -v), // BACK_LEFT
-                new Translation2d(+h, -v), // BACK_RIGHT
-                new Translation2d(+h, +v)); // FRONT_RIGHT
+                                               new Translation2d(-h, -v), // BACK_LEFT
+                                               new Translation2d(+h, -v), // BACK_RIGHT
+                                               new Translation2d(+h, +v)); // FRONT_RIGHT
         trajectoryTimer = null;
 
         this.robotGyro = new ADXRS450_Gyro();

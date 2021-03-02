@@ -50,6 +50,13 @@ public final class Constants {
    */
   public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635 * 0.5;
 
+
+  /**
+   * This iS VERY IMPORTANT (see snake-rotation.png in docs folder for visual representation)
+   * 
+   * They represent angles that are tangent to a circle, so that when the robot's wheels are set to said angles, 
+   * and the drive motors move in the same direction, the robot rotates in place.
+   */
   public static final double[] crabRotationThetas = {
       (-Math.PI) + Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
       Math.PI - Math.atan(WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE / WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE),
