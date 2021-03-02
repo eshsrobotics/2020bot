@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.Button;
-import frc.robot.Constants;
 
 /**
  * A simple Button class that allows you to attach commands to the act of

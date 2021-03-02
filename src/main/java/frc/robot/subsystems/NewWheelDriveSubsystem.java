@@ -2,9 +2,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.controls.ControlScheme;
+import frc.robot.controls.CrabDriveScheme;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -34,7 +36,7 @@ import static frc.robot.Constants.*;
 public class NewWheelDriveSubsystem extends SubsystemBase {
     private Trajectory autonomousTrajectory;
     private SwerveDriveKinematics kinematics;
-    private Timer trajectoryTimer; 
+    private Timer trajectoryTimer;
     private Gyro robotGyro;
     private SwerveDriveOdometry odometry;
 
@@ -42,7 +44,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
      * When drive is called, retain goal speeds
      */
     private List<SwerveModuleState> goalStates;
-    
+
     /**
      * This array contains four PWM-driven SpeedControllers, one for each wheel. We
      * use this abstract class on purpose: any motor controllers than can be driven
@@ -71,29 +73,46 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
      * https://docs.wpilib.org/en/latest/docs/software/wpilib-tools/smartdashboard/index.html
      * for more information.
      */
-    double kP = 1, kI = 1e-4, kD = 1, kIz = 0, kFF = 0, kMaxOutput = 1, kMinOutput = -1;
+    private double kP = 1, kI = 1e-4, kD = 1, kIz = 0, kFF = 0, kMaxOutput = 1, kMinOutput = -1;
 
-    
+    /**
+     * A way of mapping user input into robot movement. This controls which
+     * ControlScheme we are using a the moment.
+     */
+    private ControlScheme currentControlScheme = null;
+
+    /**
+     * This is the source for user input during periodic.
+     */
+    private InputSubsystem userInput = null;
+
     /**
      * Initializes an instance of this class.
+     * 
+     * @param inputSubsystem Lets us take 2D vectors from user input, and translate
+     *                       it into movement.
      */
-    public NewWheelDriveSubsystem() {
+    public NewWheelDriveSubsystem(InputSubsystem inputSubsystem) {
         setName("NewWheelDriveSubsystem");
         final double h = Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE;
         final double v = Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE;
+        currentControlScheme = new CrabDriveScheme();
+        userInput = inputSubsystem;
+
         // assuming that -h is left, and -v is the back side of the robot
-        kinematics = new SwerveDriveKinematics(new Translation2d(-h, +v),  // FRONT_LEFT
-                                               new Translation2d(-h, -v),  // BACK_LEFT
-                                               new Translation2d(+h, -v),  // BACK_RIGHT
-                                               new Translation2d(+h, +v)); // FRONT_RIGHT
+        kinematics = new SwerveDriveKinematics(new Translation2d(-h, +v), // FRONT_LEFT
+                new Translation2d(-h, -v), // BACK_LEFT
+                new Translation2d(+h, -v), // BACK_RIGHT
+                new Translation2d(+h, +v)); // FRONT_RIGHT
         trajectoryTimer = null;
 
         this.robotGyro = new ADXRS450_Gyro();
-        // Because we do not know if the gyro is ready at this point, we lazy-initialize the odometry
+        // Because we do not know if the gyro is ready at this point, we lazy-initialize
+        // the odometry
         // object.
         this.odometry = null;
 
-         // Fill the speedMotors list with 4 nulls and then overwrite them.
+        // Fill the speedMotors list with 4 nulls and then overwrite them.
         //
         // By doing things this way, we make this code immune to changes in
         // the values of the indexing constants (FRONT_LEFT, FRONT_RIGHT, and
@@ -119,7 +138,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         this.pivotMotors.set(FRONT_RIGHT, new CANSparkMax(FRONT_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
         this.pivotMotors.set(BACK_LEFT, new CANSparkMax(BACK_LEFT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
         this.pivotMotors.set(BACK_RIGHT, new CANSparkMax(BACK_RIGHT_TURN_MOTOR_CAN_ID, MotorType.kBrushless));
-        
+
         this.pivotMotors.forEach(m -> {
             // TODO: Read the required PID constants
             // for the SmartDashBoard. The user may
@@ -151,7 +170,9 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * This function allows this object to set a timer whenever it receives a trajectory
+     * This function allows this object to set a timer whenever it receives a
+     * trajectory
+     * 
      * @param newTrajectory The trajectory to set.
      */
     public void setTrajectory(Trajectory newTrajectory) {
@@ -161,8 +182,10 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Instantaneously update our drive speed and direction. 
-     * @param swerveModuleStates An array of direction/speed pairs, one for each wheel (4 in total). 
+     * Instantaneously update our drive speed and direction.
+     * 
+     * @param swerveModuleStates An array of direction/speed pairs, one for each
+     *                           wheel (4 in total).
      */
     public void drive(List<SwerveModuleState> swerveModuleStates) {
         this.goalStates = swerveModuleStates;
@@ -170,20 +193,19 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         // Update the swerve drive odometry (position)
         if (odometry == null) {
             // We are assuming gyro is ready by now
-            // Set the Odometry to set itself to the origin (0, 0) whenever the Gyro turns on.
+            // Set the Odometry to set itself to the origin (0, 0) whenever the Gyro turns
+            // on.
             odometry = new SwerveDriveOdometry(kinematics, robotGyro.getRotation2d());
-        } 
+        }
 
-        odometry.update(robotGyro.getRotation2d(),
-                        swerveModuleStates.get(0),
-                        swerveModuleStates.get(1),
-                        swerveModuleStates.get(2),
-                        swerveModuleStates.get(3));
-                        
+        odometry.update(robotGyro.getRotation2d(), swerveModuleStates.get(0), swerveModuleStates.get(1),
+                swerveModuleStates.get(2), swerveModuleStates.get(3));
+
         // Actually move the motors using the swerve module states
-        // We will only call setReference in response to changes in the goal angles and speeds (swerveModuleStates)
-        // This will hopefully address motor overheating issued caused when we called this function during periodic
-        
+        // We will only call setReference in response to changes in the goal angles and
+        // speeds (swerveModuleStates)
+        // This will hopefully address motor overheating issued caused when we called
+        // this function during periodic
 
         for (int i = 0; i < pivotMotors.size(); i++) {
             var m = pivotMotors.get(i);
@@ -197,8 +219,6 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         }
 
     }
-
-    
 
     /**
      * Instantaneous updates to the drive.
@@ -227,8 +247,10 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             this.drive(foo);
         } else {
             // Teleop mode (Driving according to human input)
-            // TODO: IMPLEMENT
-        }
+            Vector2d userInputVector = userInput.getVector();
+            var swerveModuleStates = currentControlScheme.drive(userInputVector.x, userInputVector.y);
+            this.drive(swerveModuleStates);
+        }   
 
         // Make the speed motors reach their goal speeds.
         for (int i = 0; i < this.speedMotors.size(); i++) {

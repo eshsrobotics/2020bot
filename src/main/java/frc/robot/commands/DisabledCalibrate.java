@@ -7,7 +7,6 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -37,7 +36,6 @@ public class DisabledCalibrate extends CommandBase {
 
   @Override
   public boolean runsWhenDisabled() {
-    // TODO Auto-generated method stub
     return true;//super.runsWhenDisabled();
   }
 

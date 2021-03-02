@@ -135,7 +135,7 @@ public class InputSubsystem extends SubsystemBase {
 
   /**
    * This function abstracts away the concept of the "main directional control" --
-   * the thing that determines the primary movement of the robot. Fro the single
+   * the thing that determines the primary movement of the robot. From the single
    * joystick, this is the joystick itself; for the XBox controller, this is one
    * of the two joysticks; and for the keyboard, this is WASD.
    *
