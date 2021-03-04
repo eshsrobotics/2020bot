@@ -1,16 +1,26 @@
 package frc.robot.controls;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
-import frc.robot.Constants;
+
+import static frc.robot.Constants.*;
 
 /**
  * This is a simple control scheme that implements the 2020 competition Driving Scheme for testing.
  */
 public class CrabDriveScheme implements ControlScheme {
+
+    private SwerveDriveKinematics kinematics = null;
+
+    public CrabDriveScheme(SwerveDriveKinematics kinematics) {
+        this.kinematics = kinematics;
+    }
 
     @Override
     public List<SwerveModuleState> drive(double x, double y) {
@@ -26,10 +36,34 @@ public class CrabDriveScheme implements ControlScheme {
         return result;
     }
 
+    /**
+     * This controls turning for crab rotation. 
+     * In this instance, the robot stops translating and points its wheels in a diamond configuration.
+     * Reference: docs/snake-rotation.png
+     * 
+     * @param turnSpeed A floating point number ranging from -1.0 to 1.0.
+     *                  It represents a power level for the drive wheels in the crab rotation configuration.
+     *                  Positive values turn the robot chassis clockwise. Negative values turn the robot chassis counterclockwise.
+     * @return Array of four swerveModuleStates, starting from the front left and proceeding counter-clockwise.
+     * TODO: Verify the turn rotation given a positive turnSpeed 
+     */
     @Override
     public List<SwerveModuleState> turn(double turnSpeed) {
         
         return null;
     }
     
+    @Override
+    public List<SwerveModuleState> driveAndTurn(double x, double y, double turnSpeed) {
+        double xMetersPerSecond = x * MAX_ROBOT_SPEED_MPS;
+        double yMetersPerSecond = y * MAX_ROBOT_SPEED_MPS;
+        final double MAX_ROBOT_TURN_SPEED_RADIANS_PER_SEC = 2 * Math.PI;
+        double thetaRadiansPerSecond = turnSpeed * MAX_ROBOT_TURN_SPEED_RADIANS_PER_SEC;
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, thetaRadiansPerSecond);
+    
+        SwerveModuleState[] swerveModuleStates = this.kinematics.toSwerveModuleStates(chassisSpeeds);
+        ArrayList<SwerveModuleState> swerveModuleStatesList = new ArrayList<SwerveModuleState>();
+        Collections.addAll(swerveModuleStatesList, swerveModuleStates);
+        return swerveModuleStatesList;  
+    }
 }
