@@ -27,7 +27,7 @@ public class CrabDriveScheme implements ControlScheme {
         double thetaRadians = Math.atan2(y, x);
         double speed = Math.sqrt(x * x + y * y);
         final double maximumSpeed = Math.sqrt(2);
-        final double speedMetersPerSecond = Constants.MAX_ROBOT_SPEED_MPS * speed/maximumSpeed;
+        final double speedMetersPerSecond = MAX_ROBOT_SPEED_MPS * speed/maximumSpeed;
         
         var result = new ArrayList<SwerveModuleState>();
         for (int i = 0; i < 4; i++) {
@@ -49,12 +49,13 @@ public class CrabDriveScheme implements ControlScheme {
      */
     @Override
     public List<SwerveModuleState> turn(double turnSpeed) {
-        
-        return null;
+        return driveAndTurn(0, 0, turnSpeed);
     }
     
     @Override
     public List<SwerveModuleState> driveAndTurn(double x, double y, double turnSpeed) {
+        // Biggest challenge is that kinematics depends on actual units
+        // Need to convert unitless variables x, y, and turnspeed, use made up constants to do this
         double xMetersPerSecond = x * MAX_ROBOT_SPEED_MPS;
         double yMetersPerSecond = y * MAX_ROBOT_SPEED_MPS;
         final double MAX_ROBOT_TURN_SPEED_RADIANS_PER_SEC = 2 * Math.PI;

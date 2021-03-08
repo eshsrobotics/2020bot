@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import static frc.robot.Constants.*;
 
 public class NewWheelDriveSubsystem extends SubsystemBase {
+    private boolean sneakMode = false;
     private Trajectory autonomousTrajectory;
     private SwerveDriveKinematics kinematics;
     private Timer trajectoryTimer;
@@ -96,15 +97,16 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         setName("NewWheelDriveSubsystem");
         final double h = Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE;
         final double v = Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE;
-        currentControlScheme = new CrabDriveScheme();
-        userInput = inputSubsystem;
-
+        
         // assuming that -h is left, and -v is the back side of the robot
         kinematics = new SwerveDriveKinematics(new Translation2d(-h, +v), // FRONT_LEFT
                                                new Translation2d(-h, -v), // BACK_LEFT
                                                new Translation2d(+h, -v), // BACK_RIGHT
                                                new Translation2d(+h, +v)); // FRONT_RIGHT
         trajectoryTimer = null;
+        
+        currentControlScheme = new CrabDriveScheme(kinematics);
+        userInput = inputSubsystem;
 
         this.robotGyro = new ADXRS450_Gyro();
         // Because we do not know if the gyro is ready at this point, we lazy-initialize
@@ -169,7 +171,10 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         }); // end (for each pivot motor)
     }
 
-    /**
+    public NewWheelDriveSubsystem() {
+	}
+
+	/**
      * This function allows this object to set a timer whenever it receives a
      * trajectory
      * 
@@ -221,6 +226,22 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Turns sneak on by changing sneakMode to true.
+     * sneakMode makes it so that the robot moves at a reduced percentage of its normal speed.
+     * This is important when trying to perform more precise maneuvers, such as lining up to shoot balls or move objects.
+     */
+    public void enableSneak() {
+        sneakMode = true;
+    }
+
+    /**
+     * Turns sneak off by changing sneakMode to false.
+     */
+    public void disableSneak() {
+        sneakMode = false;
+    }
+
+    /**
      * Instantaneous updates to the drive.
      */
     @Override 
@@ -248,7 +269,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         } else {
             // Teleop mode (Driving according to human input)
             Vector2d userInputVector = userInput.getVector();
-            var swerveModuleStates = currentControlScheme.drive(userInputVector.x, userInputVector.y);
+            var swerveModuleStates = currentControlScheme.driveAndTurn(userInputVector.x, userInputVector.y, userInput.getCrabTurnValue());
             this.drive(swerveModuleStates);
         }   
 
@@ -267,13 +288,13 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
                 final double ACCELERATION = 0.04;
 
                 double newSpeed = currentSpeed + sign * ACCELERATION;
-                // if (this.sneakMode) {
-                //     newSpeed *= DRIVE_SNEAK_MODIFIER;
-                // }
+                if (this.sneakMode) {
+                    newSpeed *= DRIVE_SNEAK_MODIFIER;
+                }
 
                 // The goalSpeed should always be between -1 and 1.  But just in case...
-                final double MIN_SPEED = -1.0;
-                final double MAX_SPEED = 1.0;
+                final double MIN_SPEED = -1.0 * DRIVE_SPEED_MULTIPLIER;
+                final double MAX_SPEED = 1.0 * DRIVE_SPEED_MULTIPLIER;
                 // SmartDashboard.putNumber(String.format("goalSpeeds[%d]", i), this.goalSpeeds[i]);
 
                 // Clamp to the desired range.

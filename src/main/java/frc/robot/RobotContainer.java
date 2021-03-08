@@ -32,6 +32,7 @@ import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightDisableButton;
 import frc.robot.subsystems.LimeLightEnableButton;
+import frc.robot.subsystems.NewWheelDriveSubsystem;
 import frc.robot.subsystems.ReverseBeltsButton;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -52,8 +53,9 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-    private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();
+    private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();    
     private final InputSubsystem inputSubsystem = new InputSubsystem();
+    private final NewWheelDriveSubsystem newWheelDrive = new NewWheelDriveSubsystem(inputSubsystem);
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
@@ -249,9 +251,9 @@ public class RobotContainer {
         // System.out.println(shootButton.get());
         // SmartDashboard.putBoolean("shoot button", shootButton.get());
         sneakButton.whenPressed(new InstantCommand(() -> {
-            wheelDrive.enableSneak();
+            newWheelDrive.enableSneak();
         })).whenReleased(new InstantCommand(() -> {
-            wheelDrive.disableSneak();
+            newWheelDrive.disableSneak();
         }));
 
         shootButton.whenPressed(new InstantCommand(() -> {
@@ -311,34 +313,6 @@ public class RobotContainer {
             intakeSubsystem.enableReverseBelts();
         })).whenReleased(new InstantCommand(() -> {
             intakeSubsystem.disablesBelts();
-        }));
-
-        crabRotateButton.whenPressed(new InstantCommand(() -> {
-            SmartDashboard.putBoolean("crab rotation 1", true);
-            double[] goalThetas = crabRotationThetas;
-            this.wheelDrive.setGoalAngles(goalThetas);
-        }).andThen(new WaitCommand(.5).withInterrupt(() -> {
-            return crabRotateButton.get() == false;
-        }).andThen(new InstantCommand(() -> {
-            double speed = 0.5;
-            double[] goalSpeeds = { speed, speed, speed, speed };
-            this.wheelDrive.setDriveSpeeds(goalSpeeds);
-        })))).whenReleased(new InstantCommand(() -> {
-            this.wheelDrive.setDriveSpeeds(new double[] {0,0,0,0});
-        }));
-
-        crabRotateButton2.whenPressed(new InstantCommand(() -> {
-            SmartDashboard.putBoolean("crab rotation 2", true);
-            double[] goalThetas = crabRotationThetas;
-            this.wheelDrive.setGoalAngles(goalThetas);
-        }).andThen(new WaitCommand(.5).withInterrupt(() -> {
-            return crabRotateButton2.get() == false;
-        }).andThen(new InstantCommand(() -> {
-            double speed = -0.5;
-            double[] goalSpeeds = { speed, speed, speed, speed };
-            this.wheelDrive.setDriveSpeeds(goalSpeeds);
-        })))).whenReleased(new InstantCommand(() -> {
-            this.wheelDrive.setDriveSpeeds(new double[] {0,0,0,0});
         }));
 
         // When this button is held down, if the vision tracking command ends
