@@ -22,36 +22,16 @@ public class CrabDriveScheme implements ControlScheme {
         this.kinematics = kinematics;
     }
 
-    @Override
-    public List<SwerveModuleState> drive(double x, double y) {
-        double thetaRadians = Math.atan2(y, x);
-        double speed = Math.sqrt(x * x + y * y);
-        final double maximumSpeed = Math.sqrt(2);
-        final double speedMetersPerSecond = MAX_ROBOT_SPEED_MPS * speed/maximumSpeed;
-        
-        var result = new ArrayList<SwerveModuleState>();
-        for (int i = 0; i < 4; i++) {
-            result.add(new SwerveModuleState(speedMetersPerSecond, new Rotation2d(thetaRadians)));
-        }
-        return result;
-    }
-
     /**
-     * This controls turning for crab rotation. 
-     * In this instance, the robot stops translating and points its wheels in a diamond configuration.
-     * Reference: docs/snake-rotation.png
+     * This controls turning and driving.
      * 
      * @param turnSpeed A floating point number ranging from -1.0 to 1.0.
-     *                  It represents a power level for the drive wheels in the crab rotation configuration.
-     *                  Positive values turn the robot chassis clockwise. Negative values turn the robot chassis counterclockwise.
+     *                  It represents a power level for the drive wheels, when turning.
+     * @param x double; between -100% and 100%; Negative drives left, positive drives right.
+     * @param y double; between -100% and 100%; Negative drives backward, positive drives forward.
      * @return Array of four swerveModuleStates, starting from the front left and proceeding counter-clockwise.
      * TODO: Verify the turn rotation given a positive turnSpeed 
-     */
-    @Override
-    public List<SwerveModuleState> turn(double turnSpeed) {
-        return driveAndTurn(0, 0, turnSpeed);
-    }
-    
+     */    
     @Override
     public List<SwerveModuleState> driveAndTurn(double x, double y, double turnSpeed) {
         // Biggest challenge is that kinematics depends on actual units
