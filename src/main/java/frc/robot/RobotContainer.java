@@ -53,7 +53,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-    private final WheelDriveSubsystem wheelDrive = new WheelDriveSubsystem();    
+    private final WheelDriveSubsystem wheelDrive = null;    
     private final InputSubsystem inputSubsystem = new InputSubsystem();
     private final NewWheelDriveSubsystem newWheelDrive = new NewWheelDriveSubsystem(inputSubsystem);
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
@@ -105,7 +105,7 @@ public class RobotContainer {
 
         // The following command runs at all times, allowing the user to control the
         // wheelDrive.
-        this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
+        // this.wheelDrive.setDefaultCommand(new CrabDriveModeCommand(wheelDrive, inputSubsystem));
 
         // The vision tracking command is complex.  Compose it in bits and pieces.
         Command prepareToRotate = new InstantCommand(() -> {
@@ -315,18 +315,18 @@ public class RobotContainer {
             intakeSubsystem.disablesBelts();
         }));
 
-        // When this button is held down, if the vision tracking command ends
-        // (due to losing the vision target or emptying its volley), restart
-        // it.
-        //
-        // When the button is released, the command is canceled and normal
-        // control resumes.
-        limeLightEnableButton.whileActiveOnce(visionTrackingCommand
-        .andThen(new InstantCommand(() -> {
-            // If the vision tracking command ends, and the button is still held down,
-            // then simply schedule it again.
-            CommandScheduler.getInstance().schedule(visionTrackingCommand);
-        })));
+        // // When this button is held down, if the vision tracking command ends
+        // // (due to losing the vision target or emptying its volley), restart
+        // // it.
+        // //
+        // // When the button is released, the command is canceled and normal
+        // // control resumes.
+        // limeLightEnableButton.whileActiveOnce(visionTrackingCommand
+        // .andThen(new InstantCommand(() -> {
+        //     // If the vision tracking command ends, and the button is still held down,
+        //     // then simply schedule it again.
+        //     CommandScheduler.getInstance().schedule(visionTrackingCommand);
+        // })));
 
         // testButton.whenPressed(new InstantCommand(wheelDrive::setOppositeAngle));
     }
