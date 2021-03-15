@@ -169,10 +169,33 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             pidController.setOutputRange(kMinOutput, kMaxOutput);
 
         }); // end (for each pivot motor)
+
+        // Even though we aren't driving, we still need an initial goal.
+        List<SwerveModuleState> swerveModuleStates = new ArrayList<SwerveModuleState>();
+        for (int i = 0; i < 4; i++) {
+            swerveModuleStates.add(new SwerveModuleState(0, new Rotation2d(0)));
+        }
     }
 
     public NewWheelDriveSubsystem() {
 	}
+
+    /**
+     * Measures the four existing encoder values for the four wheels and presumes
+     * that they are all pointing directly to the front.
+     *
+     * Thereafter, all pivoting angles will be relative to these initial
+     * measurements.
+     *
+     * It is recommended to call calibrate() once at the very start of the match,
+     * during robotInit().
+     */
+    public void calibrate() {
+        for (int index = 0; index < this.pivotMotors.size(); index++) {
+            var m = this.pivotMotors.get(index);
+            m.getEncoder().setPosition(0);
+        }
+    }
 
 	/**
      * This function allows this object to set a timer whenever it receives a
@@ -269,12 +292,22 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         } else {
             // Teleop mode (Driving according to human input)
             Vector2d userInputVector = userInput.getVector();
-            var swerveModuleStates = currentControlScheme.driveAndTurn(userInputVector.x, userInputVector.y, userInput.getCrabTurnValue());
-            this.drive(swerveModuleStates);
+            Vector2d userInputVector2 = new Vector2d(userInput.getCrabTurnValue(), 0);
+
+            userInputVector = deadzone(userInputVector);
+            userInputVector2 = deadzone(userInputVector2);
+
+            if (userInputVector.x != 0 || userInputVector.y != 0 || userInputVector2.x != 0) {
+                var swerveModuleStates = currentControlScheme.driveAndTurn(userInputVector.x, userInputVector.y, userInputVector2.x);
+                this.drive(swerveModuleStates);
+            }
         }   
 
         // Make the speed motors reach their goal speeds.
         for (int i = 0; i < this.speedMotors.size(); i++) {
+            if (goalStates == null) {
+                continue;
+            }
             var m = this.speedMotors.get(i);
             double currentSpeed = m.get();
             SmartDashboard.putNumber(String.format("currentSpeed[%d]", i), currentSpeed);
@@ -306,6 +339,26 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
                 // Target speed attained, nothing to do.
             }
         } // end (for each speedMotor)
+    }
+
+    /**
+     * Creates a portion of no movement on the joystick so that the drivetrain is less jittery.
+     * 
+     * @param userInputVector is a vector with components between -1 and 1.
+     * @return Returns an adjusted vector.
+     *         If this vector is the zero vector, the joystick is completely deadzoned.
+     */
+    private Vector2d deadzone(Vector2d userInputVector) {
+        Vector2d result = new Vector2d(userInputVector.x, userInputVector.y);
+        if (Math.abs(userInputVector.x) <= DEADZONE) {
+            result.x = 0;
+        }
+
+        if (Math.abs(userInputVector.y) <= DEADZONE) {
+            result.y = 0;
+        }
+        
+        return result;
     }
 
 }

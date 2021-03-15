@@ -61,7 +61,7 @@ public class RobotContainer {
     private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
     private final VisionSubsystem limelight = new VisionSubsystem();
 
-    private final AutoTimedDrive m_autoCommand;
+    private AutoTimedDrive m_autoCommand = null;
 
     // private final TestButton testButton = new TestButton(inputSubsystem);
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
@@ -100,6 +100,12 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+        // Assuming that encoders begin at their zero value.
+        // All four wheels should be set to their zero value prior to running the robot.
+        // The "zero" is where the wheel bevel gears all point inwards while the wheels align with the length of the robot.
+        calibrateDrive();
+
         // Configure the button bindings.
         configureButtonBindings();
 
@@ -132,84 +138,84 @@ public class RobotContainer {
             }
         });
 
-        Command rotateTowardTarget = new RunCommand(() -> {
-            // Command 2 of the parallel race: Look at the vision target.  If it
-            // exists, rotate left or right based on the horizontal angle of deviation.
-            //
-            // Assumption: this corresponds to the execute() for the RunCommand.
-            double horizontalDeviation = limelight.getSolutionHorizontalDeviationDegrees();
+        // Command rotateTowardTarget = new RunCommand(() -> {
+        //     // Command 2 of the parallel race: Look at the vision target.  If it
+        //     // exists, rotate left or right based on the horizontal angle of deviation.
+        //     //
+        //     // Assumption: this corresponds to the execute() for the RunCommand.
+        //     double horizontalDeviation = limelight.getSolutionHorizontalDeviationDegrees();
 
-            // Convert our horizontal deviation to a number between 1 and 0, where
-            // 0 is far left and 1 is far right.
-            final double u = (horizontalDeviation + MAX_HORIZONTAL_DEVIATION_DEGREES) /
-                (2 * MAX_HORIZONTAL_DEVIATION_DEGREES);
+        //     // Convert our horizontal deviation to a number between 1 and 0, where
+        //     // 0 is far left and 1 is far right.
+        //     final double u = (horizontalDeviation + MAX_HORIZONTAL_DEVIATION_DEGREES) /
+        //         (2 * MAX_HORIZONTAL_DEVIATION_DEGREES);
 
-            // Converting u to a value which varies from +1 on the left side to -1 on
-            // the right side, where 0 is the middle.
-            final double v = -2 * (u - .5);
+        //     // Converting u to a value which varies from +1 on the left side to -1 on
+        //     // the right side, where 0 is the middle.
+        //     final double v = -2 * (u - .5);
 
-            // Convert v into a speed that will rotate us toward the center.
-            //
-            // - When the visual target is leftmost (v == -1), our speed needs to
-            //   be hard right (+MAX_SPEED.)
-            // - When the visual target is at the center (v == 0), our speed needs
-            //   to be minimal (MIN_SPEED.)
-            // - When the visual target is rightmost (v = +1), our speed needs to
-            //   be hard to the left (-MAX_SPEED.)
-            final double MIN_SPEED = 0.07;
-            final double MAX_SPEED = 0.6;
-            double speed;
-            if (v <= 0) {
-                speed = MIN_SPEED + v * (MIN_SPEED - MAX_SPEED);
-            } else {
-                speed = -(MIN_SPEED + v * (MAX_SPEED - MIN_SPEED));
-            }
+        //     // Convert v into a speed that will rotate us toward the center.
+        //     //
+        //     // - When the visual target is leftmost (v == -1), our speed needs to
+        //     //   be hard right (+MAX_SPEED.)
+        //     // - When the visual target is at the center (v == 0), our speed needs
+        //     //   to be minimal (MIN_SPEED.)
+        //     // - When the visual target is rightmost (v = +1), our speed needs to
+        //     //   be hard to the left (-MAX_SPEED.)
+        //     final double MIN_SPEED = 0.07;
+        //     final double MAX_SPEED = 0.6;
+        //     double speed;
+        //     if (v <= 0) {
+        //         speed = MIN_SPEED + v * (MIN_SPEED - MAX_SPEED);
+        //     } else {
+        //         speed = -(MIN_SPEED + v * (MAX_SPEED - MIN_SPEED));
+        //     }
 
-            this.wheelDrive.setDriveSpeeds(new double[] { speed, speed, speed, speed });
+        //     this.wheelDrive.setDriveSpeeds(new double[] { speed, speed, speed, speed });
 
-        }, this.wheelDrive, this.limelight);
+        // }, this.wheelDrive, this.limelight);
 
-        Command stopRotatingAndShoot = new InstantCommand(() -> {
-            // Stop rotating.
-            this.wheelDrive.setDriveSpeeds(new double[] { 0, 0, 0, 0 });
+        // Command stopRotatingAndShoot = new InstantCommand(() -> {
+        //     // Stop rotating.
+        //     this.wheelDrive.setDriveSpeeds(new double[] { 0, 0, 0, 0 });
 
-            // Activate the flywheels at speeds appropriate for the calculated distance.
-            final double solutionDistanceInches = limelight.getSolutionDistance();
-            final double[] flywheelSpeeds = shooterSubsystem.getShootSpeedsOffVision(solutionDistanceInches);
-            final double topFlywheelSpeed = flywheelSpeeds[0];
-            final double bottomFlywheelSpeed = flywheelSpeeds[1];
-            shooterSubsystem.startShooter(topFlywheelSpeed, bottomFlywheelSpeed);
-        })
-        .andThen(new WaitCommand(0.2))      // Wait for flywheels to reach max speed.
-        .andThen(new InstantCommand(() -> {
-            intakeSubsystem.enablesBelts(); // Open fire.
-        }))
-        .andThen(new WaitCommand(5.0))      // We assume it takes this much time to unload the shooter.
-        .andThen(new InstantCommand(() -> { // Deactivate shooter.
-            intakeSubsystem.disablesBelts();
-            shooterSubsystem.stopShooter();
-        }));
+        //     // Activate the flywheels at speeds appropriate for the calculated distance.
+        //     final double solutionDistanceInches = limelight.getSolutionDistance();
+        //     final double[] flywheelSpeeds = shooterSubsystem.getShootSpeedsOffVision(solutionDistanceInches);
+        //     final double topFlywheelSpeed = flywheelSpeeds[0];
+        //     final double bottomFlywheelSpeed = flywheelSpeeds[1];
+        //     shooterSubsystem.startShooter(topFlywheelSpeed, bottomFlywheelSpeed);
+        // })
+        // .andThen(new WaitCommand(0.2))      // Wait for flywheels to reach max speed.
+        // .andThen(new InstantCommand(() -> {
+        //     intakeSubsystem.enablesBelts(); // Open fire.
+        // }))
+        // .andThen(new WaitCommand(5.0))      // We assume it takes this much time to unload the shooter.
+        // .andThen(new InstantCommand(() -> { // Deactivate shooter.
+        //     intakeSubsystem.disablesBelts();
+        //     shooterSubsystem.stopShooter();
+        // }));
 
-        // With all the subcommands prepared, the vision tracking command is
-        // simple to define.
-        this.visionTrackingCommand = prepareToRotate
-        .andThen(
-            // These two commands race with each other -- they run in parallel until
-            // either one of them finishes.
-            waitUntilTargetIsClose.raceWith(rotateTowardTarget))
-        .andThen(stopRotatingAndShoot)
-        .withInterrupt(() -> {
-            // This cancels tracking if the vision solution is lost.
-            return !limelight.solutionFound();
-        });
+        // // With all the subcommands prepared, the vision tracking command is
+        // // simple to define.
+        // this.visionTrackingCommand = prepareToRotate
+        // .andThen(
+        //     // These two commands race with each other -- they run in parallel until
+        //     // either one of them finishes.
+        //     waitUntilTargetIsClose.raceWith(rotateTowardTarget))
+        // .andThen(stopRotatingAndShoot)
+        // .withInterrupt(() -> {
+        //     // This cancels tracking if the vision solution is lost.
+        //     return !limelight.solutionFound();
+        // });
 
-        // Construct the command we'll use for autonomous.
-        final double SECONDS_TO_MOVE_FORWARD = 1.0;
-        m_autoCommand = new AutoTimedDrive(wheelDrive,
-                                           intakeSubsystem,
-                                           shooterSubsystem,
-                                           this.visionTrackingCommand,
-                                           SECONDS_TO_MOVE_FORWARD);
+        // // Construct the command we'll use for autonomous.
+        // final double SECONDS_TO_MOVE_FORWARD = 1.0;
+        // m_autoCommand = new AutoTimedDrive(wheelDrive,
+        //                                    intakeSubsystem,
+        //                                    shooterSubsystem,
+        //                                    this.visionTrackingCommand,
+        //                                    SECONDS_TO_MOVE_FORWARD);
 
     }
 
@@ -218,7 +224,7 @@ public class RobotContainer {
      * robot turning on.
      */
     public void calibrateDrive() {
-        this.wheelDrive.calibrate();
+        this.newWheelDrive.calibrate();
     }
 
     /**

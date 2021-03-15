@@ -100,6 +100,11 @@ public final class Constants {
   public static final Hand TURNING_CONTROLLER_JOYSTICK = Hand.kLeft;
   public static final Hand POWER_CONTROLLER_JOYSTICK = Hand.kRight;
 
+  /**
+   * Any time the x or y channel of a joystick is less than this value, we assume the channel is zero and take no action.
+   */
+  public static final double DEADZONE = 0.5;
+
   ///////////////////
   // Motor indices //
   ///////////////////
