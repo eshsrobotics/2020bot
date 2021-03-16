@@ -326,8 +326,10 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
                 }
 
                 // The goalSpeed should always be between -1 and 1.  But just in case...
-                final double MIN_SPEED = -1.0 * DRIVE_SPEED_MULTIPLIER;
-                final double MAX_SPEED = 1.0 * DRIVE_SPEED_MULTIPLIER;
+                Vector2d leftJoystickVector = userInput.getVector();
+                final double magnitude = currentControlScheme.getMagnitude(leftJoystickVector.x, leftJoystickVector.y);
+                final double MIN_SPEED = -1.0 * DRIVE_SPEED_MULTIPLIER * magnitude;
+                final double MAX_SPEED = 1.0 * DRIVE_SPEED_MULTIPLIER * magnitude;
                 // SmartDashboard.putNumber(String.format("goalSpeeds[%d]", i), this.goalSpeeds[i]);
 
                 // Clamp to the desired range.

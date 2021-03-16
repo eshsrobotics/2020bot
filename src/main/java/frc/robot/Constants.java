@@ -93,7 +93,7 @@ public final class Constants {
 
   /**
    * The left joystick on the controller handles the direction of the movement,
-   * all 360 dergrees. The right joystick on the controller handles the magnitude
+   * all 360 degrees. The right joystick on the controller handles the magnitude
    * of the speed of the movement, Y-Value. The X-Value of the right joystick of
    * the controller handles turning in place.
    */
@@ -103,7 +103,7 @@ public final class Constants {
   /**
    * Any time the x or y channel of a joystick is less than this value, we assume the channel is zero and take no action.
    */
-  public static final double DEADZONE = 0.5;
+  public static final double DEADZONE = 0.25;
 
   ///////////////////
   // Motor indices //
