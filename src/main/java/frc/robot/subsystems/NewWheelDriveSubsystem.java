@@ -55,6 +55,12 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private List<CANSparkMax> speedMotors;
 
     /**
+     * This is an array of 4 boolean values, one for each of the 4 speed motors. 
+     * Whenever the reversal flag is true for a motor, then we will reverse the motor's direction in software.
+     */
+    private List<Boolean> reversalFlags;
+
+    /**
      * This array contains four CANSparkMax controllers, one for each wheel.
      *
      * They are documented here:
@@ -119,6 +125,8 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         // By doing things this way, we make this code immune to changes in
         // the values of the indexing constants (FRONT_LEFT, FRONT_RIGHT, and
         // so on.)
+        this.reversalFlags = new ArrayList<Boolean>();
+        Collections.addAll(this.reversalFlags, new Boolean[] { true, true, false, false });
         this.speedMotors = new ArrayList<CANSparkMax>();
         Collections.addAll(this.speedMotors, new CANSparkMax[] { null, null, null, null });
         this.speedMotors.set(FRONT_LEFT, new CANSparkMax(FRONT_LEFT_DRIVE_MOTOR_CAN_ID, MotorType.kBrushless));
@@ -128,6 +136,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             this.speedMotors.get(i).stopMotor();
             this.speedMotors.get(i).set(0);
+            this.speedMotors.get(i).setInverted(this.reversalFlags.get(i));
         }
 
         // Fill the pivotMotors list with 4 nulls and then overwrite them.
@@ -308,7 +317,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             if (goalStates == null) {
                 continue;
             }
-            var m = this.speedMotors.get(i);
+            CANSparkMax m = this.speedMotors.get(i);
             double currentSpeed = m.get();
             SmartDashboard.putNumber(String.format("currentSpeed[%d]", i), currentSpeed);
             final double DRIVE_SPEED_EPSILON = 0.01;
