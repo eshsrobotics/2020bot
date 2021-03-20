@@ -184,6 +184,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             swerveModuleStates.add(new SwerveModuleState(0, new Rotation2d(0)));
         }
+        this.drive(swerveModuleStates);
     }
 
     public NewWheelDriveSubsystem() {
@@ -309,6 +310,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             if (userInputVector.x != 0 || userInputVector.y != 0 || userInputVector2.x != 0) {
                 var swerveModuleStates = currentControlScheme.driveAndTurn(userInputVector.x, userInputVector.y, userInputVector2.x);
                 this.drive(swerveModuleStates);
+            } else {
+                // Keep the current direction, but make the goal speed 0
+                this.goalStates.forEach(swerveModuleState -> {
+                    swerveModuleState.speedMetersPerSecond = 0;
+                });
             }
         }   
 
@@ -320,30 +326,40 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             CANSparkMax m = this.speedMotors.get(i);
             double currentSpeed = m.get();
             SmartDashboard.putNumber(String.format("currentSpeed[%d]", i), currentSpeed);
-            final double DRIVE_SPEED_EPSILON = 0.01;
+            final double DRIVE_SPEED_EPSILON = 0.05;
+
+            // deltaSpeed is the change we want to apply to our current speed.
             double deltaSpeed = (goalStates.get(i).speedMetersPerSecond / Constants.MAX_ROBOT_SPEED_MPS) - currentSpeed;
 
             if (Math.abs(deltaSpeed) > DRIVE_SPEED_EPSILON) {
 
                 // We haven't reached our speed yet.  Accelerate *toward* that speed.
                 double sign = Math.signum(deltaSpeed);
-                final double ACCELERATION = 0.04;
+                final double ACCELERATION = 0.07;
 
                 double newSpeed = currentSpeed + sign * ACCELERATION;
                 if (this.sneakMode) {
                     newSpeed *= DRIVE_SNEAK_MODIFIER;
                 }
 
+                Vector2d leftJoystickVector = userInput.getVector();
+                final double magnitude = currentControlScheme.getMagnitude(leftJoystickVector.x, leftJoystickVector.y);
+
                 // The goalSpeed should always be between -1 and 1.  But just in case...
-                final double MIN_SPEED = -1.0 * DRIVE_SPEED_MULTIPLIER;
-                final double MAX_SPEED = 1.0 * DRIVE_SPEED_MULTIPLIER;
+                final double MIN_SPEED = -1.0 * DRIVE_SPEED_MULTIPLIER * magnitude;
+                final double MAX_SPEED = 1.0 * DRIVE_SPEED_MULTIPLIER * magnitude;
                 // SmartDashboard.putNumber(String.format("goalSpeeds[%d]", i), this.goalSpeeds[i]);
 
                 // Clamp to the desired range.
                 newSpeed = Math.min(MAX_SPEED, Math.max(MIN_SPEED, newSpeed));
 
                 // Actually set our speed.
-                m.set(newSpeed);
+                if (Math.abs(newSpeed) < DRIVE_SPEED_EPSILON) {
+                    m.stopMotor();
+                } else {
+                    m.set(newSpeed);
+                }
+                
             } else {
                 // Target speed attained, nothing to do.
             }

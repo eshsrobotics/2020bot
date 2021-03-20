@@ -47,4 +47,9 @@ public class CrabDriveScheme implements ControlScheme {
         Collections.addAll(swerveModuleStatesList, swerveModuleStates);
         return swerveModuleStatesList;  
     }
+
+    @Override
+    public double getMagnitude(double x, double y) {
+        return Math.min(1, Math.max(0, Math.sqrt(x * x + y * y)));
+    }
 }
