@@ -301,14 +301,18 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             this.drive(foo);
         } else {
             // Teleop mode (Driving according to human input)
-            Vector2d userInputVector = userInput.getVector();
-            Vector2d userInputVector2 = new Vector2d(userInput.getCrabTurnValue(), 0);
+            Vector2d strafingVector = userInput.getVector();
+            Vector2d turningVector = new Vector2d(userInput.getCrabTurnValue(), 0);
+            SmartDashboard.putNumber("strafe x", strafingVector.x);
+            SmartDashboard.putNumber("strafe y", strafingVector.y);
+            SmartDashboard.putNumber("turn x", turningVector.x);
+            SmartDashboard.putNumber("turn y", turningVector.y);
 
-            userInputVector = deadzone(userInputVector);
-            userInputVector2 = deadzone(userInputVector2);
+            strafingVector = deadzone(strafingVector);
+            turningVector = deadzone(turningVector);
 
-            if (userInputVector.x != 0 || userInputVector.y != 0 || userInputVector2.x != 0) {
-                var swerveModuleStates = currentControlScheme.driveAndTurn(userInputVector.x, userInputVector.y, userInputVector2.x);
+            if (strafingVector.x != 0 || strafingVector.y != 0 || turningVector.x != 0) {
+                var swerveModuleStates = currentControlScheme.driveAndTurn(strafingVector.x, strafingVector.y, turningVector.x);
                 this.drive(swerveModuleStates);
             } else {
                 // Keep the current direction, but make the goal speed 0

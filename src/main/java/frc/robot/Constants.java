@@ -212,7 +212,7 @@ public final class Constants {
    * _does_ seem to be able to distinguish is the joystick names, which we then
    * have to hard-code (only once, fortunately.)
    */
-  public static String[] KNOWN_CONTROLLER_NAMES = { "Logitech Dual Action" };
+  public static String[] KNOWN_CONTROLLER_NAMES = { "Logitech Dual Action", "Controller (Xbox One For Windows)" };
 
   //////////////////////////////////////
   // NetworkTables button assignments //

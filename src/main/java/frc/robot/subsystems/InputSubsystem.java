@@ -186,7 +186,7 @@ public class InputSubsystem extends SubsystemBase {
     if (this.joystick != null) {
       xValue = this.joystick.getZ();
     } else if (this.controller != null) {
-      xValue = this.controller.getRawAxis(2);
+      xValue = this.controller.getX(Hand.kRight);
     }
 
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
@@ -212,6 +212,7 @@ public class InputSubsystem extends SubsystemBase {
   public void initialize(int port) {
     try {
       this.controller = new XboxController(port);
+      SmartDashboard.putString("controller name", this.controller.getName());
       for (int i = 0; i < KNOWN_CONTROLLER_NAMES.length; ++i) {
         if (KNOWN_CONTROLLER_NAMES[i].equals(this.controller.getName())) {
           // This is a known XBox controller.
