@@ -48,7 +48,7 @@ public final class Constants {
    * center (dimensional center, not center of mass) to the center of any of the
    * wheels.
    */
-  public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.635 * 0.5;
+  public static final double WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE = 0.745 * 0.5;
 
 
   /**
@@ -72,17 +72,16 @@ public final class Constants {
    */
   public static final double MAX_ROBOT_SPEED_MPS = 5;
 
-  /*
-   * Ratio for how many revolutions of the motor to a revolution of the wheel
+  
+  /**
+   * Ratio for how many revolutions of the pivot motor correspond to one full
+   * rotation of the wheel about the y-axis.
    *
-   * The gearbox for the planetary gear that our swerve controllers' NEO 550
-   * motors are attached to is 10:1.
-   *
-   * The gearbox is, in turn, connected to a 12-tooth sprocket, and this is
-   * attached by chain to a 26-tooth sprocket that drives the swerve wheel. _ Thus
-   * the final gear ratio = (26 / 12) * (10 / 1) = 21.6.
+   * The only way to get this value is to dismantle the swerve module and count
+   * the teeth. So, we got this value from the tech specs at
+   * https://www.swervedrivespecialties.com/products/mk3-swerve-module.
    */
-  public static final double WHEEL_TURN_RATIO = ((26 / 12) * (10 / 1)) * (1.05);
+  public static final double WHEEL_TURN_RATIO = 12.8 * (1.0);
 
   /**
    * If only one joystick or controller is plugged in, then the joystick port
