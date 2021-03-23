@@ -76,7 +76,9 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private List<CANSparkMax> pivotMotors;
 
     /**
-     * Empirically determined the offsets and compares them t
+     * Measures the offsets of the Swerve Module States, then generates a list of all 4 wheels, finding 
+     * the outlier and fixing the rotation of the wheel.
+     * 
      */
     private List<Double> pivotEncoderFudgeFactors;
 
