@@ -11,6 +11,8 @@ import static frc.robot.Constants.DEVIATION_EPSILON_DEGREES;
 import static frc.robot.Constants.MAX_HORIZONTAL_DEVIATION_DEGREES;
 import static frc.robot.Constants.crabRotationThetas;
 
+import com.revrobotics.CANSparkMaxLowLevel.FollowConfig.Config;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,6 +39,7 @@ import frc.robot.subsystems.ReverseBeltsButton;
 import frc.robot.subsystems.ShootButton;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SneakButton;
+import frc.robot.subsystems.TestButton;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
 
@@ -63,7 +66,7 @@ public class RobotContainer {
 
     private AutoTimedDrive m_autoCommand = null;
 
-    // private final TestButton testButton = new TestButton(inputSubsystem);
+    private final TestButton testButton = new TestButton(inputSubsystem);
     private final ShootButton shootButton = new ShootButton(inputSubsystem);
     private final ClimbUpButton climbUpButton = new ClimbUpButton(inputSubsystem);
     private final ClimbDownButton climbDownButton = new ClimbDownButton(inputSubsystem);
@@ -335,6 +338,12 @@ public class RobotContainer {
         // })));
 
         // testButton.whenPressed(new InstantCommand(wheelDrive::setOppositeAngle));
+        
+        testButton.whenPressed(new InstantCommand(() -> {
+            this.newWheelDrive.adjust();
+        }));
+
+
     }
 
     /**

@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.revrobotics.AlternateEncoderType;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.HolonomicDriveController;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -71,6 +74,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
      * SpeedController here.
      */
     private List<CANSparkMax> pivotMotors;
+
+    /**
+     * Empirically determined the offsets and compares them t
+     */
+    private List<Double> pivotEncoderFudgeFactors;
 
     /**
      * PID constants. Each of these appears on the SmartDashboard. We're going to
@@ -179,6 +187,18 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
 
         }); // end (for each pivot motor)
 
+        this.pivotEncoderFudgeFactors = new ArrayList<Double>();
+        Collections.addAll(this.pivotEncoderFudgeFactors, new Double[] {
+            0.0, 
+            0.0, 
+            0.0,
+            0.0 
+        });
+        SmartDashboard.putNumber("FL Fudge", this.pivotEncoderFudgeFactors.get(FRONT_LEFT));
+        SmartDashboard.putNumber("BL Fudge", this.pivotEncoderFudgeFactors.get(BACK_LEFT));
+        SmartDashboard.putNumber("BR Fudge", this.pivotEncoderFudgeFactors.get(BACK_RIGHT));
+        SmartDashboard.putNumber("FR Fudge", this.pivotEncoderFudgeFactors.get(FRONT_RIGHT));
+
         // Even though we aren't driving, we still need an initial goal.
         List<SwerveModuleState> swerveModuleStates = new ArrayList<SwerveModuleState>();
         for (int i = 0; i < 4; i++) {
@@ -205,6 +225,24 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             var m = this.pivotMotors.get(index);
             m.getEncoder().setPosition(0);
         }
+    }
+
+    /**
+     * Forces the pivot encoders to move to the position of the Fudge Factors. 
+     */
+    public void adjust() {
+        this.pivotEncoderFudgeFactors.set(FRONT_LEFT, SmartDashboard.getNumber("FL Fudge", 0));
+        this.pivotEncoderFudgeFactors.set(BACK_LEFT, SmartDashboard.getNumber("BL Fudge", 0));
+        this.pivotEncoderFudgeFactors.set(BACK_RIGHT, SmartDashboard.getNumber("BR Fudge", 0));
+        this.pivotEncoderFudgeFactors.set(FRONT_RIGHT, SmartDashboard.getNumber("FR Fudge", 0));
+
+        for (int i = 0; i < this.pivotMotors.size(); i = i + 1) {
+            CANSparkMax m = this.pivotMotors.get(i);
+            CANEncoder encoder = m.getAlternateEncoder(AlternateEncoderType.kQuadrature, 4096);
+            CANPIDController pidController = m.getPIDController();
+            pidController.setFeedbackDevice(encoder);
+            pidController.setReference(this.pivotEncoderFudgeFactors.get(i), ControlType.kPosition);
+        };
     }
 
 	/**

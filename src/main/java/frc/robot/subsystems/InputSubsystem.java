@@ -532,11 +532,11 @@ public class InputSubsystem extends SubsystemBase {
    */
   public boolean getTestButton() {
     if (joystick != null) {
-      SmartDashboard.putBoolean("button 6 joy", this.controller.getRawButton(6));
+      SmartDashboard.putBoolean("testButton joy", this.controller.getRawButton(1));
       return this.joystick.getRawButton(1);
 
     } else if (controller != null) {
-      SmartDashboard.putNumber("button 6", this.controller.getRawButton(6) ? 1 : 0);
+      SmartDashboard.putBoolean("testButton", this.controller.getRawButton(1));
       return this.controller.getRawButton(1);
     } else {
       return false;
