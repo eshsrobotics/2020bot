@@ -38,7 +38,7 @@ public class CrabDriveScheme implements ControlScheme {
         // Need to convert unitless variables x, y, and turnspeed, use made up constants to do this
         double xMetersPerSecond = x * MAX_ROBOT_SPEED_MPS;
         double yMetersPerSecond = y * MAX_ROBOT_SPEED_MPS;
-        final double MAX_ROBOT_TURN_SPEED_RADIANS_PER_SEC = 2 * Math.PI;
+        final double MAX_ROBOT_TURN_SPEED_RADIANS_PER_SEC = 8 * Math.PI;
         double thetaRadiansPerSecond = turnSpeed * MAX_ROBOT_TURN_SPEED_RADIANS_PER_SEC;
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xMetersPerSecond, yMetersPerSecond, thetaRadiansPerSecond);
     

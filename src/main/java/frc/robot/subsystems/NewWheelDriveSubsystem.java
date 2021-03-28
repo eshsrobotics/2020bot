@@ -76,11 +76,18 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private List<CANSparkMax> pivotMotors;
 
     /**
-     * Measures the offsets of the Swerve Module States, then generates a list of all 4 wheels, finding 
-     * the outlier and fixing the rotation of the wheel.
+     * These fudge factors are the current values given by the encoders after
+     * calibrating the wheels. These values are specified in units of rotations.
      * 
+     * These values tell us what values to set the wheels to when calibrating.
      */
     private List<Double> pivotEncoderFudgeFactors;
+
+    /**
+     * The list of encoder positions as they are measured during construction.
+     * They are measured in units of rotation.
+     */
+    private List<Double> initialEncoderPositions;
 
     /**
      * PID constants. Each of these appears on the SmartDashboard. We're going to
@@ -189,24 +196,14 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
 
         }); // end (for each pivot motor)
 
-        this.pivotEncoderFudgeFactors = new ArrayList<Double>();
-        Collections.addAll(this.pivotEncoderFudgeFactors, new Double[] {
-            0.0, 
-            0.0, 
-            0.0,
-            0.0 
-        });
-        SmartDashboard.putNumber("FL Fudge", this.pivotEncoderFudgeFactors.get(FRONT_LEFT));
-        SmartDashboard.putNumber("BL Fudge", this.pivotEncoderFudgeFactors.get(BACK_LEFT));
-        SmartDashboard.putNumber("BR Fudge", this.pivotEncoderFudgeFactors.get(BACK_RIGHT));
-        SmartDashboard.putNumber("FR Fudge", this.pivotEncoderFudgeFactors.get(FRONT_RIGHT));
+        this.initialEncoderPositions = this.getInitialEncoderValues();
 
         // Even though we aren't driving, we still need an initial goal.
         List<SwerveModuleState> swerveModuleStates = new ArrayList<SwerveModuleState>();
         for (int i = 0; i < 4; i++) {
             swerveModuleStates.add(new SwerveModuleState(0, new Rotation2d(0)));
         }
-        this.drive(swerveModuleStates);
+        //this.drive(swerveModuleStates);
     }
 
     public NewWheelDriveSubsystem() {
@@ -228,23 +225,41 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             m.getEncoder().setPosition(0);
         }
     }
-
+    
     /**
-     * Forces the pivot encoders to move to the position of the Fudge Factors. 
+     * Grabs the value of the encoders at the time of construction.
+     * @return Returns a list of four encoder positions, starting with the front
+     * left and proceeding counterclockwise. The encoder positions are specified
+     * in units of rotations.
      */
-    public void adjust() {
-        this.pivotEncoderFudgeFactors.set(FRONT_LEFT, SmartDashboard.getNumber("FL Fudge", 0));
-        this.pivotEncoderFudgeFactors.set(BACK_LEFT, SmartDashboard.getNumber("BL Fudge", 0));
-        this.pivotEncoderFudgeFactors.set(BACK_RIGHT, SmartDashboard.getNumber("BR Fudge", 0));
-        this.pivotEncoderFudgeFactors.set(FRONT_RIGHT, SmartDashboard.getNumber("FR Fudge", 0));
+    public List<Double> getInitialEncoderValues() {
+        var result = new ArrayList<Double>();
+        Collections.addAll(result, new Double[] {
+            this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition(),
+            this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition(),
+            this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition(),
+            this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition(), 
+        });
+        return result;
+    }
+    
+    /**
+     * When the robot is disabled, we return to the initial positions of the
+     * pivot wheels so the drivers do not have to calibrate as often.
+     * @param initialEncoderValues An array of encoder values such as what
+     * getInitialEncoderValues() returns.
+     */
+    private void setPivotPositions(List<Double> initialEncoderValues) {
 
         for (int i = 0; i < this.pivotMotors.size(); i = i + 1) {
             CANSparkMax m = this.pivotMotors.get(i);
-            CANEncoder encoder = m.getAlternateEncoder(AlternateEncoderType.kQuadrature, 4096);
             CANPIDController pidController = m.getPIDController();
-            pidController.setFeedbackDevice(encoder);
-            pidController.setReference(this.pivotEncoderFudgeFactors.get(i), ControlType.kPosition);
+            pidController.setReference(initialEncoderValues.get(i), ControlType.kPosition);
         };
+    }
+
+    public void resetPivotPositions() {
+        this.setPivotPositions(this.initialEncoderPositions);
     }
 
 	/**
@@ -356,9 +371,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
                 this.drive(swerveModuleStates);
             } else {
                 // Keep the current direction, but make the goal speed 0
-                this.goalStates.forEach(swerveModuleState -> {
-                    swerveModuleState.speedMetersPerSecond = 0;
-                });
+                if (this.goalStates != null) {
+                    this.goalStates.forEach(swerveModuleState -> {
+                        swerveModuleState.speedMetersPerSecond = 0;
+                    });
+                }
             }
         }   
 

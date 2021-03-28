@@ -8,28 +8,20 @@
 package frc.robot;
 
 import static frc.robot.Constants.DEVIATION_EPSILON_DEGREES;
-import static frc.robot.Constants.MAX_HORIZONTAL_DEVIATION_DEGREES;
 import static frc.robot.Constants.crabRotationThetas;
-
-import com.revrobotics.CANSparkMaxLowLevel.FollowConfig.Config;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.AutoTimedDrive;
-import frc.robot.commands.CrabDriveModeCommand;
 import frc.robot.subsystems.BeltButton;
 import frc.robot.subsystems.ClimbDownButton;
 import frc.robot.subsystems.ClimbUpButton;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.CrabCenterRotation2;
-import frc.robot.subsystems.CrabCenterRotationButton;
 import frc.robot.subsystems.InputSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightDisableButton;
@@ -76,8 +68,6 @@ public class RobotContainer {
     // private final Auton auton = new Auton(inputSubsystem);
     private final LimeLightDisableButton limeLightDisableButton = new LimeLightDisableButton(inputSubsystem);
     private final LimeLightEnableButton limeLightEnableButton = new LimeLightEnableButton(inputSubsystem);
-    private final CrabCenterRotationButton crabRotateButton = new CrabCenterRotationButton(inputSubsystem);
-    private final CrabCenterRotation2 crabRotateButton2 = new CrabCenterRotation2(inputSubsystem);
 
     private double topSpeed;
     private double botSpeed;
@@ -231,6 +221,14 @@ public class RobotContainer {
     }
 
     /**
+     * Reset the pivot wheels to the initial pivot positions when the robot is
+     * disabled.
+     */
+    public void resetDrive() {
+        this.newWheelDrive.resetPivotPositions();
+    }
+
+    /**
      * Gets a composite {@link Command} that:
      *
      * 1. Stops moving and aligns the wheels for crab rotation mode
@@ -339,9 +337,9 @@ public class RobotContainer {
 
         // testButton.whenPressed(new InstantCommand(wheelDrive::setOppositeAngle));
         
-        testButton.whenPressed(new InstantCommand(() -> {
-            this.newWheelDrive.adjust();
-        }));
+        testButton.whenPressed(() -> {
+            this.resetDrive();
+        }, this.newWheelDrive);
 
 
     }

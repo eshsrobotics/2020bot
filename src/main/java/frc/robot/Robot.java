@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    this.m_robotContainer.resetDrive();
     System.out.println("I'm disabled daddy!");
 
   }
