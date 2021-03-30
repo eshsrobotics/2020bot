@@ -76,14 +76,6 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private List<CANSparkMax> pivotMotors;
 
     /**
-     * These fudge factors are the current values given by the encoders after
-     * calibrating the wheels. These values are specified in units of rotations.
-     * 
-     * These values tell us what values to set the wheels to when calibrating.
-     */
-    private List<Double> pivotEncoderFudgeFactors;
-
-    /**
      * The list of encoder positions as they are measured during construction.
      * They are measured in units of rotation.
      */
@@ -209,23 +201,6 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     public NewWheelDriveSubsystem() {
 	}
 
-    /**
-     * Measures the four existing encoder values for the four wheels and presumes
-     * that they are all pointing directly to the front.
-     *
-     * Thereafter, all pivoting angles will be relative to these initial
-     * measurements.
-     *
-     * It is recommended to call calibrate() once at the very start of the match,
-     * during robotInit().
-     */
-    public void calibrate() {
-        for (int index = 0; index < this.pivotMotors.size(); index++) {
-            var m = this.pivotMotors.get(index);
-            m.getEncoder().setPosition(0);
-        }
-    }
-    
     /**
      * Grabs the value of the encoders at the time of construction.
      * @return Returns a list of four encoder positions, starting with the front
@@ -358,10 +333,13 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             // Teleop mode (Driving according to human input)
             Vector2d strafingVector = userInput.getVector();
             Vector2d turningVector = new Vector2d(userInput.getCrabTurnValue(), 0);
-            SmartDashboard.putNumber("strafe x", strafingVector.x);
-            SmartDashboard.putNumber("strafe y", strafingVector.y);
-            SmartDashboard.putNumber("turn x", turningVector.x);
-            SmartDashboard.putNumber("turn y", turningVector.y);
+            // SmartDashboard.putNumber("strafe x", strafingVector.x);
+            // SmartDashboard.putNumber("strafe y", strafingVector.y);
+            // SmartDashboard.putNumber("turn x", turningVector.x);
+            // SmartDashboard.putNumber("turn y", turningVector.y);
+            for (int i = 0; i < 4; i++) {
+                SmartDashboard.putNumber(String.format("encoder #%d", i), this.pivotMotors.get(i).getEncoder().getPosition());
+            }
 
             strafingVector = deadzone(strafingVector);
             turningVector = deadzone(turningVector);

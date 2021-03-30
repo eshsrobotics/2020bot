@@ -94,11 +94,6 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        // Assuming that encoders begin at their zero value.
-        // All four wheels should be set to their zero value prior to running the robot.
-        // The "zero" is where the wheel bevel gears all point inwards while the wheels align with the length of the robot.
-        calibrateDrive();
-
         // Configure the button bindings.
         configureButtonBindings();
 
@@ -210,14 +205,6 @@ public class RobotContainer {
         //                                    this.visionTrackingCommand,
         //                                    SECONDS_TO_MOVE_FORWARD);
 
-    }
-
-    /**
-     * This exists to make it so the robot calibrates upon starting teleop, not the
-     * robot turning on.
-     */
-    public void calibrateDrive() {
-        this.newWheelDrive.calibrate();
     }
 
     /**

@@ -96,8 +96,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    // Remembers current position of the encoders to set as a "default position" to be called later.
-    m_robotContainer.calibrateDrive();
   }
 
   /**
