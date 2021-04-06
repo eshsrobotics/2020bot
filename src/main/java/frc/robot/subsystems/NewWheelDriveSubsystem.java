@@ -43,6 +43,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private Timer trajectoryTimer;
     private Gyro robotGyro;
     private SwerveDriveOdometry odometry;
+    private int currentlySelectedTrajectory = -1;
 
     /**
      * When drive is called, retain goal speeds
@@ -247,6 +248,13 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         this.autonomousTrajectory = newTrajectory;
         this.trajectoryTimer = new Timer();
         this.trajectoryTimer.start();
+    }
+
+    public void nextTrajectory() {
+        currentlySelectedTrajectory += 1;
+        if (currentlySelectedTrajectory >= Constants.trajectoryList.length) {
+            // Wrap back around to -1.
+        }
     }
 
     /**

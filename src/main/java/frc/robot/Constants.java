@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.nio.file.Path;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 /**
@@ -285,4 +287,13 @@ public final class Constants {
   // Assumes limelight returns a tx between zero and this.
   // It's ok if this isn't exactly accurate.
   public static final double MAX_HORIZONTAL_DEVIATION_DEGREES = 22.0;
+ 
+  //////////////////////////////////////////
+  // Autonomous and trajectory constants. //
+  //////////////////////////////////////////
+  
+  public static final Path[] trajectoryList = {
+      Path.of("/home", "admin", "trajectories", "test_trajectory.json"),
+      Path.of("/home", "admin", "trajectories", "test_time.json")
+  };
 }
