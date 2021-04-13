@@ -262,13 +262,15 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     }
 
     private Trajectory loadTrajectory() {
+        Trajectory trajectory = null;
         try {
-            Path selectedPath = Constants.trajectoryList[currentlySelectedTrajectory];
-            Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(selectedPath);
+            Path selectedPath = trajectoryList[currentlySelectedTrajectory];
+            trajectory = TrajectoryUtil.fromPathweaverJson(selectedPath);
         } catch (IOException e) {
-            //TODO: handle exception
             System.out.printf("ERROR selecting trajectory #%d: %s", currentlySelectedTrajectory, e.getMessage());
         }
+        return trajectory;
+        
     }
 
     /**
@@ -277,12 +279,12 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
      */
     public void nextTrajectory() {
         currentlySelectedTrajectory += 1;
-        if (currentlySelectedTrajectory >= Constants.trajectoryList.length) {
+        if (currentlySelectedTrajectory >= trajectoryList.length) {
             // Wrap back around to -1.
             currentlySelectedTrajectory = -1;
         }
 
-        setTrajectory();
+        setTrajectory(loadTrajectory());
     
     }
     
