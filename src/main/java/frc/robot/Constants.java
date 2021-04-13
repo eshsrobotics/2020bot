@@ -292,8 +292,16 @@ public final class Constants {
   // Autonomous and trajectory constants. //
   //////////////////////////////////////////
   
+  /**
+   * A list of the possible trajectories that a user can select with the
+   * selection keys.
+   *
+   * Each represents an actual path on the RoboRio, meaning you must first
+   * upload the file to the RoboRio (using FileZilla) prior to running it.
+   */
+
   public static final Path[] trajectoryList = {
-      Path.of("/home", "admin", "trajectories", "test_trajectory.json"),
-      Path.of("/home", "admin", "trajectories", "test_time.json")
+      Path.of("/home", "admin", "trajectories", "test_trajectory.json"), // "/home/admin/trajectories/test_trajectory.json"
+      Path.of("/home", "admin", "trajectories", "test_time.json")        // "/home/admin/trajectories/test_time.json"
   };
 }

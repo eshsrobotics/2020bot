@@ -5,6 +5,8 @@ import frc.robot.Constants;
 import frc.robot.controls.ControlScheme;
 import frc.robot.controls.CrabDriveScheme;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 
 import static frc.robot.Constants.*;
@@ -43,6 +46,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private Timer trajectoryTimer;
     private Gyro robotGyro;
     private SwerveDriveOdometry odometry;
+    /**
+     * This is the current selected trajectory within Constants.trajectoryList. When
+     * it is equal to -1, this means no trajectory is selected and the robot will
+     * continue with teleop.
+     */
     private int currentlySelectedTrajectory = -1;
 
     /**
@@ -59,8 +67,9 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private List<CANSparkMax> speedMotors;
 
     /**
-     * This is an array of 4 boolean values, one for each of the 4 speed motors. 
-     * Whenever the reversal flag is true for a motor, then we will reverse the motor's direction in software.
+     * This is an array of 4 boolean values, one for each of the 4 speed motors.
+     * Whenever the reversal flag is true for a motor, then we will reverse the
+     * motor's direction in software.
      */
     private List<Boolean> reversalFlags;
 
@@ -77,8 +86,8 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     private List<CANSparkMax> pivotMotors;
 
     /**
-     * The list of encoder positions as they are measured during construction.
-     * They are measured in units of rotation.
+     * The list of encoder positions as they are measured during construction. They
+     * are measured in units of rotation.
      */
     private List<Double> initialEncoderPositions;
 
@@ -113,14 +122,14 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         setName("NewWheelDriveSubsystem");
         final double h = Constants.WHEEL_DRIVE_HORIZONTAL_WHEEL_TO_CENTER_DISTANCE;
         final double v = Constants.WHEEL_DRIVE_VERTICAL_WHEEL_TO_CENTER_DISTANCE;
-        
+
         // assuming that -h is left, and -v is the back side of the robot
         kinematics = new SwerveDriveKinematics(new Translation2d(-h, +v), // FRONT_LEFT
-                                               new Translation2d(-h, -v), // BACK_LEFT
-                                               new Translation2d(+h, -v), // BACK_RIGHT
-                                               new Translation2d(+h, +v)); // FRONT_RIGHT
+                new Translation2d(-h, -v), // BACK_LEFT
+                new Translation2d(+h, -v), // BACK_RIGHT
+                new Translation2d(+h, +v)); // FRONT_RIGHT
         trajectoryTimer = null;
-        
+
         currentControlScheme = new CrabDriveScheme(kinematics);
         userInput = inputSubsystem;
 
@@ -196,34 +205,35 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             swerveModuleStates.add(new SwerveModuleState(0, new Rotation2d(0)));
         }
-        //this.drive(swerveModuleStates);
+        // this.drive(swerveModuleStates);
     }
 
     public NewWheelDriveSubsystem() {
-	}
+    }
 
     /**
      * Grabs the value of the encoders at the time of construction.
+     * 
      * @return Returns a list of four encoder positions, starting with the front
-     * left and proceeding counterclockwise. The encoder positions are specified
-     * in units of rotations.
+     *         left and proceeding counterclockwise. The encoder positions are
+     *         specified in units of rotations.
      */
     public List<Double> getInitialEncoderValues() {
         var result = new ArrayList<Double>();
-        Collections.addAll(result, new Double[] {
-            this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition(),
-            this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition(),
-            this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition(),
-            this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition(), 
-        });
+        Collections.addAll(result,
+                new Double[] { this.pivotMotors.get(FRONT_LEFT).getEncoder().getPosition(),
+                        this.pivotMotors.get(BACK_LEFT).getEncoder().getPosition(),
+                        this.pivotMotors.get(BACK_RIGHT).getEncoder().getPosition(),
+                        this.pivotMotors.get(FRONT_RIGHT).getEncoder().getPosition(), });
         return result;
     }
-    
+
     /**
-     * When the robot is disabled, we return to the initial positions of the
-     * pivot wheels so the drivers do not have to calibrate as often.
+     * When the robot is disabled, we return to the initial positions of the pivot
+     * wheels so the drivers do not have to calibrate as often.
+     * 
      * @param initialEncoderValues An array of encoder values such as what
-     * getInitialEncoderValues() returns.
+     *                             getInitialEncoderValues() returns.
      */
     private void setPivotPositions(List<Double> initialEncoderValues) {
 
@@ -231,14 +241,15 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             CANSparkMax m = this.pivotMotors.get(i);
             CANPIDController pidController = m.getPIDController();
             pidController.setReference(initialEncoderValues.get(i), ControlType.kPosition);
-        };
+        }
+        ;
     }
 
     public void resetPivotPositions() {
         this.setPivotPositions(this.initialEncoderPositions);
     }
 
-	/**
+    /**
      * This function allows this object to set a timer whenever it receives a
      * trajectory
      * 
@@ -250,13 +261,44 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         this.trajectoryTimer.start();
     }
 
+    private Trajectory loadTrajectory() {
+        try {
+            Path selectedPath = Constants.trajectoryList[currentlySelectedTrajectory];
+            Trajectory trajectory = TrajectoryUtil.fromPathweaverJson(selectedPath);
+        } catch (IOException e) {
+            //TODO: handle exception
+            System.out.printf("ERROR selecting trajectory #%d: %s", currentlySelectedTrajectory, e.getMessage());
+        }
+    }
+
+    /**
+     * This is executed when the "next trajectory" button is pressed.
+     * It will cycle to the next trajectory and repeat once reaching the end.
+     */
     public void nextTrajectory() {
         currentlySelectedTrajectory += 1;
         if (currentlySelectedTrajectory >= Constants.trajectoryList.length) {
             // Wrap back around to -1.
+            currentlySelectedTrajectory = -1;
+        }
+
+        setTrajectory();
+    
+    }
+    
+    
+    
+    /**
+     * This is executed when the "previous trajectory" button is pressed.
+     * It will cycle to the previous trajectory in the list and cycle to the end of the list when it has reached the beginning.
+     */
+    public void previousTrajectory() {
+        currentlySelectedTrajectory -= 1;
+        if (currentlySelectedTrajectory < -1) {
+            // Wrap back around to the last trajectory in the list.
+            currentlySelectedTrajectory = Constants.trajectoryList.length - 1;
         }
     }
-
     /**
      * Instantaneously update our drive speed and direction.
      * 
