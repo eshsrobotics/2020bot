@@ -232,7 +232,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
      * When the robot is disabled, we return to the initial positions of the pivot
      * wheels so the drivers do not have to calibrate as often.
      * 
-     * @param initialEncoderValues An array of encoder values such as what
+     * @param initialEncoderValues An array of encoder values such as what 
      *                             getInitialEncoderValues() returns.
      */
     private void setPivotPositions(List<Double> initialEncoderValues) {
@@ -261,8 +261,15 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         this.trajectoryTimer.start();
     }
 
+    /**
+     * Loads the file represented by the currently selected trajectory from the disc in the roborio. 
+     * @return Returns loaded trajectory or null if in teleop
+     */
     private Trajectory loadTrajectory() {
-        Trajectory trajectory = null;
+        Trajectory trajectory = null; 
+        if (currentlySelectedTrajectory == -1) { 
+            return null;
+        }
         try {
             Path selectedPath = trajectoryList[currentlySelectedTrajectory];
             trajectory = TrajectoryUtil.fromPathweaverJson(selectedPath);
@@ -270,7 +277,6 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             System.out.printf("ERROR selecting trajectory #%d: %s", currentlySelectedTrajectory, e.getMessage());
         }
         return trajectory;
-        
     }
 
     /**
@@ -285,7 +291,6 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         }
 
         setTrajectory(loadTrajectory());
-    
     }
     
     
@@ -300,6 +305,8 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             // Wrap back around to the last trajectory in the list.
             currentlySelectedTrajectory = Constants.trajectoryList.length - 1;
         }
+
+        setTrajectory(loadTrajectory());
     }
     /**
      * Instantaneously update our drive speed and direction.
@@ -368,7 +375,7 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         var controller = new HolonomicDriveController(new PIDController(1, 0, 0),
                                                       new PIDController(1, 0, 0), 
                                                       new ProfiledPIDController(1, 0, 0, 
-                                                                               new TrapezoidProfile.Constraints(6.28, 3.14)));
+                                                                                new TrapezoidProfile.Constraints(6.28, 3.14)));
 
         // If there is an autonomous trajectory, follow it  
         if (autonomousTrajectory != null && trajectoryTimer.get() < autonomousTrajectory.getTotalTimeSeconds()) {
