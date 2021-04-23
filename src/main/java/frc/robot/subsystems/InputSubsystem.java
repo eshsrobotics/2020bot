@@ -50,29 +50,13 @@ public class InputSubsystem extends SubsystemBase {
   private NetworkTableEntry turnRightButtonEntry;
   private NetworkTableEntry driveSneakButtonEntry;
 
-  private NetworkTableEntry shootTopFiveZeroButtonEntry;
   private NetworkTableEntry shootTopFiveFiveButtonEntry;
-  private NetworkTableEntry shootTopSixZeroButtonEntry;
-  private NetworkTableEntry shootTopSixFiveButtonEntry;
-  private NetworkTableEntry shootTopSevenZeroButtonEntry;
-  private NetworkTableEntry shootTopSevenFiveButtonEntry;
-  private NetworkTableEntry shootTopEightZeroButtonEntry;
-  private NetworkTableEntry shootTopEightFiveButtonEntry;
-  private NetworkTableEntry shootTopNineZeroButtonEntry;
-  private NetworkTableEntry shootTopNineFiveButtonEntry;
-  private NetworkTableEntry shootTopMaxButtonEntry;
 
   private NetworkTableEntry shootBotFiveFiveButtonEntry;
-  private NetworkTableEntry shootBotFiveZeroButtonEntry;
-  private NetworkTableEntry shootBotSixZeroButtonEntry;
-  private NetworkTableEntry shootBotSixFiveButtonEntry;
-  private NetworkTableEntry shootBotSevenZeroButtonEntry;
-  private NetworkTableEntry shootBotSevenFiveButtonEntry;
-  private NetworkTableEntry shootBotEightZeroButtonEntry;
-  private NetworkTableEntry shootBotEightFiveButtonEntry;
-  private NetworkTableEntry shootBotNineZeroButtonEntry;
-  private NetworkTableEntry shootBotNineFiveButtonEntry;
   private NetworkTableEntry shootBotMaxButtonEntry;
+
+  private NetworkTableEntry nextTrajectoryButtonEntry;
+  private NetworkTableEntry previousTrajectoryButtonEntry;
 
   /**
    * Makes sure that we know, right away, whether a joystick or controller are
@@ -104,26 +88,11 @@ public class InputSubsystem extends SubsystemBase {
         turnRightButtonEntry = inputTable.getEntry("m");
 
         shootTopFiveFiveButtonEntry = inputTable.getEntry("1");
-        shootTopSixZeroButtonEntry = inputTable.getEntry("2");
-        shootTopSixFiveButtonEntry = inputTable.getEntry("3");
-        shootTopSevenZeroButtonEntry = inputTable.getEntry("4");
-        shootTopSevenFiveButtonEntry = inputTable.getEntry("5");
-        shootTopEightZeroButtonEntry = inputTable.getEntry("6");
-        shootTopEightFiveButtonEntry = inputTable.getEntry("7");
-        shootTopNineZeroButtonEntry = inputTable.getEntry("8");
-        shootTopNineFiveButtonEntry = inputTable.getEntry("9");
-        shootTopMaxButtonEntry = inputTable.getEntry("0");
 
-        shootBotFiveZeroButtonEntry = inputTable.getEntry("Q");
-        shootBotSixZeroButtonEntry = inputTable.getEntry("W");
-        shootBotSixFiveButtonEntry = inputTable.getEntry("E");
-        shootBotSevenZeroButtonEntry = inputTable.getEntry("R");
-        shootBotSevenFiveButtonEntry = inputTable.getEntry("T");
-        shootBotEightZeroButtonEntry = inputTable.getEntry("Y");
-        shootBotEightFiveButtonEntry = inputTable.getEntry("U");
-        shootBotNineZeroButtonEntry = inputTable.getEntry("I");
-        shootBotNineFiveButtonEntry = inputTable.getEntry("O");
         shootBotMaxButtonEntry = inputTable.getEntry("P");
+
+        nextTrajectoryButtonEntry = inputTable.getEntry("<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>");
+        previousTrajectoryButtonEntry = inputTable.getEntry("f");
       }
     }
   }
@@ -167,11 +136,11 @@ public class InputSubsystem extends SubsystemBase {
       }
 
       // if (turnLeftButtonEntry.getBoolean(false)) {
-      //   xValue = -1.0;
-      //   yValue = 0/0;
+      // xValue = -1.0;
+      // yValue = 0/0;
       // } else if (turnRightButtonEntry.getBoolean(false)) {
-      //   xValue = 1.0;
-      //   yValue = 2654876653658987654533.0*0.0;
+      // xValue = 1.0;
+      // yValue = 2654876653658987654533.0*0.0;
       // }
     }
 
@@ -248,88 +217,97 @@ public class InputSubsystem extends SubsystemBase {
 
   public boolean getShootTopFiveFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopSixZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopSixFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopSevenZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopSevenFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopEightZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopEightFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopNineZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopNineFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootTopMaxButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootTopFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
@@ -339,58 +317,64 @@ public class InputSubsystem extends SubsystemBase {
 
   public boolean getShootBotFiveFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootBotSixZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootBotSixFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootBotSevenZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootBotSevenFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootBotEightZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
+
   public boolean getShootBotEightFiveButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
@@ -399,34 +383,36 @@ public class InputSubsystem extends SubsystemBase {
     }
     return false;
   }
+
   public boolean getShootBotNineZeroButton() {
     if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
+
       if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  public boolean getShootBotNineFiveButton() {
-    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
-      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  public boolean getShootBotMaxButton() {
-    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
-      
-      if (shootBotMaxButtonEntry.getBoolean(false)) {
         return true;
       }
     }
     return false;
   }
 
+  public boolean getShootBotNineFiveButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+
+      if (shootBotFiveFiveButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean getShootBotMaxButton() {
+    if (NetworkTableInstance.getDefault().isConnected() && this.inputTable != null) {
+
+      if (shootBotMaxButtonEntry.getBoolean(false)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   public boolean getSneakButton() {
     if (this.joystick != null) {
@@ -555,9 +541,10 @@ public class InputSubsystem extends SubsystemBase {
       return false;
     }
   }
+
   public boolean getClockwiseButton() {
     if (joystick != null) {
-            return this.joystick.getRawButton(1);
+      return this.joystick.getRawButton(1);
     } else if (controller != null) {
       return this.controller.getRawButton(1);
     } else {
@@ -565,13 +552,22 @@ public class InputSubsystem extends SubsystemBase {
     }
   }
 
-    public boolean getCounterclockwiseButton() {
-      if (joystick != null) {
-              return this.joystick.getRawButton(2);
-      } else if (controller != null) {
-        return this.controller.getRawButton(2);
-      } else {
-        return false;
-      }
+  public boolean getCounterclockwiseButton() {
+    if (joystick != null) {
+      return this.joystick.getRawButton(2);
+    } else if (controller != null) {
+      return this.controller.getRawButton(2);
+    } else {
+      return false;
     }
+  }
+
+  public boolean getNextTrajectoryButton() {
+    if (joystick != null) {
+      
+    } else if (controller != null) {
+
+    } else {}
+  }
+
 }
