@@ -563,20 +563,38 @@ public class InputSubsystem extends SubsystemBase {
   }
 
   /**
-   * Alerts when user presses a button that corresponds to Next Trajectory.
+   * Alerts when user presses a button that corresponds to Next Trajectory. 
    * @return The button the user pressed (Joystick, controller, keyboard) if it corresponds to Next Trajectory
    */
   public boolean getNextTrajectoryButton() {
     if (joystick != null) {
-      // THe button is the small button to the top right of the joystick
+      // The button is the small button to the top right of the joystick.
       return joystick.getRawButton(6);
     } else if (controller != null) {
-      // it is the options button (small button to the left of the Letter buttons)
+      // it is the options button (small button to the left of the Letter buttons).
       return controller.getRawButton(8);
     } else {
-      // Keyboard control
+      // Keyboard control.
       return nextTrajectoryButtonEntry.getBoolean(false);
     }
   }
 
+  /**
+   * Determines if the user wants to navigate previous trajectory or not 
+   * @return Returns true if the user is pressing the relevant button, using three different control
+   * set-ups (X-box, big joystick, & a keyboard).
+   */
+
+  public boolean getPreviousTrajectoryButton() {
+    if (joystick != null) {
+      // The button is the small button to the top left of the joystick.
+      return joystick.getRawButton(5);
+    } else if (controller != null) {
+      // This is the share button (small button to the right of the arrow pad).
+      return controller.getRawButton(7);
+    } else {
+      // Keyboard control.
+      return previousTrajectoryButtonEntry.getBoolean(false);
+    }   
+  }
 }
