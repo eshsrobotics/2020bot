@@ -571,8 +571,8 @@ public class InputSubsystem extends SubsystemBase {
       // The button is the small button to the top right of the joystick.
       return joystick.getRawButton(6);
     } else if (controller != null) {
-      // it is the options button (small button to the left of the Letter buttons).
-      return controller.getRawButton(8);
+      // This is true when the user is pressing the lower half of the directional pad.
+      return controller.getPOV() < 270 && controller.getPOV() >= 90;
     } else {
       // Keyboard control.
       return nextTrajectoryButtonEntry.getBoolean(false);
@@ -590,8 +590,8 @@ public class InputSubsystem extends SubsystemBase {
       // The button is the small button to the top left of the joystick.
       return joystick.getRawButton(5);
     } else if (controller != null) {
-      // This is the share button (small button to the right of the arrow pad).
-      return controller.getRawButton(7);
+      // This is true when the user is pressing the upper half of the directional pad.
+      return controller.getPOV() < 90 || controller.getPOV() >= 270;
     } else {
       // Keyboard control.
       return previousTrajectoryButtonEntry.getBoolean(false);
