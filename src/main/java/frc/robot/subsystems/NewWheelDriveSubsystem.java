@@ -288,8 +288,12 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         if (currentlySelectedTrajectory >= trajectoryList.length) {
             // Wrap back around to -1.
             currentlySelectedTrajectory = -1;
+            SmartDashboard.putString("Current trajectory", "Tele-op");
+        } else {
+            // Current trajectory is valid
+            Path foo = trajectoryList[currentlySelectedTrajectory];
+            SmartDashboard.putString("Current trajectory", foo.toString());
         }
-
         setTrajectory(loadTrajectory());
     }
     
@@ -304,6 +308,13 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
         if (currentlySelectedTrajectory < -1) {
             // Wrap back around to the last trajectory in the list.
             currentlySelectedTrajectory = Constants.trajectoryList.length - 1;
+        }
+        if (currentlySelectedTrajectory == -1) {
+            // Current trajectory is invalid
+            SmartDashboard.putString("Current trajectory", "Tele-op");
+        } else {
+            Path foo = trajectoryList[currentlySelectedTrajectory];
+            SmartDashboard.putString("Current trajectory", foo.toString());
         }
 
         setTrajectory(loadTrajectory());

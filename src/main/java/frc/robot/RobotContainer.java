@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.button.NextTrajectoryButton;
+import frc.robot.button.PreviousTrajectoryButton;
 import frc.robot.commands.AutoTimedDrive;
 import frc.robot.subsystems.BeltButton;
 import frc.robot.subsystems.ClimbDownButton;
@@ -65,6 +67,8 @@ public class RobotContainer {
     private final SneakButton sneakButton = new SneakButton(inputSubsystem);
     private final BeltButton beltButton = new BeltButton(inputSubsystem);
     private final ReverseBeltsButton intakeButton = new ReverseBeltsButton(inputSubsystem);
+    private final NextTrajectoryButton nextTrajectoryButton = new NextTrajectoryButton(inputSubsystem);
+    private final PreviousTrajectoryButton previousTrajectoryButton = new PreviousTrajectoryButton(inputSubsystem);
     // private final Auton auton = new Auton(inputSubsystem);
     private final LimeLightDisableButton limeLightDisableButton = new LimeLightDisableButton(inputSubsystem);
     private final LimeLightEnableButton limeLightEnableButton = new LimeLightEnableButton(inputSubsystem);
@@ -328,7 +332,13 @@ public class RobotContainer {
             this.resetDrive();
         }, this.newWheelDrive);
 
+        nextTrajectoryButton.whenPressed(() -> {
+            this.newWheelDrive.nextTrajectory();
+        }, this.newWheelDrive);
 
+        previousTrajectoryButton.whenPressed(() -> {
+            this.newWheelDrive.previousTrajectory();
+        }, this.newWheelDrive);
     }
 
     /**
