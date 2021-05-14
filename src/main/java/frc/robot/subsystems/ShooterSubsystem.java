@@ -110,20 +110,22 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double[] getShootSpeedsOffVision(double distanceInches) {
-    //0 is top, 1 is bot
+    // 0 is top, 1 is bot
     double[] speeds = {0,0};
 
-    //top equation
-    speeds[0] = (((-2.2187)*Math.pow(10, -8)) * Math.pow(distanceInches, 3)) + ((0.0000259508)*Math.pow(distanceInches, 2)) + ((-0.00844196)*distanceInches) + (1.47272);
+    // TODO: Find out where these formulas came from. 
 
-    //bot equation
-    speeds[1] = ((1.5684*Math.pow(10, -7)) * Math.pow(distanceInches, 3)) + ((-0.000103375)*Math.pow(distanceInches, 2)) + ((0.0205054)*distanceInches) + (-0.450662);
+    // top equation
+    speeds[0] = (-2.2187e-8 * Math.pow(distanceInches, 3)) + ((0.0000259508)*Math.pow(distanceInches, 2)) + ((-0.00844196)*distanceInches) + (1.47272);
+
+    // bottom equation
+    speeds[1] = (1.5684e-7 * Math.pow(distanceInches, 3)) + ((-0.000103375)*Math.pow(distanceInches, 2)) + ((0.0205054)*distanceInches) + (-0.450662);
     return speeds;
   }
 
   @Override
     public void periodic() {
-      //this.startShooter(0.5, 0.5);
+      // this.startShooter(0.5, 0.5);
 
     }
 

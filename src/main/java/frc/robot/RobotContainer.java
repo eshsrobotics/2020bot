@@ -269,8 +269,8 @@ public class RobotContainer {
             }
             CommandScheduler.getInstance()
                     .schedule(new InstantCommand(() -> shooterSubsystem.startShooter(topSpeed, botSpeed))
-                            .andThen(new WaitCommand(0.4).andThen(() -> intakeSubsystem.enablesBelts())
-                                    .withInterrupt(() -> shootButton.get() == false)));
+                              .andThen(new WaitCommand(0.4).andThen(() -> intakeSubsystem.enablesBelts())
+                                       .withInterrupt(() -> shootButton.get() == false)));
 
         })).whenReleased(new InstantCommand(() -> {
             //SmartDashboard.putNumber("shoot number", 2);

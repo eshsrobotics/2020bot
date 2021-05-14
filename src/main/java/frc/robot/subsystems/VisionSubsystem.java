@@ -128,7 +128,7 @@ public class VisionSubsystem extends SubsystemBase {
         // The long sides of this triangle represent the distance to the center of the 
         // vision target.
         //
-        // Now, consider the right trangle formed by cutting the isosceles triangle in half.
+        // Now, consider the right triangle formed by cutting the isosceles triangle in half.
         // Clearly the hypotenuse of the triangle -- the distance to the target -- is 
         // cos tx / distanceToScreenCenterMeters.
        
