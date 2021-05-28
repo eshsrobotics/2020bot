@@ -100,6 +100,12 @@ public class RobotContainer {
 
         // Configure the button bindings.
         configureButtonBindings();
+        Command aimAtTarget = new InstantCommand(() -> {
+            if (limelight.solutionFound()) {
+                double tX = limelight.getSolutionHorizontalDeviationDegrees();
+
+            }
+        });
 
         // The following command runs at all times, allowing the user to control the
         // wheelDrive.

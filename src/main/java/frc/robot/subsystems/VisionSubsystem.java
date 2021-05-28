@@ -75,7 +75,7 @@ public class VisionSubsystem extends SubsystemBase {
      */
     public boolean solutionFound() {
         if (enabled) {
-        return (tv > 0);
+            return (tv > 0);
         } else {
             return false;
         }
