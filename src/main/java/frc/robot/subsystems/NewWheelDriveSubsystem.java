@@ -359,6 +359,23 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * A wrap-around function towards the other drive function to translate the speeds and directions of 
+     * all four swerve modules at the same time. 
+     * @param omegaRadiansPerSecond How fast the robot should rotate
+     * @param vxMetersPerSecond     How fast the robot should move in the side-to-side direction
+     * @param vyMetersPerSecond     How fast the robot should move in the forward and backward direction
+     */ 
+    public void drive(double omegaRadiansPerSecond, double vxMetersPerSecond, double vyMetersPerSecond) {
+        
+        ChassisSpeeds velocities = new ChassisSpeeds(vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond);
+        SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(velocities);
+            
+        ArrayList<SwerveModuleState> swerveArrayList = new ArrayList<SwerveModuleState>();
+        Collections.addAll(swerveArrayList, swerveModuleStates);
+        this.drive(swerveArrayList);
+    }
+
+    /**
      * Turns sneak on by changing sneakMode to true.
      * sneakMode makes it so that the robot moves at a reduced percentage of its normal speed.
      * This is important when trying to perform more precise maneuvers, such as lining up to shoot balls or move objects.
@@ -394,11 +411,8 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             
             // In this call, we want the robot face 0 degrees relative to its starting angle. 
             ChassisSpeeds velocities = controller.calculate(odometry.getPoseMeters(), state, Rotation2d.fromDegrees(0.0));
-            SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(velocities);
-            
-            ArrayList<SwerveModuleState> foo = new ArrayList<SwerveModuleState>();
-            Collections.addAll(foo, swerveModuleStates);
-            this.drive(foo);
+            this.drive(velocities);
+
         } else {
             // Teleop mode (Driving according to human input)
             Vector2d strafingVector = userInput.getVector();

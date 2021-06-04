@@ -10,8 +10,11 @@ package frc.robot;
 import static frc.robot.Constants.DEVIATION_EPSILON_DEGREES;
 import static frc.robot.Constants.crabRotationThetas;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,6 +39,7 @@ import frc.robot.subsystems.SneakButton;
 import frc.robot.subsystems.TestButton;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.WheelDriveSubsystem;
+import frc.robot.subsystems.WheelDriveSubsystem.DriveMode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -101,9 +105,21 @@ public class RobotContainer {
         // Configure the button bindings.
         configureButtonBindings();
         Command aimAtTarget = new InstantCommand(() -> {
+            // *bing!* TODO: These parameters need to be tweaked 
+            final double minRadPerSec = Math.PI/6;
+            final double maxRadPerSec = Math.PI/5;
             if (limelight.solutionFound()) {
                 double tX = limelight.getSolutionHorizontalDeviationDegrees();
-
+                final double horizontalDeviationRad = tx * Math.PI/180;
+                final double secToRotate = 3;
+                double angularVelocity = horizontalDeviationRad/secToRotate; 
+                if (angularVelocity > maxRadPerSec) {
+                    angularVelocity = maxRadPerSec;
+                } 
+                if (angularVelocity < minRadPerSec) {
+                    angularVelocity = minRadPerSec;
+                } 
+                this.newWheelDrive.drive(angularVelocity, 0, 0);
             }
         });
 
