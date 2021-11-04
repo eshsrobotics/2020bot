@@ -411,7 +411,11 @@ public class NewWheelDriveSubsystem extends SubsystemBase {
             
             // In this call, we want the robot face 0 degrees relative to its starting angle. 
             ChassisSpeeds velocities = controller.calculate(odometry.getPoseMeters(), state, Rotation2d.fromDegrees(0.0));
-            this.drive(velocities);
+			SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(velocities);
+		    ArrayList<SwerveModuleState> swerveArrayList = new ArrayList<SwerveModuleState>();
+			Collections.addAll(swerveArrayList, swerveModuleStates);
+			
+			this.drive(swerveArrayList);
 
         } else {
             // Teleop mode (Driving according to human input)

@@ -110,7 +110,7 @@ public class RobotContainer {
             final double maxRadPerSec = Math.PI/5;
             if (limelight.solutionFound()) {
                 double tX = limelight.getSolutionHorizontalDeviationDegrees();
-                final double horizontalDeviationRad = tx * Math.PI/180;
+                final double horizontalDeviationRad = tX * Math.PI/180;
                 final double secToRotate = 3;
                 double angularVelocity = horizontalDeviationRad/secToRotate; 
                 if (angularVelocity > maxRadPerSec) {
