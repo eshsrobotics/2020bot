@@ -1,10 +1,10 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2021.2.2"
+    id "edu.wpi.first.GradleRIO" version "2021.3.1"
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
@@ -76,4 +76,19 @@ sim {
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+}
+
+// https://github.com/wpilibsuite/GradleRIO trying to upgrade gradle from 6.3 to 7.0 to support java16 
+// straightforward way causes error:
+//
+//    An exception occurred applying plugin request [id: 'edu.wpi.first.GradleRIO', version: '2021.3.1']
+//    > Failed to apply plugin class 'jaci.gradle.deploy.DeployPlugin'.
+//       > Could not create an instance of type jaci.gradle.deploy.DeployExtension.
+//          > Could not create an instance of type jaci.gradle.deploy.target.TargetsExtension.
+//             > 'void org.gradle.api.internal.DefaultNamedDomainObjectSet.<init>(java.lang.Class, org.gradle.internal.reflect.Instantiator)'
+//
+// trying to force gradle version used in build 
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '7.0'
 }
